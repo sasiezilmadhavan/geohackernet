@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #5c - Clickable Clustered Marker Example with Icon (technique 3)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_5c_Clickable_Clustered_Marker_Example_with_icon_technique_3.html">Altus Platform - Example #5c - Clickable Clustered Marker Example with Icon (technique 3)</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Mapbox.com Aerial<span class='spacer'></span></span></h5>
+<font face="arial,helvetica">
+<center>
+<b>Example #5c - Clickable Clustered Marker Example with Icon (technique 3)  </b>
+</center>
+This demonstrates how to add clickable clustered markers to the BA3 Altus Mapping Engine. Eight markers are added in the Washington DC area. The tile set here is the aerial tiles from Mapbox.com. 
+<p>
+Maps: © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #5c
+// Demonstrates how to add clickable clustered markers to the BA3 Altus Mapping Engine
+// using an image file that is embedded directly in the code rather than loaded from a file.
+// This is an extension of Example #4. Click on the markers to see the action. 
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  installBaseMap();
+  addClusteredMarkers();
+  //Washington DC at 10,000 meters
+  positionCamera2D(38.889469, -77.035258, 10000);
+};
+
+function addElementsToVectorAndDelete(vector, array) {
+  pushToVector(vector, array);
+  deleteElements(array);
+}
+
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns an icon texture with the given dimensions and colors
+function iconTexture() {
+  var image = iconImage();
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+function createTextureFromImageData(imageData, width, height, mipEnabled) {
+  var vector = new AltusUnified.VectorByte(),
+    image,
+    texture;
+
+  pushToVector(vector, imageData, width * height * 4);
+
+  image = new AltusUnified.Image(width, height, vector);
+  image.multiplyAlpha();
+
+  texture = new AltusUnified.Texture(image, mipEnabled);
+
+  vector.delete();
+  image.delete();
+
+  return texture;
+}
+
+// Returns a canvas that can be used for drawing
+// Used by the addMarkerLabel function
+function createCanvas(width, height) {
+  var canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+}
+
+function getImageData(image) {
+  var canvas = createCanvas(image.width, image.height),
+    context = canvas.getContext("2d"),
+    imageData,
+    imageBytes;
+
+  // Copy the image contents to the canvas        
+  context.clearRect(0, 0, image.width, image.height);
+  context.drawImage(image, 0, 0);
+
+  imageData = context.getImageData(0, 0, image.width, image.height);
+  imageBytes = new Uint8Array(imageData.data);
+
+  return imageBytes;
+}
+
+//All of the code to handle clickable markers is isolated to this function, in the
+//form of the delegate.
+function addClusteredMarkers() {
+
+  //Create the delegate to handle the clicks on the markers
+  var clusteredMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+    onMarkerTapped: function(marker, screenPoint, markerPoint, mapName) {
+      console.log("onMarkerTapped: " + marker.metadata);
+      window.alert(marker.metadata + " clicked");
+    },
+    onMarkersTapped: function(markerHit) {},
+    getMarkerImage: function(markerInfo, mapName) {
+      console.log("getMarkerImage");
+    },
+    phrase: "phrase"
+  });
+
+  var image = new Image();
+
+  //image.src = "BlueDotMarker.png";
+  image.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAANbY1E9YMgAABMxJREFUWMOlV1lMlFcUvjAzUEYQRrZAhk2owsiwdVgqmw7DIosDYZkBUYQXJKBowKhQakWNYjTGgJVQjEQDioYoKg8EWuOK25tFQcF9iS+kSdMYW+vpOX8DhfH/rVwm+XJzZ+499zvnnvOdOwwAmBiyb99mOXfvsqzLl9myjg4WvW8fC6mpkfnl5EQ7eHvXWVlZtTPGOmh08PJq8E5PXxq2ZYs8as8elnj0qLCP9pMdqTMI7LME7txhWVeusKRTp1hwVVW40t29X6ZQfFig0cDC3FxYXFoKC/PzwVmrBblC8bfSze0Xzbp10frOzn8J4P65EUAPCJry8hL09r1XSgqknj8PBQ8fQtGLF1MwPXoEaX194JOZiRbZh8Vr11ZM7p8TgbzhYRa+bVupFS7D0ELRy5dgfvIECkZGIP/Bg/+Ac/Pjx1D06hV8e/AgWFtbg3bjxkraz01g5Y0bLKGtTYeH/xnd1ASr3rwRDppxsAhoXWxzM0XiI47xK4eG+AiknDvHVEFB/erUVFiFnv3fwTNIvH4NmKww38/vanJPj5yLQEhtbby1TAZpFy8K4Z0NAdP4OGQMDoJMLocllZWpXATQ++9UgYGCMcvQJ3V3C1Vg5+QkjDS3JGF++hRcwsIoCo1cBPDzk09GhpDllsbpUDl6NwmaW66hhPXHEkU77bwEjgWYTIIhS+Pk+XQCNBcjEFhWRoaOcRHA7G/1TkubUwQoEZFAGxcBt8jIWrw/QXRmnQO4nnIH8wgWBAfXcxH4Zvv2CNT59yjDUIgJNZsqILFK6e0F3P8xbOvWOC4CetR/V52uy02ng8Jnz6BgdPTLCKD3dG0eCQnkfa++q4tPiIyohIbubn+Zjc2Etrr6i8WI1qF8A2rI7/oTJzRGXiXMxk5GWo5t2ICJ9C6ioUG0IiwTj3oGrv9L19iYlXf/vmCHmwAhH41E7tqVi0Yhob0dCp8/F793zJOk06fp3iEMG9hkI+JvRtevTyHv3j22aPXqH2xVKsi+dUtov9MPF/JjeBjwoQK+RmMLkcZ1zHjzpgAuApmXLk2BHhf4MJFhWQ7hAVBkEQUKffD69WDr6DiO7wLHDNyTPjg4Bb5u2Ns7Ayv6++kq9HQVqRcuTDUo0gkMM8jt7IhEWfrAgNBJp4OLwLLjxz+B4cwZalJ903sEeR+6eTPYOjmN6k+etMXKEZ5w08GtA5ZIPnuWhdfXJ2NpQta1a2AaGxNeR/ZeXuBvNteQt1T3luAiEHfkyKdobaVRYTNv3ljk7t1Q/PYtYFRAJpO9w+99KEKW3nNHYOmhQ6KIb2tj7jExzZ6JibBmYgKWVFWBvVp9la4Iy1QUXATofS+GmAMH2KKSkhV2zs6C7LpERIDaYKiLPXxY+E0MXAQwxKIgEuF1dR4KpfKP5Z2doHR1BU1FRRwdFLV3ryi4CGg3bJBGdTX7SqUaCSovBxx/Q5l2JmJSpLkI4D8hSYRs2sRQ9X52CQ0Fe0/PXyN37mS6HTskwUUgwGyWBMoym+/r222jVAKOA1okhMkoCS4C/iaTJL4uLmb4Yv6RVNFBre7xMxoZipMk+F5EGDopRDU1MXVy8vdEwCM2tgX/jklWDYGLgFRJEWJbWlhAYeEaIoAPzyqax+zfL4nPEfgHf2JVnNxdC00AAAAASUVORK5CYII=";
+
+  if (image == null) return;
+  var iconImageData = getImageData(image),
+    texture = createTextureFromImageData(iconImageData, image.width, image.height, true),
+    anchor = new AltusUnified.vec2d(image.width / 2, image.height), //anchor to bottom center
+    markers = [
+      new AltusUnified.MarkerData(0, 38.889469, -77.035258, 0, 1, "Washington Monument", texture),
+      new AltusUnified.MarkerData(1, 38.889803, -77.009114, 0, 2, "United States Capital", texture),
+      new AltusUnified.MarkerData(2, 38.8977, -77.0365, 0, 3, "White House", texture),
+      new AltusUnified.MarkerData(3, 38.8893, -77.050111, 0, 4, "Lincoln Memorial", texture),
+      new AltusUnified.MarkerData(4, 38.8957, -77.0559, 0, 5, "Kennedy Center", texture),
+      new AltusUnified.MarkerData(5, 38.891111, -77.047778, 0, 6, "Vietnam Memorial", texture),
+      new AltusUnified.MarkerData(6, 38.888, -77.02, 0, 7, "Air & Space Museum", texture),
+      new AltusUnified.MarkerData(7, 38.89731, -77.00626, 0, 8, "Union Station", texture)
+    ];
+
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].anchorPoint_set(anchor);
+  }
+
+  var vectorMarkerData = new AltusUnified.VectorMarkerData();
+  addElementsToVectorAndDelete(vectorMarkerData, markers);
+
+  var markerMap = new AltusUnified.ClusteredMarkerMap("clusteredMarkerMap", vectorMarkerData, 32, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+  //Add the delegate
+  var del = new clusteredMarkerMapDelegate();
+  del.phrase = "marker";
+  markerMap.setDelegate(del);
+  markerMap.setHitTestingEnabled(true);
+
+  AltusUnified.scene.addMap(markerMap);
+  markerMap.setOrder(100);
+
+  vectorMarkerData.delete();
+  markerMap.delete();
+  texture.delete();
+}
+
+function positionCamera2D(lat, lon, altitude) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_5c_Clickable_Clustered_Marker_Example_with_icon_technique_3').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

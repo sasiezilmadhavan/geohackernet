@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #42b - Shows 35 Highest Population Cities on Earth (Scaled Cubes Instead of Stacked Cubes)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_42b_Shows_35_Highest_Population_Cities_on_Earth_Scaled_Cubes_Instead_of_Stacked_Cubes.html">Altus Platform - Example #42b - Shows 35 Highest Population Cities on Earth (Scaled Cubes Instead of Stacked Cubes)</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Thunderforest.com cycling<span class='spacer'></span></span></h5>
+
+<center><font face="arial,helvetica"><font size=+1><b>Example #42b - Top 35 Highest Population Cities <br>
+ (Scaled Cubes Instead of Stacked Cubes)</b></font>
+  <br> Hit "s" key to stop spin and look around, hit again to resume.
+  <br> Use shift-pan and crtl-pan after hitting "s" for different perspectives.
+</center>
+<p>
+  Maps: © <a href="http://www.thunderforest.com/">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors
+  <p>
+    More info:
+    <ul>
+      <li>Product information: <a href="http://ba3.us">http://ba3.us</a>
+        <li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+          <li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+            <li>Ask questions: info@ba3.us
+    </ul>
+    </font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #42b
+// This example demonstrates how to use scaled cube models to create 
+// a population histogram on the globe in the BA3 Altus Mapping Engine.  
+// Example 42a stacked multiple  cubes for each city, while 
+// this example scales a single cube for each city.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Note: you must use the "No Wrap in body" javascript setting and 
+// attach the altus.js external resource as shown in this example. 
+// Note: Jsfiddle forces the use of https servers for tiles, but
+// almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  installBaseMap();
+  addPopulationData();
+  timerPtr = setInterval(myTimer, 100);
+  addEventListener("keydown", dealWithKeyboard, false);
+};
+
+// source: https://en.wikipedia.org/wiki/List_of_metropolitan_areas_by_population
+var cityData = [ // lat, lon, population, name
+  [35.68, 139.68, 36923000, "Tokyo"],
+  [31.2, 121.5, 34000000, "Shanghai"],
+  [-6.2, 106.8, 30326103, "Jakarta"],
+  [37.6, 127, 25620000, "Seoul"],
+  [23.1, 113.3, 23900000, "Guangzhou"],
+  [28.6, 77.2, 21753500, "Delhi"],
+  [19.4, -99, 21179000, "Mexico City"],
+  [39.9, 116.4, 21148000, "Beijing"],
+  [6.4, 3.4, 21000000, "Lagos"],
+  [-23.5, -45.6, 21000000, "Sao Paulo"],
+  [18.9, 72.8, 20750000, "Mumbai"],
+  [40.7, -74, 20100000, "New York"],
+  [34.7, 135.5, 19342000, "Osaka"],
+  [23.7, 90.3, 17152000, "Dhaka"],
+  [22.5, 88.3, 14618000, "Kolkata"],
+  [35.7, 51.4, 14600000, "Theran"],
+  [41.2, 28.8, 14400000, "Istanbul"],
+  [51.5, -0.1, 14030000, "London"],
+  [34, -118, 13300000, "Los Angeles"],
+  [-34.6, -58.4, 13074000, "Buenos Aires"],
+  [48.8, 2.35, 12005000, "Paris"],
+  [-22.9, -43.2, 12000000, "Rio de Janeiro"],
+  [14.6, 121, 11855999, "Manila"],
+  [50.9, 7, 11470000, "Rhine-Ruhr"],
+  [22.4, 114.1, 10630000, "Shenzhen"],
+  [-12.06, -77.09, 9900000, "Lima"],
+  [41.9, -87.65, 9554000, "Chicago"],
+  [-7.26, 112.74, 9120000, "Surabya"],
+  [35.18, 137, 9107000, "Nagoya"],
+  [13.1, 80.3, 8917000, "Chennai"],
+  [13, 77.56, 8727000, "Bangalor"],
+  [13.75, 100.47, 8305000, "Bangkok"],
+  [-6.9, 107.6, 8200000, "Bandung"],
+  [4.6, -74.1, 7878000, "Bogota"],
+  [17.4, 78.5, 7749000, "Hyderabad"]
+];
+
+var lookLat = 35;
+var lookLon = 0;
+
+function lookAtModel() {
+
+  // Calculate direction camera should look based on heading.
+  // Camera is behind and above plane. 
+  var lat = lookLat
+  var lon = lookLon
+  var altitude = 30000000 //Meters above sea level
+
+  var roll = 0; //Degrees (positive is clockwise)
+  var pitch = 90; //Degrees (positive is 'down')
+  var yaw = 0; //Degrees (positive is clockwise)
+
+  //Create a new position
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  //Create a new orientation
+  var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+  //Scale is needed to construct a transform, but not used by the camera
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  //Create a new transform
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+
+  //Set the camera's transform
+  //Note that we could also use transform.lookAt(vec3d worldPosition, vec3d up) to look at the model without hard-codin roll, pitch, and yaw
+  AltusUnified.scene.camera().transform.set(trans);
+
+  //Clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+var cubeNum = 10;
+var timerPtr; // holds pointer to interval timer
+var timerOn = 1; // when 1, interval timer is running 
+
+function myTimer() {
+  // look at the heading and move forward one notch
+  lookLon = lookLon + 1.0;
+  lookLat = 0;
+  lookAtModel();
+}
+
+function dealWithKeyboard(e) {
+  switch (e.keyCode) {
+    case 83: //s = stop
+      if (timerOn == 0) {
+        timerPtr = setInterval(myTimer, 200);
+        timerOn = 1;
+        break;
+      }
+      if (timerOn == 1) {
+        clearInterval(timerPtr);
+        timerOn = 0;
+      }
+      break;
+  }
+}
+
+//To a vector, 'pushes' an array of elements
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+/*C10*/
+
+/*C11*/
+//From a vector, 'deletes' an array of elements
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+//Creates a cube mesh
+function createCubeMesh(red, green, blue) {
+
+  //Create cube vertex buffer
+  var vectorOfModelVertex = new AltusUnified.VectorModelVertex();
+  var vertexBufferData = [
+    new AltusUnified.ModelVertex(-1, 1, -1, 0, 1, 0, 0, 0), // top
+    new AltusUnified.ModelVertex(1, 1, -1, 0, 1, 0, 1, 0),
+    new AltusUnified.ModelVertex(-1, 1, 1, 0, 1, 0, 0, 1),
+    new AltusUnified.ModelVertex(1, 1, 1, 0, 1, 0, 1, 1),
+
+    new AltusUnified.ModelVertex(-1, -1, -1, 0, -1, 0, 0, 0), // bottom
+    new AltusUnified.ModelVertex(1, -1, -1, 0, -1, 0, 1, 0),
+    new AltusUnified.ModelVertex(-1, -1, 1, 0, -1, 0, 0, 1),
+    new AltusUnified.ModelVertex(1, -1, 1, 0, -1, 0, 1, 1),
+
+    new AltusUnified.ModelVertex(1, 1, -1, 1, 0, 0, 0, 0), // right
+    new AltusUnified.ModelVertex(1, -1, -1, 1, 0, 0, 1, 0),
+    new AltusUnified.ModelVertex(1, 1, 1, 1, 0, 0, 0, 1),
+    new AltusUnified.ModelVertex(1, -1, 1, 1, 0, 0, 1, 1),
+
+    new AltusUnified.ModelVertex(-1, 1, -1, -1, 0, 0, 0, 0), // left
+    new AltusUnified.ModelVertex(-1, -1, -1, -1, 0, 0, 1, 0),
+    new AltusUnified.ModelVertex(-1, 1, 1, -1, 0, 0, 0, 1),
+    new AltusUnified.ModelVertex(-1, -1, 1, -1, 0, 0, 1, 1),
+
+    new AltusUnified.ModelVertex(-1, -1, -1, 0, 0, -1, 0, 0), // front
+    new AltusUnified.ModelVertex(1, -1, -1, 0, 0, -1, 1, 0),
+    new AltusUnified.ModelVertex(-1, 1, -1, 0, 0, -1, 0, 1),
+    new AltusUnified.ModelVertex(1, 1, -1, 0, 0, -1, 1, 1),
+
+    new AltusUnified.ModelVertex(-1, -1, 1, 0, 0, 1, 0, 0), // back
+    new AltusUnified.ModelVertex(1, -1, 1, 0, 0, 1, 1, 0),
+    new AltusUnified.ModelVertex(-1, 1, 1, 0, 0, 1, 0, 1),
+    new AltusUnified.ModelVertex(1, 1, 1, 0, 0, 1, 1, 1)
+  ];
+
+  pushToVector(vectorOfModelVertex, vertexBufferData);
+
+  //Create cube index buffer
+  var vectorOfGLushort = new AltusUnified.VectorGLushort();
+  var indexBufferdata = [
+    0, 2, 1, 1, 2, 3, // top
+    4, 5, 7, 4, 7, 6, // bottom
+    8, 10, 9, 9, 10, 11, // right
+    14, 12, 13, 14, 13, 15, // left
+    16, 18, 17, 17, 18, 19, // front
+    20, 21, 22, 22, 21, 23
+  ];
+  pushToVector(vectorOfGLushort, indexBufferdata);
+
+  //Create a red texture
+  var texture = createTexture(red, green, blue, 255);
+
+  //Create mesh from vertex buffer, index buffer, and texture
+  var mesh = new AltusUnified.Mesh(vectorOfModelVertex, vectorOfGLushort, texture);
+
+  //Clean up
+  texture.delete();
+  deleteElements(vectorOfModelVertex);
+  deleteElements(vectorOfGLushort);
+  vectorOfModelVertex.delete();
+  vectorOfGLushort.delete();
+
+  return mesh;
+}
+
+function createCubeModel(cubeName, red, green, blue) {
+  var cubeMesh = createCubeMesh(red, green, blue);
+  cubeModel = new AltusUnified.InstancedModel(cubeName, cubeMesh);
+
+  //Clean up
+  cubeMesh.delete();
+
+  return cubeModel;
+}
+
+function createTransform(lat, lon, alt, scaleXY, scaleZ) {
+  var position = new AltusUnified.GeographicPosition(lat, lon, alt);
+  var orientation = new AltusUnified.Orientation(0, 0, 0);
+  var scale = new AltusUnified.vec3d(scaleXY, scaleZ, scaleXY);
+  var transform = new AltusUnified.Transform(position, orientation, scale);
+
+  //Clean up
+  scale.delete();
+  orientation.delete();
+  position.delete();
+
+  return transform;
+}
+
+//Create and add a model layer
+function addModelLayer(layerName) {
+  var modelMap = new AltusUnified.ModelMap(layerName);
+  AltusUnified.scene.addMap(modelMap);
+  modelMap.delete();
+}
+
+//Creates a 1x1 pixel texture with the given color values
+function createTexture(redValue, greenValue, blueValue, alphaValue) {
+
+  //Create a vector of bytes to hold color values
+  var rgbaData = new AltusUnified.VectorByte();
+  rgbaData.push_back(redValue);
+  rgbaData.push_back(greenValue);
+  rgbaData.push_back(blueValue);
+  rgbaData.push_back(alphaValue);
+
+  //Create image from color data
+  var image = new AltusUnified.Image(1, 1, rgbaData);
+
+  //Create texture from image
+  var texture = new AltusUnified.Texture(image, false);
+
+  //Clean up
+  rgbaData.delete();
+  image.delete();
+
+  return texture;
+}
+
+//Create and add a cube model to the specified layer
+function addCube(layerName, cubeName, lat, lon, alt, scaleXY, scaleZ, red, green, blue) {
+
+  var modelMap = AltusUnified.scene.findMap(layerName);
+  if (modelMap == null) {
+    return;
+  }
+
+  //Create a cube model
+  var cubeModel = createCubeModel(cubeName, red, green, blue);
+
+  //Add cube to map layer
+  modelMap.addModel(cubeModel);
+
+  //Create a transform to set location and scale of cube
+  var trans = createTransform(lat, lon, alt, scaleXY, scaleZ);
+  var modelTrans = cubeModel.transform();
+  modelTrans.set(trans);
+
+  //Animate the cube (rotate it about it's AXIS)
+  var worldPosition = modelTrans.worldPosition();
+  var upVector = modelTrans.up();
+
+  //Clean up
+  upVector.delete();
+  worldPosition.delete();
+  modelTrans.delete();
+  modelMap.delete();
+}
+
+function addPopulationData() {
+  //Add a model layer and cubes to show city populations
+  addModelLayer("cubes");
+  var i;
+  for (i = 0; i < cityData.length; i++) {
+    cubeNum = cubeNum + 1;
+    var name = "cube" + cubeNum;
+    // We are drawing a single long cube over each city, and scaling the length of the 
+    // cube to represent the population of the city
+    addCube("cubes", name,
+      cityData[i][0], cityData[i][1], //lat, lon
+      (cityData[i][2] / 15), // altitude in meters. This is the location of the center of the long cube.
+      0.02, // scaleXY - change this to change fatness or thinness of cube (units are earth radii)
+      (cityData[i][2] / 100000000.0), // scaleZ - the length of the cube (units are in earth radii)
+      255, 0, 0); //RGB color
+  }
+  lookAtModel();
+}
+
+function positionCamera2D(lat, lon, altitude) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_42b_Shows_35_Highest_Population_Cities_on_Earth_Scaled_Cubes_Instead_of_Stacked_Cubes').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

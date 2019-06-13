@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="../altus.css" rel="stylesheet">
+
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" /> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Resources/bootstrap.min.css">
+    <link rel="stylesheet" href="../Resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="../Resources/font-awesome.min.css">
+    <link rel="stylesheet" href="../Resources/prism.css">
+    <link rel="stylesheet" href="../Resources/demobrowser.css">
+    <link rel="stylesheet" href="../Resources/altus.css">
+    <link rel="stylesheet" href="../Resources/docs.css">
+    <script src="../Resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../Resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="../Resources/bootstrap.js" type="text/javascript"></script>
+    <script src="../Resources/holder.js" type="text/javascript"></script>
+    <script src="../Resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="../Resources/prism.js" type="text/javascript"></script>
+    <script src="../Resources/demo.js" type="text/javascript"></script>
+
+    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+
+</head>
+
+<body>
+</body>
+
+<table>
+    <tr>
+
+        <td valign=top>
+            <font face="Arial,Helvetica" size=+4>
+                <b>Altus
+                    <br> Flight&nbsp;
+                    <br> Sim
+                </b>
+            </font>
+        </td>
+
+        <!--Controls for location type-->
+        <td class="controlgroup" valign=top>
+            <fieldset id="StartingLocationGroup" disabled="true">
+                <font face="Arial,Helvetica">
+                    <legend>Starting Location</legend>
+                    <input type="radio" name="startingLocation" value="rainier" onclick="startingLocationRainier()" checked/>
+                    <label for="absolute">Mt. Rainier</label>
+                    <br/>
+                    <input type="radio" name="startingLocation" value="gc" onclick="startingLocationGC()" />
+                    <label for="accurate">Grand Canyon</label>
+                    <br/>
+                    <input type="radio" name="startingLocation" value="monument-valley" onclick="startingLocationMV()" />
+                    <label for="offset">Monument Valley</label>
+                </font>
+            </fieldset>
+        </td>
+
+        <!--Display stats-->
+        <td class="controlgroup" valign=top>
+            <fieldset id="StatsGroup" disabled="true">
+                <font face="Arial,Helvetica">
+                    <legend>Camera Stats</legend>
+                    <label for="statslat">Lat:</label>
+                    <input type="text" id="statslat" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="statslon">Lon:</label>
+                    <input type="text" id="statslon" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="statsalt">Alt:</label>
+                    <input type="text" id="statsalt" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="statsroll">Roll:</label>
+                    <input type="text" id="statsroll" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="statspitch">Pitch:</label>
+                    <input type="text" id="statspitch" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="statsyaw">Yaw:</label>
+                    <input type="text" id="statsyaw" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="cubenum">Cubes:</label>
+                    <input type="text" id="cubenum" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                    <label for="heading">Heading:</label>
+                    <input type="text" id="heading" readonly style="width:150px; border:0; font-weight:bold;" />
+                    <br/>
+                </font>
+            </fieldset>
+        </td>
+
+        <td class="controlgroup" valign=top>
+            <fieldset id="InstructionsGroup" disabled="true">
+                <font face="Arial,Helvetica">
+                    <legend>Controls</legend>
+                    <label for="leftLabel">a = left</label>
+                    <br/>
+                    <label for="rightLabel">d = right</label>
+                    <br/>
+                    <label for="upLabel">w = up</label>
+                    <br/>
+                    <label for="downLabel">x = down</label>
+                    <br/>
+                    <label for="haltLabel">h = halt (to look around)</label>
+                    <br/>
+                    <label for="goLabel">g = go</label>
+                    <br/>
+                    <label for="moreLabel">Use Shft-drag and Ctrl-drag
+                        <br>for dramatic views</b>
+                    </label>
+                    <br/>
+            </fieldset>
+        </td>
+    </tr>
+</table>
+
+
+
+<script type="text/javascript" src="../altus.js"></script>
+<script type='text/javascript'>
+    var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+</script>
+
+<script type='text/javascript'>
+    //Called by the mapping engine after it has initialized
+
+    var flightMoveLongitude;
+    var flightMoveLattitude;
+    var flightMoveAltitude;
+    function onAltusEngineReady() {
+        
+        console.log("onAltusEngineReady called");
+        AltusUnified.scene.setLicenseKey('YOUR-LICENSE-KEY-HERE');
+        solveJsfiddleProblem();
+        installBaseMap();
+        initStats();
+        add3DTerrain();
+
+        //add3DModels("modelLayer1");
+        // //Look at Mt. Rainier
+        // positionCamera3D(47.202, -121.643, 20000, 0, 25, -168);
+
+        //Look at Mt. Rainier
+        addEventListener("keydown", dealWithKeyboard, false);
+        //timerPtr = setInterval(myTimer, 200);
+
+
+        // Add model layer for cubes in breadcrumb trail plus first cube
+
+        addModelLayer("cubes");
+        addCube("cubes", "cube1", 47, -121.7, 10000, 0.0001, 255, 0, 0);
+        addCube("cubes", "cube2", 46.9, -121.7, 13000, 0.0001, 0, 255, 0);
+        addCube("cubes", "cube3", 46.2, -121.7, 10000, 0.0003, 0, 0, 255);
+
+        lookAtModel();
+
+        //Enable UI
+        document.getElementById("StartingLocationGroup").disabled = false;
+        document.getElementById("StatsGroup").disabled = false;
+        document.getElementById("InstructionsGroup").disabled = false;
+
+        createDynamicMarker();
+        positionCamera2D(39, -98, 10000000);
+    };
+
+    var lookLat = 47;
+    var lookLon = -121.7;
+    var flightSpeed = 0.01;
+    var cubeSize = 0.00002;
+    var heading = 180;
+    var cubeAlt = 10000;
+    var cameraOffset = 0.3;
+    var cameraAltOffset = 5000;
+    var incrementDistance = 0;
+    var distanceDivisor = 70;
+    var markerMap;
+    var markerName = "plane";
+    var currentLat = 0.0;
+    var currentLong = 0.0;
+    var currentAlt = 0.0;
+
+    function positionCamera2D(lat, lon, altitude) {
+        // create position object
+        var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+        // create orientation object - camera pointed like standard 2D map view
+        var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+        // create default scale object
+        var scale = new AltusUnified.vec3d(1, 1, 1);
+
+        // set transfrom to scene
+        // More info on transforms here: http://tinyurl.com/z2c94lb
+        var trans = new AltusUnified.Transform(pos, orientation, scale);
+        AltusUnified.scene.camera().transform.set(trans);
+
+        // clean up
+        pos.delete();
+        orientation.delete();
+        scale.delete();
+    }
+
+    function lookAtModel() {
+
+        // Calculate direction camera should look based on heading.
+        // Camera is behind and above plane. 
+        var lat = lookLat - Math.cos(heading * Math.PI / 180) * cameraOffset;
+        var lon = lookLon - Math.sin(heading * Math.PI / 180) * cameraOffset;
+        var altitude = cubeAlt + cameraAltOffset; //Meters above sea level
+
+        var roll = 0; //Degrees (positive is clockwise)
+        var pitch = 15; //Degrees (positive is 'down')
+        var yaw = heading; //Degrees (positive is clockwise)
+
+        //Create a new position
+        var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+        //Create a new orientation
+        var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+        //Scale is needed to construct a transform, but not used by the camera
+        var scale = new AltusUnified.vec3d(1, 1, 1);
+
+        //Create a new transform
+        var trans = new AltusUnified.Transform(pos, orientation, scale);
+
+        //Set the camera's transform
+        //Note that we could also use transform.lookAt(vec3d worldPosition, vec3d up) to look at the model without hard-codin roll, pitch, and yaw
+        AltusUnified.scene.camera().transform.set(trans);
+
+        //Clean up
+        pos.delete();
+        orientation.delete();
+        scale.delete();
+    }
+
+
+    function addFlight(layerName, cubeName, lat, lon, alt, scale, red, green, blue) {
+
+        console.log("In addFlight() lat " + lat + " lon " + lon + " alt " + alt );
+
+        var modelMap = AltusUnified.scene.findMap(layerName);
+        if (modelMap == null) {
+            console.log("ModelMap is null..");
+            return;
+        }
+
+
+    }
+
+
+    //Create and add a cube model to the specified layer
+    function addCube(layerName, cubeName, lat, lon, alt, scale, red, green, blue) {
+        var modelMap = AltusUnified.scene.findMap(layerName);
+        if (modelMap == null) {
+            return;
+        }
+
+        //Create a cube model
+        var tex = createTexture(red, green, blue, 255); //RGBA
+        var model = new AltusUnified.Model(cubeName, AltusUnified.Mesh.createCubeMesh(tex));
+        var trans = createTransform(lat, lon, alt, scale); //scale unit is in earth radii
+        model.transform().set(trans);
+        modelMap.addModel(model);
+
+        //clean up
+        tex.delete();
+        model.delete();
+        modelMap.delete();
+        trans.delete();
+        //    modelMap.delete();
+    }
+
+    //Create and add a model layer
+    function addModelLayer(layerName) {
+        var modelMap = new AltusUnified.ModelMap(layerName);
+        AltusUnified.scene.addMap(modelMap);
+
+        //clean up
+        modelMap.delete();
+    }
+    //This function exists to solve a problem in jsfiddle with keyboard
+    //clicks in the canvas. Without this function, shift-drag and
+    //ctrl-drag work do not work in jsfiddle. 
+    function solveJsfiddleProblem() {
+        AltusUnified.canvas.setAttribute('tabindex', '1');
+        AltusUnified.canvas.addEventListener('click', function (event) {
+            AltusUnified.canvas.blur();
+            AltusUnified.canvas.focus();
+        });
+    }
+
+    //Initalize stat tracking
+    function initStats() {
+        var MySceneDelegate = AltusUnified.ISceneDelegate.extend("ISceneDelegate", {
+            getRenderEventFlags: function () {
+                return AltusUnified.RenderEventFlags.POST_RENDER;
+            },
+            preRender: function (elapsed) { },
+            postRender: function (elapsed) {
+                var pos = AltusUnified.scene.camera().transform.geographicPosition();
+                flightMoveLongitude = pos.longitude;
+                flightMoveLattitude = pos.latitude;
+                flightMoveAltitude = pos.altitude;
+                currentLat = pos.latitude;
+                currentLong = pos.longitude;
+                currentAlt = pos.altitude;
+                //console.log("flightMoveLongitude value"+ flightMoveLongitude)
+                $("#statslat").val(pos.latitude);
+                $("#statslon").val(pos.longitude);
+                $("#statsalt").val(pos.altitude);
+                //addCube("cubes", "cube1", flightMoveLongitude,flightMoveLattitude, flightMoveAltitude, 0.0001, 255, 0, 0);
+
+                pos.delete();
+
+                var orientation = AltusUnified.scene.camera().transform.geographicOrientation();
+                $("#statsroll").val(orientation.roll);
+                $("#statspitch").val(orientation.pitch);
+                $("#statsyaw").val(orientation.yaw);
+                $("#cubenum").val(cubeNum);
+                $("#heading").val(heading);
+                orientation.delete();
+            }
+        });
+        var sceneDelegate = new MySceneDelegate();
+        AltusUnified.scene.setDelegate(sceneDelegate);
+        sceneDelegate.delete();
+    }
+    function installBaseMap() {
+
+        //Internal name of map
+        var mapName = "BaseMap"
+
+        //Url template for raster map tiles
+        var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+        //Create a tile provider that will serve up the tiles
+        var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+        //Create a map description and map object
+        var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+        var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+        //Add the new map
+        AltusUnified.scene.addMap(newMap);
+
+        //no dark side (delete this line and spin the globe to see what I mean)
+        AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+        //Make the sky blue
+        AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC);
+
+        //Know what version of the engine is in use. Press F12 to see.
+        console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+        //Clean up
+        newMap.delete();
+        mapDesc.delete();
+        internetTileProvider.delete();
+    };
+
+    //Loads 3D terrain
+    function add3DTerrain() {
+        //Create the tile provider
+        var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(
+            "baseMapHeight",
+            "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png",
+            "",
+            true,
+            AltusUnified.MapFormat.TERRAIN_HEIGHT);
+
+        //Create the terrain map object
+        var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+        var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+
+        //Add the terrain map
+        AltusUnified.scene.addMap(terrainMap);
+
+        //Disable tile biasing (to minimize the amount of data loaded)
+        AltusUnified.scene.screen().setTileLevelBias(0);
+
+        //Clean up
+        terrainMap.delete();
+        baseDesc.delete();
+        internetTileProvider.delete();
+    }
+    //To a vector, 'pushes' an array of elements
+    function pushToVector(vector, array) {
+        var size = array.length;
+        for (var i = 0; i < size; i++) {
+            vector.push_back(array[i]);
+        }
+    }
+    //Creates a cube mesh
+    function createCubeMesh(red, green, blue) {
+
+        //Create cube vertex buffer
+        var vectorOfModelVertex = new AltusUnified.VectorModelVertex();
+        var vertexBufferData = [
+            new AltusUnified.ModelVertex(-2, 2, -2, 0, 2, 0, 0, 0), // top
+            new AltusUnified.ModelVertex(2, 2, -2, 0, 2, 0, 2, 0),
+            new AltusUnified.ModelVertex(-2, 2, 2, 0, 2, 0, 0, 2),
+            new AltusUnified.ModelVertex(2, 2, 2, 0, 2, 0, 2, 2),
+
+            new AltusUnified.ModelVertex(-2, -2, -2, 0, -2, 0, 0, 0), // bottom
+            new AltusUnified.ModelVertex(2, -2, -2, 0, -2, 0, 2, 0),
+            new AltusUnified.ModelVertex(-2, -2, 2, 0, -2, 0, 0, 2),
+            new AltusUnified.ModelVertex(2, -2, 2, 0, -2, 0, 2, 2),
+
+            new AltusUnified.ModelVertex(2, 2, -2, 2, 0, 0, 0, 0), // right
+            new AltusUnified.ModelVertex(2, -2, -2, 2, 0, 0, 2, 0),
+            new AltusUnified.ModelVertex(2, 2, 2, 2, 0, 0, 0, 2),
+            new AltusUnified.ModelVertex(2, -2, 2, 2, 0, 0, 2, 2),
+
+            new AltusUnified.ModelVertex(-2, 2, -2, -2, 0, 0, 0, 0), // left
+            new AltusUnified.ModelVertex(-2, -2, -2, -2, 0, 0, 2, 0),
+            new AltusUnified.ModelVertex(-2, 2, 2, -2, 0, 0, 0, 2),
+            new AltusUnified.ModelVertex(-2, -2, 2, -2, 0, 0, 2, 2),
+
+            new AltusUnified.ModelVertex(-2, -2, -2, 0, 0, -2, 0, 0), // front
+            new AltusUnified.ModelVertex(2, -2, -2, 0, 0, -2, 2, 0),
+            new AltusUnified.ModelVertex(-2, 2, -2, 0, 0, -2, 0, 2),
+            new AltusUnified.ModelVertex(2, 2, -2, 0, 0, -2, 2, 2),
+
+            new AltusUnified.ModelVertex(-2, -2, 2, 0, 0, 2, 0, 0), // back
+            new AltusUnified.ModelVertex(2, -2, 2, 0, 0, 2, 2, 0),
+            new AltusUnified.ModelVertex(-2, 2, 2, 0, 0, 2, 0, 2),
+            new AltusUnified.ModelVertex(2, 2, 2, 0, 0, 2, 2, 2)
+        ];
+
+        pushToVector(vectorOfModelVertex, vertexBufferData);
+
+        //Create cube index buffer
+        var vectorOfGLushort = new AltusUnified.VectorGLushort();
+        var indexBufferdata = [
+            0, 2, 1, 1, 2, 3, // top
+            4, 5, 7, 4, 7, 6, // bottom
+            8, 10, 9, 9, 10, 11, // right
+            14, 12, 13, 14, 13, 15, // left
+            16, 18, 17, 17, 18, 19, // front
+            20, 21, 22, 22, 21, 23
+        ];
+        pushToVector(vectorOfGLushort, indexBufferdata);
+
+        //Create a red texture
+        var texture = createTexture(red, green, blue, 255);
+
+        //Create mesh from vertex buffer, index buffer, and texture
+        var mesh = new AltusUnified.Mesh(vectorOfModelVertex, vectorOfGLushort, texture);
+
+        //Clean up
+        texture.delete();
+        deleteElements(vectorOfModelVertex);
+        deleteElements(vectorOfGLushort);
+        vectorOfModelVertex.delete();
+        vectorOfGLushort.delete();
+
+        return mesh;
+    }
+
+    var cubeNum = 1;
+    var timerPtr; // holds pointer to interval timer
+    var timerOn = 1; // when 1, interval timer is running 
+    function incrementLocation() {
+        cubeNum = cubeNum + 1;
+        lookLat = lookLat + Math.cos(heading * Math.PI / 180) * flightSpeed;
+        lookLon = lookLon + Math.sin(heading * Math.PI / 180) * flightSpeed;
+    }
+
+    // lets user fly up, down, left, right, plus halting and going 
+    function dealWithKeyboard(e) {
+        switch (e.keyCode) {
+            case 65: //a = left
+                heading = heading - 5;
+                break;
+            case 88: //x = down
+                cubeAlt = cubeAlt - 200;
+                break;
+            case 68: //d = right
+                heading = heading + 5;
+                break;
+            case 87: //w = up
+                cubeAlt = cubeAlt + 200;
+                break;
+            case 71: //g = go
+                if (timerOn == 0) {
+                    timerPtr = setInterval(myTimer, 200);
+                    timerOn = 1;
+                }
+                break;
+            case 72: //h = halt
+                if (timerOn == 1) {
+                    clearInterval(timerPtr);
+                    timerOn = 0;
+                    incrementLocation();
+                    var name = "cube" + cubeNum;
+                    addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize * 2, 0, 255, 0);
+                }
+                break;
+        }
+    }
+
+
+    function myTimer() {
+  var dynamicMarker = markerMap.getMarker(markerName);
+  //console.info('dynamicMarker2: '+ markerMap.getMarker(markerName2));
+  //var dynamicMarker2 = markerMap.getMarker(markerName2);
+  // look at the heading and move forward one notch
+  incrementLocation();
+  var name = "cube" + cubeNum;
+  //addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize, 254, 254, 254);
+   //plane 1
+   var newGeoPos = new AltusUnified.GeographicPosition(lookLat, lookLon , cubeAlt );
+   dynamicMarker.transform.setPositionAndMaintainGeographicOrientation(newGeoPos);
+    newGeoPos.delete();
+//plane 2
+//      var newGeoPos2 = new AltusUnified.GeographicPosition(lookLat -3, lookLon, 2);
+//    dynamicMarker2.transform.setPositionAndMaintainGeographicOrientation(newGeoPos2);
+//    newGeoPos2.delete();
+
+var name = "cube" + cubeNum;
+        addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize, 254, 254, 254);
+
+  lookAtModel();
+}
+
+    function myTimer1() {
+        // look at the heading and move forward one notch
+        incrementLocation();
+
+        rotating = 0;
+
+        //Move flight..
+        var dynamicMarker = markerMap.getMarker(markerName);
+        if (rotating == 1) {
+        //determine the angle the plane should be rotated based on the new desintation city
+           var angleTrig = calculateDirectionalAngle(currentCity.latitude, currentCity.longitude, destinationCity.latitude, destinationCity.longitude);
+           rotateMarker(dynamicMarker.transform, angleTrig);
+           return;
+        }
+
+        var name = "cube" + cubeNum;
+        addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize, 254, 254, 254);
+        lookAtModel();
+    }
+
+    //Starting locations functions
+    function startingLocationRainier() {
+        cameraOffset = 0.3;
+        cameraAltOffset = 5000;
+        flightSpeed = 0.01;
+        cubeSize = 0.00005;
+        lookLat = 47;
+        lookLon = -121.7;
+        heading = 180;
+        cubeAlt = 10000;
+        cubeNum = cubeNum + 1;
+        var name = "cube" + cubeNum;
+        addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize * 2, 255, 0, 0);
+        lookAtModel();
+    };
+
+    function startingLocationGC() {
+        cameraOffset = 0.1;
+        cameraAltOffset = 1000;
+        flightSpeed = 0.001;
+        cubeSize = 0.000005;
+        lookLat = 36;
+        lookLon = -112;
+        heading = 290;
+        cubeAlt = 3000;
+        cubeNum = cubeNum + 1;
+        var name = "cube" + cubeNum;
+        addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize * 2, 255, 0, 0);
+        lookAtModel();
+    };
+
+    function startingLocationMV() {
+        cameraOffset = 0.05;
+        cameraAltOffset = 1000;
+        flightSpeed = 0.001;
+        cubeSize = 0.000005;
+        lookLat = 36.983333;
+        lookLon = -110.1;
+        heading = 190;
+        cubeAlt = 2000;
+        cubeNum = cubeNum + 1;
+        var name = "cube" + cubeNum;
+        addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize * 2, 255, 0, 0);
+        lookAtModel();
+    };
+
+    //Creates a 1x1 pixel texture with the given color values
+    function createTexture(redValue, greenValue, blueValue, alphaValue) {
+
+        //Create a vector of bytes to hold color values
+        var rgbaData = new AltusUnified.VectorByte();
+        rgbaData.push_back(redValue);
+        rgbaData.push_back(greenValue);
+        rgbaData.push_back(blueValue);
+        rgbaData.push_back(alphaValue);
+
+        //Create image from color data
+        var image = new AltusUnified.Image(1, 1, rgbaData);
+
+        //Create texture from image
+        var texture = new AltusUnified.Texture(image, false);
+
+        //Clean up
+        rgbaData.delete();
+        image.delete();
+
+        return texture;
+    }
+    //Positions and scales the 3D model. Scale is in earth radii. 
+    function createTransform(lat, lon, alt, scale) {
+        var position = new AltusUnified.GeographicPosition(lat, lon, alt);
+        var orientation = new AltusUnified.Orientation(0, 0, 0);
+        var scalet = new AltusUnified.vec3d(scale, scale, scale);
+        var transform = new AltusUnified.Transform(position, orientation, scalet);
+
+        //Clean up
+        scalet.delete();
+        orientation.delete();
+        position.delete();
+
+        return transform;
+    }
+
+
+    function positionCamera3D(lat, lon, altitude, roll, pitch, yaw) {
+        // create position object
+        var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+        // create orientation object - camera pointed like standard 2D map view
+        var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+        // create default scale object
+        var scale = new AltusUnified.vec3d(1, 1, 1);
+
+        // set transfrom to scene
+        // More info on transforms here: http://tinyurl.com/z2c94lb
+        var trans = new AltusUnified.Transform(pos, orientation, scale);
+        AltusUnified.scene.camera().transform.set(trans);
+
+        // clean up
+        pos.delete();
+        orientation.delete();
+        scale.delete();
+    }
+
+    function createTextureFromImageData(response) {
+        var byteArray = new Uint8Array(response);
+        var len = byteArray.length;
+        var arr = new AltusUnified.VectorByte();
+        pushToVector(arr, byteArray, len);
+        var image = new AltusUnified.Image();
+        image.loadFromMemory(arr);
+        image.multiplyAlpha();
+        var tex = new AltusUnified.Texture(image, false);
+        markerHeight = image.height;
+        markerWidth = image.width;
+        arr.delete();
+        image.delete();
+        return tex;
+    }
+
+    //This function calculates the angle (bearing) to rotate the plane marker.
+    // Bearing from point A to B, can be calculated as,
+    //  = atan2(X,Y),
+    // where, X and Y are two quantities and can be calculated as:
+    // X = cos b * sin L
+    // Y = cos a * sin b  sin a * cos b * cos L
+    // A is the starting point, B is the destination point
+    function calculateDirectionalAngle(latA, longA, latB, longB) {
+        latA = degreesToRadians(latA);
+        longA = degreesToRadians(longA);
+        latB = degreesToRadians(latB);
+        longB = degreesToRadians(longB);
+
+        var deltaLong = longB - longA;
+        var x = (Math.cos(latB)) * (Math.sin(deltaLong));
+        var y = Math.cos(latA) * Math.sin(latB) - Math.sin(latA) * Math.cos(latB) * Math.cos(deltaLong);
+        var angleInRadians = Math.atan2(x, y);
+        var angleInDegrees = radiansToDegrees(angleInRadians);
+
+        return (angleInDegrees);
+    }
+
+    function downloadData(url, timeout, onload, onerror, ontimeout) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.timeout = timeout;
+        xhr.responseType = 'arraybuffer';
+
+        //Handle download timeouts
+        xhr.ontimeout = function xhr_ontimeout() {
+            if (ontimeout) ontimeout();
+        };
+
+        //Handle successful downloads
+        xhr.onload = function xhr_onload() {
+            if (xhr.status == 200 && xhr.response) {
+                onload(xhr.response);
+            } else {
+                onerror();
+            }
+        };
+
+        //Handle other errors
+        xhr.onerror = function xhrError() {
+            onerror();
+        };
+
+        //Send the download request
+        xhr.send(null);
+
+    }
+
+    //Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha) {
+  var image = squareImage(width, height, red, green, blue, alpha);
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha) {
+  var arr = new AltusUnified.VectorByte();
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(red);
+    arr.push_back(green);
+    arr.push_back(blue);
+    arr.push_back(alpha);
+  }
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+  return image;
+}
+    // convert degrees to radians and radians to degrees for angle rotation calculations
+    function degreesToRadians(degrees) {
+        var radians = degrees * (Math.PI / 180);
+        return (radians);
+    }
+
+    function radiansToDegrees(radians) {
+        var degrees = radians * (180 / Math.PI)
+        return (degrees);
+    }
+
+    // Reset the plane marker's orientation to 0,0 and then rotate it
+    // the given degreesToRotate
+    function rotateMarker(markerTransform, degreesToRotate) {
+
+        var currentYaw = markerTransform.geographicOrientation().yaw;
+        if (Math.abs(currentYaw - degreesToRotate) >= 1) {
+
+            //rotate marker 1 degree at a time
+            if (degreesToRotate < 0) {
+                currentYaw--;
+            } else {
+                currentYaw++;
+            }
+
+            if (currentYaw >= 360) {
+                currentYaw = currentYaw % 360;
+            }
+            var temp = new AltusUnified.Orientation(0, 0, currentYaw);
+            markerTransform.setGeographicOrientationAndMaintainPosition(temp);
+            temp.delete();
+
+        } else {
+
+            rotating = 0;
+        }
+    }
+    // Read in the plane image, create the dynamic marker, and call a timer
+    // function to move the marker
+    function createDynamicMarker() {
+        // Read in the blue plane image from a file
+        var image = new Image();
+        downloadData("https://cdn.ba3.us/images/blueplane.png", 6000,
+
+            function (response) {
+                markerTex = createTextureFromImageData(response);
+                var anchorPoint = new AltusUnified.vec2d(markerWidth / 2, markerHeight / 2);
+                //  set the current city counter to be the the last in the city array
+                //currentCounter = (myCities.length) - 1;
+
+                // set the destination city counter to be the first in the city array 
+                //destinationCounter = 0;
+                //currentCity = myCities[currentCounter];
+                //destinationCity = myCities[destinationCounter];
+
+                var scale = 0.000002;
+                var locationTransform = new AltusUnified.Transform(new AltusUnified.GeographicPosition(currentLat, currentLong, currentAlt), new AltusUnified.Orientation(0, 0, 0), new AltusUnified.vec3d(scale, scale, scale));
+                var zero = new AltusUnified.vec2d(0, 0);
+                var hitTestSize = new AltusUnified.vec2i(image.width, image.height);
+                marker = new AltusUnified.DynamicMarker(markerName, 1, locationTransform, markerTex, anchorPoint, zero, AltusUnified.MarkerRotationType.ROTATION_SCREENEDGE_ALIGNED, hitTestSize);
+                markerMap = new AltusUnified.DynamicMarkerMap("markers");
+                var markers = new AltusUnified.VectorDynamicMarker();
+                markers.push_back(marker);
+                markerMap.addMarkers(markers);
+
+                AltusUnified.scene.addMap(markerMap);
+                markerMap.setOrder(212);
+
+                //clean up
+                markers.delete;
+                zero.delete();
+                hitTestSize.delete();
+                locationTransform.delete();
+
+                var dynamicMarker = markerMap.getMarker(markerName);
+                var planeGeoPos = dynamicMarker.transform.geographicPosition();
+
+                // break the planes path into distanceDivisor increments to make the plane appear to fly
+                incrementDistance = 0;
+                incrementX = 0;
+                incrementY = 0;
+
+                // var angleTrig = calculateDirectionalAngle(currentCity.latitude, currentCity.longitude, destinationCity.latitude, destinationCity.longitude);
+                rotateMarker(dynamicMarker.transform, 10);
+                timerPtr = setInterval(myTimer, 200);
+            },
+            function () { },
+            function () { });
+    }
+
+</script>
+
+<!--
+<script src="js/contents.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/prism.js"></script>
+-->
+</html>

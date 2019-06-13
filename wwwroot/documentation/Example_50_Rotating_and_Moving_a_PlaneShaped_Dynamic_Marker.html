@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #50 - Rotating and Moving a Plane-Shaped Dynamic Marker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_50_Rotating_and_Moving_a_PlaneShaped_Dynamic_Marker.html">Altus Platform - Example #50 - Rotating and Moving a Plane-Shaped Dynamic Marker</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:80vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Thunderforest.com cycling<span class='spacer'></span></span></h5>
+
+<font face="arial,helvetica">
+  <center><b>Example #50 - Rotating and Moving a Plane Shaped Dynamic Marker</b></center>
+  <p>
+The dynamic plane marker is rotated to move to each city. The cities are clustered markers.
+  
+<p>
+Maps: © <a href="http://www.thunderforest.com/">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #50
+// Demonstrates how to create a single dynamic marker on the map
+// and rotate it about its anchor point. In this case the
+// marker is a plane and it is rotated to the direction it is flying.
+// A timer event updates the marker with the new yaw orientation as well as the
+// position as it moves from city to city.
+// Markers are two dimensional objects that always face the camera
+// therefore changing the roll or pitch of the marker does not affect it.  
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for 
+//Instantiate engine
+
+var myCities;
+var incrementDistance = 0;
+var distanceDivisor = 70;
+var currentCounter;
+var destinationCounter;
+var incrementX;
+var incrementY;
+var currentCity;
+var destinationCity;
+var markerMap;
+var markerName = "plane";
+var markerHeight;
+var markerWidth;
+var timerPtr;
+var marker;
+var clusterMarkerSize = 8;
+var rotating = 1; // has a value of 0 or 1 depending on if it is rotating
+
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+
+  installBaseMap();
+  positionCamera2D(39, -98, 10000000);
+  var dallasCity = new City("Dallas", 32.7, -96.7);
+  var kansasCity = new City("Kansas City", 39.09, -94.58);
+  var bismarckCity = new City("Bismarck", 46.81, -100.77)
+  var stLouisCity = new City("St. Louis", 38.62, -90.20);
+  var raleighCity = new City("Raleigh", 35.78, -78.64);
+  var newYorkCity = new City("New York", 40, -74);
+  var sanFranCity = new City("San Francisco", 37.7, -122);
+  var tampaCity = new City("Tampa", 27, -82);
+  var atlantaCity = new City("Atlanta", 33.75, -84.39);
+  var saltLakeCity = new City("Salt Lake", 40.76, -111.89);
+  var orlandoCity = new City("Orlano", 28.54, -81.38)
+  myCities = [dallasCity, sanFranCity, bismarckCity, kansasCity, raleighCity, orlandoCity, stLouisCity, saltLakeCity];
+  createClusteredMarkers();
+  createDynamicMarker();
+
+}
+
+// create an array of clustered square red markers to mark the cities
+function createClusteredMarkers() {
+
+  var markerName;
+  var clusteredMarkerArray = new AltusUnified.VectorMarkerData();
+  var markerTex = squareTexture(clusterMarkerSize, clusterMarkerSize, 255, 0, 0, 255);
+  var zero = new AltusUnified.vec2d(0, 0);
+  var anchorPoint = new AltusUnified.vec2d(clusterMarkerSize / 2, clusterMarkerSize / 2);
+  var hitTestSize = new AltusUnified.vec2i(clusterMarkerSize, clusterMarkerSize);
+  for (i = 0; i < myCities.length; i++) {
+    markerName = myCities[i].name;
+    marker = new AltusUnified.MarkerData(i, myCities[i].latitude, myCities[i].longitude, 0, 20, markerName, markerTex);
+    marker.anchorPoint_set(anchorPoint);
+    clusteredMarkerArray.push_back(marker);
+    marker.delete();
+  }
+  var clusterMarkerMap = new AltusUnified.ClusteredMarkerMap("clusteredMarkerMap", clusteredMarkerArray, 32, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+  AltusUnified.scene.addMap(clusterMarkerMap);
+  clusterMarkerMap.setOrder(105);
+  clusteredMarkerArray.delete();
+  markerTex.delete();
+}
+
+// This function is called to update the plane marker's position as it 
+// moves from city to city
+function myTimer() {
+
+  var dynamicMarker = markerMap.getMarker(markerName);
+  if (rotating == 1) {
+    // determine the angle the plane should be rotated based on the new desintation city
+    var angleTrig = calculateDirectionalAngle(currentCity.latitude, currentCity.longitude, destinationCity.latitude, destinationCity.longitude);
+    rotateMarker(dynamicMarker.transform, angleTrig);
+    return;
+  }
+  var newGepPosY;
+  var newGeoPosX;
+  var newGeoPos;
+  var planeGeoPos = dynamicMarker.transform.geographicPosition();
+  if (incrementDistance != distanceDivisor) {
+    incrementDistance++;
+    newGeoPosY = planeGeoPos.latitude + incrementY;
+    newGeoPosX = planeGeoPos.longitude + incrementX;
+    newGeoPos = new AltusUnified.GeographicPosition(newGeoPosY, newGeoPosX, 1);
+    dynamicMarker.transform.setPositionAndMaintainGeographicOrientation(newGeoPos);
+    newGeoPos.delete();
+  } else {
+    // we are at the destination city, so pick a new current city and a new destination city 
+    newGeoPosY = destinationCity.latitude;
+    newGeoPosX = destinationCity.longitude;
+    newGeoPos = new AltusUnified.GeographicPosition(newGeoPosY, newGeoPosX, 1);
+    dynamicMarker.transform.setPositionAndMaintainGeographicOrientation(newGeoPos);
+    newGeoPos.delete();
+    currentCounter += 1;;
+    destinationCounter += 1;
+    if (currentCounter == myCities.length) {
+      currentCounter = 0;
+    }
+    if (destinationCounter == myCities.length) {
+      destinationCounter = 0;
+    }
+    currentCity = myCities[currentCounter];
+    destinationCity = myCities[destinationCounter];
+
+    // each flight from city to city is broken up into distanceDivisor increments to
+    // make it appear the plane is flying
+    incrementDistance = 0;
+    incrementX = (destinationCity.longitude - currentCity.longitude) / distanceDivisor;
+    incrementY = (destinationCity.latitude - currentCity.latitude) / distanceDivisor;
+    rotating = 1;
+  }
+}
+
+var Class = function(methods) {
+  var klass = function() {
+    this.initialize.apply(this, arguments);
+  };
+  for (var property in methods) {
+    klass.prototype[property] = methods[property];
+  }
+  if (!klass.prototype.initialize) klass.prototype.initialize = function() {};
+  return klass;
+};
+
+var City = Class({
+  initialize: function(name, latitude, longitude) {
+    this.name = name;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  },
+  toString: function() {
+    return "My city name is " + this.name + " and I am at " + this.latitude + " and " + this.longitude;
+  }
+});
+
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function downloadData(url, timeout, onload, onerror, ontimeout) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = timeout;
+  xhr.responseType = 'arraybuffer';
+
+  //Handle download timeouts
+  xhr.ontimeout = function xhr_ontimeout() {
+    if (ontimeout) ontimeout();
+  };
+
+  //Handle successful downloads
+  xhr.onload = function xhr_onload() {
+    if (xhr.status == 200 && xhr.response) {
+      onload(xhr.response);
+    } else {
+      onerror();
+    }
+  };
+
+  //Handle other errors
+  xhr.onerror = function xhrError() {
+    onerror();
+  };
+
+  //Send the download request
+  xhr.send(null);
+
+}
+
+function createTextureFromImageData(response) {
+  var byteArray = new Uint8Array(response);
+  var len = byteArray.length;
+  var arr = new AltusUnified.VectorByte();
+  pushToVector(arr, byteArray, len);
+  var image = new AltusUnified.Image();
+  image.loadFromMemory(arr);
+  image.multiplyAlpha();
+  var tex = new AltusUnified.Texture(image, false);
+  markerHeight = image.height;
+  markerWidth = image.width;
+  arr.delete();
+  image.delete();
+  return tex;
+}
+
+// convert degrees to radians and radians to degrees for angle rotation calculations
+
+function degreesToRadians(degrees) {
+  var radians = degrees * (Math.PI / 180);
+  return (radians);
+}
+
+function radiansToDegrees(radians) {
+  var degrees = radians * (180 / Math.PI)
+  return (degrees);
+}
+
+//This function calculates the angle (bearing) to rotate the plane marker.
+// Bearing from point A to B, can be calculated as,
+//  = atan2(X,Y),
+// where, X and Y are two quantities and can be calculated as:
+// X = cos b * sin L
+// Y = cos a * sin b  sin a * cos b * cos L
+// A is the starting point, B is the destination point
+function calculateDirectionalAngle(latA, longA, latB, longB) {
+  latA = degreesToRadians(latA);
+  longA = degreesToRadians(longA);
+  latB = degreesToRadians(latB);
+  longB = degreesToRadians(longB);
+
+  var deltaLong = longB - longA;
+  var x = (Math.cos(latB)) * (Math.sin(deltaLong));
+  var y = Math.cos(latA) * Math.sin(latB) - Math.sin(latA) * Math.cos(latB) * Math.cos(deltaLong);
+  var angleInRadians = Math.atan2(x, y);
+  var angleInDegrees = radiansToDegrees(angleInRadians);
+
+  return (angleInDegrees);
+}
+
+// Reset the plane marker's orientation to 0,0 and then rotate it
+// the given degreesToRotate
+function rotateMarker(markerTransform, degreesToRotate) {
+
+  var currentYaw = markerTransform.geographicOrientation().yaw;
+  if (Math.abs(currentYaw - degreesToRotate) >= 1) {
+
+    //rotate marker 1 degree at a time
+    if (degreesToRotate < 0) {
+      currentYaw--;
+    } else {
+      currentYaw++;
+    }
+
+    if (currentYaw >= 360) {
+      currentYaw = currentYaw % 360;
+    }
+    var temp = new AltusUnified.Orientation(0, 0, currentYaw);
+    markerTransform.setGeographicOrientationAndMaintainPosition(temp);
+    temp.delete();
+
+  } else {
+
+    rotating = 0;
+  }
+}
+
+// Read in the plane image, create the dynamic marker, and call a timer
+// function to move the marker
+function createDynamicMarker() {
+
+  // Read in the blue plane image from a file
+  var image = new Image();
+  downloadData("https://cdn.ba3.us/images/blueplane.png", 6000,
+
+    function(response) {
+      markerTex = createTextureFromImageData(response);
+      var anchorPoint = new AltusUnified.vec2d(markerWidth / 2, markerHeight / 2);
+      //  set the current city counter to be the the last in the city array
+      currentCounter = (myCities.length) - 1;
+
+      // set the destination city counter to be the first in the city array 
+      destinationCounter = 0;
+      currentCity = myCities[currentCounter];
+      destinationCity = myCities[destinationCounter];
+
+      var scale = 0.000002;
+      var locationTransform = new AltusUnified.Transform(new AltusUnified.GeographicPosition(currentCity.latitude, currentCity.longitude, 0), new AltusUnified.Orientation(0, 0, 0), new AltusUnified.vec3d(scale, scale, scale));
+      var zero = new AltusUnified.vec2d(0, 0);
+      var hitTestSize = new AltusUnified.vec2i(image.width, image.height);
+      marker = new AltusUnified.DynamicMarker(markerName, 1, locationTransform, markerTex, anchorPoint, zero, AltusUnified.MarkerRotationType.ROTATION_SCREENEDGE_ALIGNED, hitTestSize);
+      markerMap = new AltusUnified.DynamicMarkerMap("markers");
+      var markers = new AltusUnified.VectorDynamicMarker();
+      markers.push_back(marker);
+      markerMap.addMarkers(markers);
+
+      AltusUnified.scene.addMap(markerMap);
+      markerMap.setOrder(212);
+
+      //clean up
+      markers.delete;
+      zero.delete();
+      hitTestSize.delete();
+      locationTransform.delete();
+
+      var dynamicMarker = markerMap.getMarker(markerName);
+      var planeGeoPos = dynamicMarker.transform.geographicPosition();
+
+      // break the planes path into distanceDivisor increments to make the plane appear to fly
+      incrementDistance = 0;
+      incrementX = (destinationCity.longitude - currentCity.longitude) / distanceDivisor;
+      incrementY = (destinationCity.latitude - currentCity.latitude) / distanceDivisor;
+
+      var angleTrig = calculateDirectionalAngle(currentCity.latitude, currentCity.longitude, destinationCity.latitude, destinationCity.longitude);
+      rotateMarker(dynamicMarker.transform, angleTrig);
+      timerPtr = setInterval(myTimer, 100);
+    },
+    function() {},
+    function() {});
+}
+
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha) {
+  var image = squareImage(width, height, red, green, blue, alpha);
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha) {
+  var arr = new AltusUnified.VectorByte();
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(red);
+    arr.push_back(green);
+    arr.push_back(blue);
+    arr.push_back(alpha);
+  }
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+  return image;
+}
+
+function positionCamera2D(lat, lon, altitude) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_50_Rotating_and_Moving_a_PlaneShaped_Dynamic_Marker').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

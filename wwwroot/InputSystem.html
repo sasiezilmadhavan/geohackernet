@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Altus Web - Input System</title>
+    <link href="altus.css" rel="stylesheet">
+</head>
+<body style="padding:0px; margin:0px;">
+
+    <!--HMD1
+    ####Altus &lt;div> and Loading Altus
+    HMD1-->
+    <!--H1-->
+    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <!--H1-->
+
+    <!--HMD2
+    ####onAltusEngineReady
+    HMD2-->
+    <!--H2-->
+    <script type="text/javascript">
+        function onAltusEngineReady() {
+        
+            //Start off with an aerial map
+            setMapBoxAerialBaseMap();
+            
+            //Reset camera
+            resetCamera();
+            
+            //Enable UI
+            document.getElementById("inputTypeGroup").disabled = false;
+        };
+    </script>
+    <!--H2-->
+
+    <table><tr>
+    <td>
+    <!--HMD3
+    ####Add Radio Buttons to Control Input Type
+    HMD3-->
+    <!--H3-->
+    <fieldset id="inputTypeGroup" disabled="true">
+    <legend>Input Type</legend>
+    <input type="radio" name="inputType" value="free axis" onclick="useFreeAxisInput()" checked/>
+    <label for="classic">Free Axis</label>
+    <input type="radio" name="inputType" value="classic" onclick="useClassicInput()" />
+    <label for="realistic">Classic</label>
+    </fieldset>
+    <!--H3-->
+    </td>
+    </tr></table>
+
+    <!--HMD4
+    ####[See Demo](InputSystemDemo.html)
+    HMD4-->
+
+    <!--HMD5
+    ####[See Tutorial](InputSystemTutorial.html)
+    HMD5-->
+
+</body>
+</html>

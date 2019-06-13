@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #15 - Dynamic Vector Experiment #1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_15_Dynamic_vector_experiment_1.html">Altus Platform - Example #15 - Dynamic Vector Experiment #1</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:80vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Thunderforest.com cycling<span class='spacer'></span></span></h5>
+
+<center>
+  <font face="helvetica,arial">
+<b>Example #15 - Demonstration of Moving Lines in a DynamicVectorMap in Altus</b><p>
+<i>Try this quick demo, then read the explanation below: Hit the "2" key to create 10 random lines, then hold down the "e" key to move them east. <br>See below to understand what is happening.</i>
+    </center>
+    In Altus there are several different ways to create a layer of lines that overlay your base map. A DynamicVectorMap is one way to do it.
+    A DynamicVectorMap is used in the special situation where you plan for the lines to move or otherwise change frequently. For example, you would use
+    a DynamicVectorMap if you wanted to create the notion of "rubber-banding" a line in your app. Or if you wanted to use a line to show the changing
+    flight path of a plane whenever its heading changes, a DynamicVectorMap is the tool to use.
+    <p>
+        This page helps you get a feel for the performance of a DynamicVectorMap. Performance depends on at least four different factors:
+        <ul>
+            <li>The number of lines in the DynamicVectorMap layer
+            <li>
+                The number of styles those lines incorporate. If all lines have a single style (color, width, etc.),
+                performance will be better than if every line has a different style.
+            <li>The tesselation threshold used to subdivide long lines.
+            <li>
+                The performance of the machine running the app. If you are running on a cheap laptop with a i3 processor and no external GPU,
+                performance will be very different from a beefy destop machine with an i7 processor and Nvidia Titan.
+        </ul>
+        A quick explanation of the tesselation threshold. Let's say you create a line in Altus from San Francisco to New York.
+        That line will need to be subdivided in some way to accomodate the curvature of the earth. If you tell the
+        engine to subdivide every kilometer, the performance will be different than if you subdivide every 10 kilometers or every 100 kilometers. If the line is 4,000 kilometers
+        long, and you subdivide it every kilometer, the single line turns into 4,000 sub-lines that the engine has to render. If, on the other hand, you subdivide every 100  kilometers,
+        there are only 40 sub-lines. In this demo, the tesselation distance is set to 200 kilometers (200,000 meters).
+    <p>
+        Here is what you can try in this demo:
+        <ul>
+            <li> hit the "1" key to add one long (country-spanning) black line to the map
+            <li> hit the "2" key to add ten long (country-spanning) black lines to the map
+            <li> hit the "3" key to add one long (country-spanning) randomly colored line to the map
+            <li> hit the "4" key to add ten long (country-spanning) randomly colored lines to the map
+            <li> hit the "5" key to add one short black line to the map (Zoom in on Washington DC to find them)
+            <li> hit the "6" key to add ten short black lines to the map (Zoom in on Washington DC to find them)
+            <li> hit the "7" key to add one short randomly colored line to the map (Zoom in on Washington DC to find them)
+            <li> hit the "8" key to add ten short randomly colored lines to the map (Zoom in on Washington DC to find them)
+            <li> hit the "n" key to move all of the lines north
+            <li> hit the "s" key to move all of the lines south
+            <li> hit the "e" key to move all of the lines east
+            <li> hit the "w" key to move all of the lines west
+            <li> hit the "c" key to clear all of the lines and start over
+        </ul>
+        As an example, start the app and hit the "2" key. Ten long, random, black lines will be added to the map. Then press and hold the "e"
+        key to move the lines east. Notice that Altus can handle this no problem. Here are a few notes to give you more context:
+        <ol>
+            <li>
+                Note 1: the "short" lines are all drawn in a small region around Washington DC. Zoom into DC to find them.
+                The idea with the short lines is to create lines which will encounter much less of a tesselation penalty than the long lines.
+                Performance will be better with only short lines on the screen. Performance will be best if only short lines of a
+                single color are on the screen.
+    <p>
+        <li>
+            Note 2: Each time you move the lines,  the DynamicVectorMap layer is cleared and all of the lines are added again (with altered lat/lon)
+            to show the movement (The API also allows you to delete individual lines and re-add them, but this is not shown in the demo).
+    <p>
+        <li>
+            Note 3: If you hold one of the movement keys (n, s, e, w) down, you are moving the lines at a rate of X times per second, with X
+            depending on how fast your keyboard repeat rate is set to.
+    <p>
+        <li>
+            Note 4: The nature of a DynamicVectorMap is that every line in the layer, planet wide, is redrawn every frame.
+            This allows for every line in the layer to be completely dynamic, but
+            by its nature a DynamicVectorMap layer consumes computer resources in direct relation to the number of lines in the layer, ragardless of how far you zoom in or out.
+    <p>
+        <li>
+            Note 5: A DynamicVectorMap can handle 2D lines, 3D lines, 2D polygons, 3D polygons, as well as 2D/2D polylines.
+    <p>
+        <li>
+            Note 6: You will notice that it takes two commands to clear the DynamicVectorMap. The clearCache function clears the DynamicVectorMap on the CPU side, while the 
+            rebuildMapUsingCachedShapes function clears it on the GPU side. Whenever changing a line, you should also call rebuildMapUsingCachedShapes to flush the
+            change over to the GPU side. 
+    <p>
+        </ol>
+        On just about any machine - even the lowliest laptop - you will find that the Altus mapping engine can
+        easily handle dozens of lines in a DynamicVectorMap.
+        If the lines are short and have a single style (e.g. they are all short black lines), hundreds are possible and movement will still be fluid.
+        If you are running on a beefy desktop machine or a gaming laptop, the
+        number can easily range into the thousands.
+    <p>
+        After you add some lines, try panning and zooming. Panning and zooming performance will be excellent even with 1,000 long, random lines on the screen.
+        <br>
+      
+</center>
+<p>
+  Maps: © <a href="http://www.thunderforest.com/">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors
+  <p>
+    More info:
+    <ul>
+      <li>Product information: <a href="http://ba3.us">http://ba3.us</a>
+        <li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+          <li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+            <li>Ask questions: info@ba3.us
+    </ul>
+    </font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #15
+// Experiment to show the performance of moving dynamic vectors on your machine.
+// Read the description below the map for more details. 
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  installBaseMap();
+  addVectorLayer();
+  //Position over US - position, orientation, and scale
+  setPosition(39.720774, -101.505561, 15000000);
+  addEventListener("keydown", dealWithKeyboard, false);
+};
+
+function setPosition(lat, lon, altitude) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+function addElementsToVectorAndDelete(vector, array) {
+  pushToVector(vector, array);
+  deleteElements(array);
+}
+
+var vectorMap;
+
+function addVectorLayer() {
+  vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+
+  colors2 = [new AltusUnified.Color(0, 0, 0), new AltusUnified.Color(0, 0, 255)];
+  lineStyle2 = new AltusUnified.LineStyle(colors2[0], 2, colors2[1], 0);
+
+  vectorMap.setTesselationThreshold(200000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+}
+
+
+var LineArray = [];
+
+function AddLine(lat1, lon1, lat2, lon2, r, g, b)
+//Each line has a different RGB color, therefore an independent style for each line
+{
+  //Set style
+  var colors = [new AltusUnified.Color(r, g, b), new AltusUnified.Color(0, 0, 255)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 2, colors[1], 0);
+
+  //Clean up colors now that they are assigned to a style
+  deleteElements(colors);
+
+  //Add line to line array
+  LineArray.push([lat1, lon1, lat2, lon2, lineStyle]);
+}
+
+function AddLine2(lat1, lon1, lat2, lon2)
+//All lines have the same style
+{
+  LineArray.push([lat1, lon1, lat2, lon2, lineStyle2]);
+}
+
+
+
+function ShowAllLines(numNewLines) {
+  var i;
+  if (typeof numNewLines == 'undefined') {
+    // let's start over, clearing all lines
+    vectorMap.clearCache();
+    vectorMap.rebuildMapUsingCachedShapes();
+    numNewLines = LineArray.length;
+  }
+
+  // Add the new lines to the Altus engine
+  for (i = LineArray.length - numNewLines; i < LineArray.length; i++) {
+    var positions = [
+      new AltusUnified.GeographicPosition2D(LineArray[i][0] + northOffset, LineArray[i][1] + eastOffset),
+      new AltusUnified.GeographicPosition2D(LineArray[i][2] + northOffset, LineArray[i][3] + eastOffset)
+    ];
+
+    var vectorGeographicPosition2Ds = new AltusUnified.VectorGeographicPosition2D();
+    pushToVector(vectorGeographicPosition2Ds, positions);
+
+    //Clean up positions now that they are pushed to a vector
+    deleteElements(positions);
+
+    // Create a dynamic line
+    var dynamicLine = new AltusUnified.DynamicLine("line" + i);
+    dynamicLine.points_set(vectorGeographicPosition2Ds);
+
+    //Clean up vector of positions now that it is set to a line
+    vectorGeographicPosition2Ds.delete();
+
+    vectorMap.addDynamicLine(dynamicLine, LineArray[i][4]);
+    dynamicLine.delete();
+  }
+}
+
+var colors2;
+var lineStyle2;
+var northOffset = 0.0;
+var eastOffset = 0.0;
+
+function dealWithKeyboard(e) {
+  var i = 0;
+  switch (e.keyCode) {
+    case 49: //1 adds one long black line
+      for (i = 0; i < 1; i++)
+        AddLine2(Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 20 + 30, Math.random() * 50 - 122);
+      ShowAllLines(1);
+      break;
+    case 50: //2 adds ten long lines
+      for (i = 0; i < 10; i++)
+        AddLine2(Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 20 + 30, Math.random() * 50 - 122);
+      ShowAllLines(10);
+      break;
+    case 51: //3 adds one long random color line
+      for (i = 0; i < 1; i++)
+        AddLine(Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 255, Math.random() * 255, Math.random() * 255);
+      ShowAllLines(1);
+      break;
+    case 52: //4 adds ten long random color lines
+      for (i = 0; i < 10; i++)
+        AddLine(Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 20 + 30, Math.random() * 50 - 122, Math.random() * 255, Math.random() * 255, Math.random() * 255);
+      ShowAllLines(10);
+      break;
+    case 53: //5 adds one short black line
+      for (i = 0; i < 1; i++)
+        AddLine2(Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77);
+      ShowAllLines(1);
+      break;
+    case 54: //6 adds ten short lines
+      for (i = 0; i < 10; i++)
+        AddLine2(Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77);
+      ShowAllLines(10);
+      break;
+    case 55: //7 adds one short random color line
+      for (i = 0; i < 1; i++)
+        AddLine(Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 255, Math.random() * 255, Math.random() * 255);
+      ShowAllLines(1);
+      break;
+    case 56: //8 adds ten short random color lines
+      for (i = 0; i < 10; i++)
+        AddLine(Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 0.1 + 38.8, Math.random() * 0.1 - 77, Math.random() * 255, Math.random() * 255, Math.random() * 255);
+      ShowAllLines(10);
+      break;
+    case 78: //n moves the lines north
+      northOffset += 0.1;
+      ShowAllLines();
+      break;
+    case 83: //s moves the lines south
+      northOffset -= 0.1;
+      ShowAllLines();
+      break;
+    case 69: //e moves the lines east
+      eastOffset += 0.1;
+      ShowAllLines();
+      break;
+    case 87: //ew moves the lines west
+      eastOffset -= 0.1;
+      ShowAllLines();
+      break;
+    case 67: //c clears the cache and the array
+      vectorMap.clearCache();
+      vectorMap.rebuildMapUsingCachedShapes();
+      LineArray.length = 0;
+      northOffset = 0;
+      eastOffset = 0;
+      ShowAllLines();
+      break;
+  }
+}
+
+
+function positionCamera2D(lat, lon, altitude) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_15_Dynamic_vector_experiment_1').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

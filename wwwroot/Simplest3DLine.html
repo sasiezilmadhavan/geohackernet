@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Altus Mapping Engine Web Test">
+    <meta name="author" content="BA3, LLC">
+
+    <title>Altus Web - Test</title>
+
+    <!--Altus styles : required-->
+    <link href="altus.css" rel="stylesheet">
+
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        border: 0;
+        overflow: hidden; /*  Disable scrollbars */
+        display: block; /* No floating content on sides */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!--H1-->
+    <div style="position:relative; width:100%; height:60vh; overflow:hidden;" id="AltusDiv"></div>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script type='text/javascript'>
+
+/*C1*/
+
+function createSimplest3DLineExample() {
+
+  var addBaseMap = function (mapName, url) {
+    console.log("adding base map " + mapName + " url:" + url);
+
+    // setup tile source
+    var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, url);
+
+    // create map description
+    var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+    var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+    // add map to scene
+    AltusUnified.scene.addMap(newMap);
+
+    newMap.delete();
+    mapDesc.delete();
+    internetTileProvider.delete();
+  };
+
+  /*C2*/
+  var addVectorLine = function() {
+    var vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+    vectorMap.setTesselationThreshold(4000);
+
+    // Add map to scene
+    AltusUnified.scene.addMap(vectorMap);
+    vectorMap.setOrder(200);
+    vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+
+    // Add a line 
+    var dynamicLine = new AltusUnified.DynamicLine("line1");
+    var dynamicLinePoints = [
+      new AltusUnified.GeographicPosition2D(35, -80),
+      new AltusUnified.GeographicPosition2D(47, -122)
+      // you could add more 2D positions here to create a poly-line
+    ];
+    pushToVector(dynamicLine.points(), dynamicLinePoints);
+
+    var colors = [new AltusUnified.Color(255, 0, 0), new AltusUnified.Color(0, 0, 255)];
+    var lineStyle = new AltusUnified.LineStyle(colors[0], 8, colors[1], 0);
+
+    vectorMap.addDynamicLine(dynamicLine, lineStyle);
+
+    // Clean up
+    deleteElements(dynamicLinePoints);
+    deleteElements(colors);
+    dynamicLine.delete();
+    lineStyle.delete();
+  }
+  /*C2*/
+
+  /*C3*/
+  var addVectorLine3D = function() {
+    var vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+    vectorMap.setTesselationThreshold(4000);
+
+    // Add map to scene
+    AltusUnified.scene.addMap(vectorMap);
+    vectorMap.setOrder(200);
+    vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+
+    // Add a 3D line 
+    var dynamicLine3D = new AltusUnified.DynamicLine3D("line3D1");
+    var dynamicLine3DPoints = [
+      new AltusUnified.GeographicPosition(26, -81, 0),
+      new AltusUnified.GeographicPosition(35, -80, 1000000),
+      new AltusUnified.GeographicPosition(47, -122, 1000000),
+      new AltusUnified.GeographicPosition(48, -123, 0)
+    ];
+    pushToVector(dynamicLine3D.points(), dynamicLine3DPoints);
+
+    var colors = [new AltusUnified.Color(255, 255, 0), new AltusUnified.Color(0, 0, 255, 0)];
+    var lineStyle = new AltusUnified.LineStyle(colors[0], 8, colors[1], 0);
+    lineStyle.setDashArray4(20, 10, 20, 10);
+
+    vectorMap.addDynamicLine3D(dynamicLine3D, lineStyle);
+
+    // Clean up
+    deleteElements(dynamicLine3DPoints);
+    deleteElements(colors);
+    dynamicLine3D.delete();
+    lineStyle.delete();
+  }
+  /*C3*/
+
+  /*C4*/
+  var pushToVector = function(vector, array) {
+    var size = array.length;
+    for (var i = 0; i < size; i++) {
+        vector.push_back(array[i]);
+    }
+  }
+  /*C4*/
+
+  /*C5*/
+  var deleteElements = function(array) {
+    var size = array.length;
+    for (var i = 0; i < size; i++) {
+        array[i].delete();
+    }
+    array.length = 0;
+  }
+  /*C5*/
+
+  /*C6*/
+  function setPosition(lat, lon, altitude) {
+    // create position object
+    var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+    // create orientation object - camera pointed like standard 2D map view
+    var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+    // create default scale object
+    var scale = new AltusUnified.vec3d(1, 1, 1);
+
+    // set transfrom to scene
+    var trans = new AltusUnified.Transform(pos, orientation, scale);
+    AltusUnified.scene.camera().transform.set(trans);
+
+    pos.delete();
+    orientation.delete();
+    scale.delete();
+  }
+  /*C6*/
+
+  return {
+    addBaseMap: addBaseMap,
+    // addVectorLine: addVectorLine,
+    addVectorLine3D: addVectorLine3D,
+    setPosition: setPosition
+  }
+};
+
+function onAltusEngineReady() {
+  var Simplest3DLineExample = createSimplest3DLineExample();
+
+  var tileProviderUrl = "https://a.tiles.mapbox.com/v3/dxjacob.h43n70g0/{z}/{x}/{y}.png";
+
+  Simplest3DLineExample.addBaseMap("baseMap", tileProviderUrl);
+  Simplest3DLineExample.addVectorLine3D();
+
+  //Position over US/Canada border - position, orientation, and scale
+  Simplest3DLineExample.setPosition(47.5, -101.505561, 15000000);
+};
+/*C1*/
+
+    </script>
+    <!--H1-->
+
+    <!--HMD1
+    ####[See Tutorial](Simplest3DLineTutorial.html)
+    HMD1-->
+
+  </body>
+</html>

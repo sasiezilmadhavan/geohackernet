@@ -1,0 +1,4 @@
+<map id="AltusUnified::VirtualMap" name="AltusUnified::VirtualMap">
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_weather_grid_map.html" title="A WeatherGridMap is a special kind of map where each tile is raster data, either 1 channel or 3 chann..." alt="" coords="5,155,208,181"/>
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_map.html" title="A base class for all Maps. You cannot create this map directly." alt="" coords="43,5,170,32"/>
+</map>

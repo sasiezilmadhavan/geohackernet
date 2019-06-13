@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altus Web - Print Map</title>
+    <link href="altus.css" rel="stylesheet">
+    <!--Styles for printing-->
+    <style>
+        .visuallyhidden {
+          position: absolute; 
+          overflow: hidden; 
+          clip: rect(0 0 0 0); 
+          height: 1px; width: 1px; 
+          margin: -1px; padding: 0; border: 0; 
+        }
+
+        @page {
+            size: 21cm 29.7cm;
+            margin: 10mm 10mm 10mm 10mm;
+        }
+        @media all {
+            .page-break	{ display: none; }
+        }
+        @media print {
+            .page-break	{ display: block; page-break-before: always; }
+        }
+    </style>
+</head>
+<body style="padding:0px; width:21cm; margin:0 auto;">
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script type="text/javascript">
+
+    var altusCanvas;
+    var printingModeRequested=false;
+    var inPrintingMode=false;
+    var printableImage;
+
+    //Subscribes to the map engine's post render vent
+    function onPostRenderEvent(postRenderFunction){
+        var MySceneDelegate=AltusUnified.ISceneDelegate.extend("ISceneDelegate",{
+            //We want to listen for the POST_RENDER event
+            getRenderEventFlags:function(){
+                return AltusUnified.RenderEventFlags.POST_RENDER;
+            },
+            //Handle print requests in the post render event
+            postRender:postRenderFunction,
+            preRender:function(elapsed){}
+        });
+        var sceneDelegate = new MySceneDelegate();
+        AltusUnified.scene.setDelegate(sceneDelegate);
+        sceneDelegate.delete();
+    }
+
+
+    function onAltusEngineReady() {
+    
+        //Hook the post render event up
+        onPostRenderEvent(function(elapsed){
+            if(printingModeRequested){
+                   enterPrintingMode();
+            }
+        });
+        
+        //Store references to altus div and canvas
+        altusDiv = document.getElementById("AltusDiv");
+        altusCanvas = document.getElementById("AltusCanvas");
+       
+        //Configure printing div with a single image that fills it
+        printingDiv = document.getElementById("PrintingDiv");
+        printingDiv.style.display="none";
+        printableImage = document.createElement("IMG");
+        printableImage.style.width="100%";
+        printableImage.style.height="100%";
+        printingDiv.appendChild(printableImage);
+        
+        //Show a map
+        setCameraPosition(40.7099424,-74.009720640,1000);
+        setMapBoxStreetsBaseMap();
+        
+        //Enable user interface
+        document.getElementById("inputTypeGroup").disabled = false;
+    };
+
+    function enterPrintingMode(){
+    
+        //Cancel printing mode request
+        printingModeRequested = false;
+        
+        //If we are already in printing mode return
+        if(inPrintingMode){
+            return;
+        }
+        
+        //Enter printing mode
+        inPrintingMode = true;
+        
+        //Copy map view canvas data to our printable image
+        printableImage.src = altusCanvas.toDataURL("image/png");
+        
+        //Show printing div
+        printingDiv.style.display="block";
+    }
+    
+    function endPrintingMode(){
+        inPrintingMode=false;
+        printingDiv.style.display="none";
+    }
+    
+    function requestPrintingMode(){
+        printingModeRequested = true;
+    }
+    
+    //Listen for printing to finish
+    var mediaQueryList = window.matchMedia('print');
+    mediaQueryList.addListener(function(mql) {
+        if (!mql.matches) {
+            console.log('onafterprint');
+        };
+    });
+
+    </script>
+    
+    
+    <div style="z-index:0; position:absolute; width:21cm; height:50vh; overflow:hidden; margin:0 auto" id="AltusDiv"></div>
+    <div style="z-index:1; position:absolute; width:21cm; height:50vh; overflow:hidden; margin:0 auto" id="PrintingDiv"></div>
+    
+    
+    <div style="position:absolute; top: 50vh; width:21cm; overflow:hidden; margin:0 auto">
+    <table><tr>
+        <td valign="top" width="50%">
+        <h2>Printing With Altus Web</h2>
+        <p>Because the Altus canvas is WebGL based, some browers will not always print a page containing an Altus Map View very well. This is because WebGL context is likely to be clearing and rendering ever few milliseconds. If you print a page and the map view is all black, your browser may be having problems.</p>
+        <p>In order to have a reliable way to print from it, you must grab the image from the render target after it is rendered and before the next frame begins. This page demonstrates one way to achieve that and print a map that is being rendered by Altus. Additionaly, this example uses css to target A4 paper size.</p>
+        <p>Just find a location you like on the map below and try to print it. If there are issues, use printer-friendly mode and try again.</p>
+        </td>
+        <td valign="top">
+            <fieldset id="inputTypeGroup" disabled="true">
+                <legend>Printing Controls</legend>
+                <input type="radio" name="printMode" value="rendering" onclick="endPrintingMode()" checked/>
+                <label for="rendering"><b>Interactive</b></label> - Hides the PrintingDiv and you see the Altus div beneath it.
+                <p></p>
+                <input type="radio" name="printMode" value="printable" onclick="requestPrintingMode()" />
+                <label for="printable"><b>Printer-Friendly</b></label> - Copies the Altus view data into an image in a hidden div (PrintingDiv), then shows the PrintingDiv. The page is laid out to have the hidden PrintingDiv absolutely aligned on top of the Altus div. (z-index:1, whereas altus is assigned z-index:0).
+                <br/>
+                <p align="center">
+                <button onclick="window.print()"><b>Print</b></button>
+                </p>
+            </fieldset>
+        </td>
+    </tr>
+    </table>
+    </div>
+</body>
+</html>

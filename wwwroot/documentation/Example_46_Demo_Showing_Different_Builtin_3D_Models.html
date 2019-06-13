@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #46 - Demo Showing Different Built-in 3D Models</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_46_Demo_Showing_Different_Builtin_3D_Models.html">Altus Platform - Example #46 - Demo Showing Different Built-in 3D Models</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Mapbox.com Aerial<span class='spacer'></span></span></h5>
+<font face="arial,helvetica">
+<center>
+<b>Example #46 - Demo Showing Different Built-in 3D Models  </b><br>
+This example demonstrates how to add 3D terrain plus four different 3D models, and look at them with a 3D camera in the BA3 Altus Mapping Engine. Also shown are random textures applied to the models. 
+</center>
+<p>
+Maps: © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #46
+// Extension of example #7 to show all models
+//This example demonstrates how to add 3D terrain plus four different 3D models, 
+//and look at them with a 3D camera in the BA3 Altus Mapping Engine. Also shown 
+//are random textures applied to the models.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  solveJsfiddleProblem();
+  installBaseMap();
+  add3DTerrain();
+  add3DModelMap("modelLayer1");
+  //Look at Mt. Rainier
+  positionCamera3D(47.202, -121.643, 20000, 0, 23, -178);
+};
+
+function add3DModels(modelMap, tex, lat, lon, alt, scale) {
+  for (var i = 0; i < 4; i++) {
+    var model;
+
+    if (i == 0) model = new AltusUnified.Model("cube", AltusUnified.Mesh.createCubeMesh(tex));
+    if (i == 1) model = new AltusUnified.Model("cylinder", AltusUnified.Mesh.createCylinderMesh(14, tex));
+    if (i == 2) model = new AltusUnified.Model("sphere", AltusUnified.Mesh.createSphereMesh(14, tex));
+    if (i == 3) model = new AltusUnified.Model("cone", AltusUnified.Mesh.createConeMesh(14, tex));
+
+    var trans = createTransform(lat, lon + i * 0.05, alt, scale); //scale unit is in earth radii
+
+    model.transform().set(trans);
+    modelMap.addModel(model);
+
+    //clean up
+    model.delete();
+  }
+}
+
+
+function randomImage(width, height, alpha) {
+  var arr = new AltusUnified.VectorByte();
+
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(Math.random() * 255);
+    arr.push_back(Math.random() * 255);
+    arr.push_back(Math.random() * 255);
+    arr.push_back(alpha);
+  }
+
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+
+  return image;
+}
+
+function createRandomTexture(width, height, alpha) {
+  var image = randomImage(width, height, alpha);
+  var tex = new AltusUnified.Texture(image, false);
+  image.delete();
+  tex.setFilter(AltusUnified.TextureMagFilter.Nearest);
+  return tex;
+}
+
+//Adds a 3D model layer with one model
+//Use shift-pan abd Ctrl-pan to see the model from different angles
+function add3DModelMap(layerName) {
+  var modelMap = new AltusUnified.ModelMap(layerName);
+  AltusUnified.scene.addMap(modelMap);
+  var tex;
+  tex = createTexture(255, 0, 0, 255); //RGBA
+  add3DModels(modelMap, tex, 46.852886, -121.760374, 6000, 0.0002);
+  tex.delete();
+
+  tex = createRandomTexture(4, 4, 255);
+  add3DModels(modelMap, tex, 46.852886 - 0.1, -121.760374, 6000, 0.0002);
+  tex.delete();
+
+  //clean up
+  modelMap.delete();
+}
+
+//Positions and scales the 3D model. Scale is in earth radii. 
+function createTransform(lat, lon, alt, scale) {
+  var position = new AltusUnified.GeographicPosition(lat, lon, alt);
+  var orientation = new AltusUnified.Orientation(0, 0, 0);
+  var scalet = new AltusUnified.vec3d(scale, scale, scale);
+  var transform = new AltusUnified.Transform(position, orientation, scalet);
+
+  //Clean up
+  scalet.delete();
+  orientation.delete();
+  position.delete();
+
+  return transform;
+}
+
+//Creates a 1x1 pixel texture with the given color values
+function createTexture(redValue, greenValue, blueValue, alphaValue) {
+
+  //Create a vector of bytes to hold color values
+  var rgbaData = new AltusUnified.VectorByte();
+  rgbaData.push_back(redValue);
+  rgbaData.push_back(greenValue);
+  rgbaData.push_back(blueValue);
+  rgbaData.push_back(alphaValue);
+
+  //Create image from color data
+  var image = new AltusUnified.Image(1, 1, rgbaData);
+
+  //Create texture from image
+  var texture = new AltusUnified.Texture(image, false);
+
+  //Clean up
+  rgbaData.delete();
+  image.delete();
+
+  return texture;
+}
+
+//Loads 3D terrain
+function add3DTerrain() {
+  //Create the tile provider
+  var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(
+    "baseMapHeight",
+    "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png",
+    "",
+    true,
+    AltusUnified.MapFormat.TERRAIN_HEIGHT);
+
+  //Create the terrain map object
+  var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+  var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+
+  //Add the terrain map
+  AltusUnified.scene.addMap(terrainMap);
+
+  //Disable tile biasing (to minimize the amount of data loaded)
+  AltusUnified.scene.screen().setTileLevelBias(0);
+
+  //Clean up
+  terrainMap.delete();
+  baseDesc.delete();
+  internetTileProvider.delete();
+}
+
+function positionCamera3D(lat, lon, altitude, roll, pitch, yaw) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Make the sky blue
+  AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+
+//This function exists to solve a problem in jsfiddle with keyboard
+//clicks in the canvas. Without this function, shift-drag and
+//ctrl-drag work do not work in jsfiddle. 
+function solveJsfiddleProblem() {
+  AltusUnified.canvas.setAttribute('tabindex', '1');
+  AltusUnified.canvas.addEventListener('click', function(event) {
+    AltusUnified.canvas.blur();
+    AltusUnified.canvas.focus();
+  });
+}
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_46_Demo_Showing_Different_Builtin_3D_Models').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

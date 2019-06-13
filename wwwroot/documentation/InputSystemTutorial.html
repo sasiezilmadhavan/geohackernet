@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Input System - Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="InputSystemTutorial.html">Altus Platform - Input System - Tutorial</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <h2 id="input-system">Input System</h2>
+<p>Input handlers convert user input into transformations of the virtual camera. From the user's perspective, input from the mouse, touch-screen, and keyboard are used to pan, zoom, rotate, tilt, and navigate.</p>
+<p>Altus comes with two pre-built input handlers:</p>
+<ul>
+<li>Free Axis - Poles are free to rotate across the plane of the view.</li>
+<li>Classic Style - Poles are 'locked' such that they cannot be rotated across the plane of the view.</li>
+</ul>
+<p>The Free Axis style input handler is very flexible in terms of 3D camera orientation, but can be a bit confusing as it allows a full range of orientations, including not having North be 'up'.</p>
+<p>The Classic style input hanlder locks North to 'up' and may be less confusing for certain applications.</p>
+<h3 id="free-axis-style-input-handler-controls">Free Axis Style Input Handler Controls</h3>
+<h4 id="left-mouse">Left Mouse</h4>
+<ul>
+<li>Drag: Pan</li>
+<li>Double-Click: Zoom In</li>
+</ul>
+<h4 id="mouse-wheel">Mouse Wheel</h4>
+<ul>
+<li>Roll Up/Down: Zoom In/Out</li>
+<li>Drag Vertically: Tilt</li>
+<li>Drag Horizontally: Orbit</li>
+</ul>
+<h4 id="right-mouse">Right Mouse</h4>
+<ul>
+<li>Drag Vertically: Zoom In/Out</li>
+<li>Drag Horizontally: Orbit</li>
+<li>Double-Click: Zoom Out</li>
+</ul>
+<p>Additionally this system has the following keyboard modifiers:</p>
+<h4 id="shift-key-left-mouse">Shift-Key + Left Mouse</h4>
+<ul>
+<li>Drag Vertically: Tilt</li>
+<li>Drag Horizontally: Orbit</li>
+</ul>
+<h4 id="ctrl-key-left-mouse">Ctrl-Key + Left Mouse</h4>
+<ul>
+<li>Drag Horizontally: Rotate Camera</li>
+<li>Drag Vertically: Tilt Camera</li>
+</ul>
+<h4 id="using-the-free-axis-input-handler">Using the Free Axis Input Handler</h4>
+<pre class="language=javascript">
+var inputHandler = new AltusUnified.FreeAxisInputHandler(AltusUnified.scene);
+AltusUnified.inputManager.setRawInputHandler(inputHandler);
+inputHandler.delete();
+</pre>
+
+<h3 id="classic-input-handler-controls">Classic Input Handler Controls</h3>
+<pre class="language=javascript">
+var inputHandler = new AltusUnified.ClassicInputHandler(AltusUnified.scene);
+AltusUnified.inputManager.setRawInputHandler(inputHandler);
+inputHandler.delete();
+</pre>
+
+
+<h4 id="left-mouse-1">Left Mouse</h4>
+<ul>
+<li>Drag: Pan</li>
+<li>Double-Click: Zoom In</li>
+</ul>
+<h4 id="mouse-wheel-1">Mouse Wheel</h4>
+<ul>
+<li>Roll Up/Down: Zoom In/Out</li>
+</ul>
+<h4 id="right-mouse-1">Right Mouse</h4>
+<ul>
+<li>Double-Click: Zoom Out</li>
+</ul>
+<h3 id="input-type-tutorial">Input Type Tutorial</h3>
+<p>This tutorial will walk you through changing between the different input handlers.</p>
+<h4 id="helper-functions">Helper Functions</h4>
+<p>The following code from altusutil.js is used:</p>
+<pre><code class=language-javascript>/*Set camera orientation using roll, pitch, and yaw
+ Note: We could also use transform.lookAt(vec3d worldPosition, vec3d up) without using roll pitch and yaw
+ */
+function setCameraOrientation(roll, pitch, yaw){
+    var pos = AltusUnified.scene.camera().transform.geographicPosition();
+    var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+    var scale = AltusUnified.scene.camera().transform.scale();
+    var trans = new AltusUnified.Transform(pos, orientation, scale);
+    AltusUnified.scene.camera().transform.set(trans);
+    trans.delete();
+    pos.delete();
+    orientation.delete();
+    scale.delete();
+}
+
+/**Set camera position*/
+function setCameraPosition(lat, lon, altitude) {
+    var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+    var orientation = new AltusUnified.Orientation(0, 90, 0);
+    var scale = new AltusUnified.vec3d(1, 1, 1);
+    var trans = new AltusUnified.Transform(pos, orientation, scale);
+    AltusUnified.scene.camera().transform.set(trans);
+    trans.delete();
+    pos.delete();
+    orientation.delete();
+    scale.delete();
+};
+
+/**Reset camera to over the U.S.*/
+function resetCamera() {
+    setCameraPosition(39, -98, 10000000);
+};
+
+function lookAtUS() {
+    setCameraPosition(39, -98, 5000000);
+}
+</code></pre><pre><code class=language-javascript>//Input helper functions
+
+/**Use classic input handler*/
+function useClassicInput() {
+    resetCamera();
+    var inputHandler = new AltusUnified.ClassicInputHandler(AltusUnified.scene);
+    AltusUnified.inputManager.setRawInputHandler(inputHandler);
+    inputHandler.delete();
+};
+
+/**Use the FreeAxis input handler, which allows you to move the camera using mouse gestures and keyboard modifiers.  Try holding down ctrl or shift when dragging the mouse.*/
+function useFreeAxisInput() {
+    resetCamera();
+    var inputHandler = new AltusUnified.FreeAxisInputHandler(AltusUnified.scene);
+    AltusUnified.inputManager.setRawInputHandler(inputHandler);
+    inputHandler.delete();
+};
+</code></pre><h4 id="add-radio-buttons-to-control-input-type">Add Radio Buttons to Control Input Type</h4>
+<pre><code class=language-js>    &lt;fieldset id=&quot;inputTypeGroup&quot; disabled=&quot;true&quot;&gt;
+    &lt;legend&gt;Input Type&lt;/legend&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;inputType&quot; value=&quot;free axis&quot; onclick=&quot;useFreeAxisInput()&quot; checked/&gt;
+    &lt;label for=&quot;classic&quot;&gt;Free Axis&lt;/label&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;inputType&quot; value=&quot;classic&quot; onclick=&quot;useClassicInput()&quot; /&gt;
+    &lt;label for=&quot;realistic&quot;&gt;Classic&lt;/label&gt;
+    &lt;/fieldset&gt;
+</code></pre><h4 id="see-demo"><a href="InputSystemDemo.html">See Demo</a></h4>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('InputSystemTutorial').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

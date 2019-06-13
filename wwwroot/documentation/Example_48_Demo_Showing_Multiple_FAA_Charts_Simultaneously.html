@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #48 - Demo Showing Multiple FAA Charts Simultaneously</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_48_Demo_Showing_Multiple_FAA_Charts_Simultaneously.html">Altus Platform - Example #48 - Demo Showing Multiple FAA Charts Simultaneously</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5 style="pointer-events:none"><span>Tiles: Mapbox.com Aerial<span class='spacer'></span></span></h5>
+
+<font face="arial,helvetica">
+
+    <table><tr>
+
+        <td valign=top>
+            <font face="arial,helvetica" size=10>
+            <b>Top 5<br>
+            FAA<br>
+            Charts
+            <br></b>
+            </font>
+<font face="arial,helvetica">
+            (Shift-drag to see terrain<br>See instructions below)
+            </font>
+</td>
+
+<!--Controls for location type-->
+<td class="controlgroup" valign=top>
+  <fieldset id="location1TypeGroup" disabled="true">
+    <font face="arial,helvetica">
+          <legend>Top 5</legend>
+<input type="checkbox" name="cb-Charlotte" id="cb-Charlotte" onchange="changeCharlotteMap(document.getElementById('cb-Charlotte').checked)">
+        <label for="cb-Charlotte">Charlotte</label>
+        <br>
+        <input type="checkbox" name="cb-Dallas" id="cb-Dallas" onchange="changeDallasMap(document.getElementById('cb-Dallas').checked)">
+        <label for="cb-Dallas">Dallas</label>
+         <br>
+        <input type="checkbox" name="cb-LosAngeles" id="cb-LosAngeles" onchange="changeLosAngelesMap(document.getElementById('cb-LosAngeles').checked)">
+        <label for="cb-LosAngeles">Los Angeles</label>
+         <br>
+        <input type="checkbox" name="cb-LasVegas" id="cb-LasVegas" onchange="changeLasVegasMap(document.getElementById('cb-LasVegas').checked)">
+        <label for="cb-LasVegas">Las Vegas</label>
+         <br>
+        <input type="checkbox" name="cb-SanFrancisco" id="cb-SanFrancisco" onchange="changeSanFranciscoMap(document.getElementById('cb-SanFrancisco').checked)">
+        <label for="cb-SanFrancisco">SanFrancisco</label>
+          </font>
+  </fieldset>
+</td>
+
+</tr>
+</table>
+<p>
+  <p>
+    <p>
+      <b>About the technology</b>
+      <p>
+        This web page is made possible by the the BA3 Altus Mapping Engine, specifically Altus Web. You can learn more about Altus at <a href="http://developer.ba3.us">http://developer.ba3.us</a>.
+        <p>
+          <b>Description</b>
+          <p>
+            This is a viewer for 5 of the most popular FAA charts in the United States. For details on how to generate these charts, see example 33.
+            <p>
+              <b>Instructions</b>
+              <p>
+                Here are several things to try with this application:
+                <ol>
+                  <li>Double-click to zoom in, double-right-click to zoom out. Drag to pan.
+                    <p>
+                      <li>If you click on any of the 5 maps, you will see it appear on the globe.
+                        <p>
+                          <li>The maps are overlaid on top of aerial photos of the world taken by satellite. Fnd a spot on the map, then click the check box again to turn the map off, and then you can see what is on the ground at that location.
+                            <p>
+                              <li>If you hold down the shift key as you pan, you can tilt the map and see terrain. For example, zoom in on Las Vegas chart and look at the Grand Canyon, use shift-drag to tilt the map, and you can create views like this, where
+                                the map is overlaid on terrain:
+                                <p>
+                                  <center>
+                                    <img src="http://marshallbrain.com/altus/ss/rocky-mountain-view.jpg" width=50% height=50%>
+                                    <p>
+                                  </center>
+                                  <li> If you ever get lost, simply refresh the page to reset.
+                                    <p>
+                                      Web page performance will decline if many maps are visible simultaneously. This web page is not recommended for mobile devices.
+                </ol>
+                <p>
+                  <b>About the technology</b>
+                  <p>
+                    This application is made possible by the the BA3 Altus Mapping Engine, specifically Altus Web. Documentation and tutorials are available at
+                    <a href="http://developer.BA3.us">http://developer.ba3.us</a> so that you can create your own web pages with Altus.
+                    <p>
+                      If you find yourself thinking, "I wish it would...", chances are you can modify the page and make it do that. See the examples here: <a href="https://jsfiddle.net/user/BA3User/fiddles/">https://jsfiddle.net/user/BA3User/fiddles/</a>
+                      <p>
+                        </ul>
+                      </p>
+                      </center>
+                      <p>
+                        Maps: © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+                        <p>
+                          More info:
+                          <ul>
+                            <li>Product information: <a href="http://ba3.us">http://ba3.us</a>
+                              <li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+                                <li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+                                  <li>Ask questions: info@ba3.us
+                          </ul>
+                          </font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #48
+// This demonstrates how to create a simple user interface and show multiple 
+// FAA Charts simultaneously. See example #33 for instructions on creating the charts.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  solveJsfiddleProblem();
+  installBaseMap();
+  add3DTerrain();
+  positionCamera3D(38, -98, 6000000, 0, 90, 0); // lat, lon, alt (meters), roll, pitch, yaw
+
+  //Enable UI
+  document.getElementById("location1TypeGroup").disabled = false;
+};
+
+function AddNewMap(num, mapName, mapUrl) {
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+
+  mapDesc.maxLevel = 16;
+
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+  newMap.setOrder(100 + num);
+
+  //Clean up
+  mapDesc.delete();
+  internetTileProvider.delete();
+
+  return newMap;
+}
+
+//This function exists to solve a problem in jsfiddle with keyboard
+//clicks in the canvas. Without this function, shift-drag and
+//ctrl-drag work do not work in jsfiddle. You should not need
+//this function outside of jsfiddle. You should not need
+//this function outside of jsfiddle. 
+function solveJsfiddleProblem() {
+  AltusUnified.canvas.setAttribute('tabindex', '1');
+  AltusUnified.canvas.addEventListener('click', function(event) {
+    AltusUnified.canvas.blur();
+    AltusUnified.canvas.focus();
+  });
+}
+
+//Loads 3D terrain
+function add3DTerrain() {
+  //Create the tile provider
+  var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(
+    "baseMapHeight",
+    "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png",
+    "",
+    true,
+    AltusUnified.MapFormat.TERRAIN_HEIGHT);
+
+  //Create the terrain map object
+  var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+  var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+
+  //Add the terrain map
+  AltusUnified.scene.addMap(terrainMap);
+
+  //Disable tile biasing (to minimize the amount of data loaded)
+  AltusUnified.scene.screen().setTileLevelBias(0);
+
+  //Clean up
+  terrainMap.delete();
+  baseDesc.delete();
+  internetTileProvider.delete();
+}
+
+function positionCamera3D(lat, lon, altitude, roll, pitch, yaw) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function AddNewMap2(num, mapName, mapUrl, lat1, lon1, lat2, lon2) {
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+
+  // Set the bounding box to avoid unneeded tiles being read
+  mapDesc.bounds_set(new AltusUnified.GeoBoundingBox(lat1, lon1, lat2, lon2));
+
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+  newMap.setOrder(100 + num);
+
+  //Clean up
+  mapDesc.delete();
+  internetTileProvider.delete();
+  return newMap;
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  newMap.setOrder(1);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Make the sky blue
+  AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+
+var charlotteOn = 0;
+var dallasOn = 0;
+var losAngelesOn = 0;
+var lasVegasOn = 0;
+var sanFranciscoOn = 0;
+var charlotteMap;
+var dallasMap;
+var losAngelesMap;
+var lasVegasMap;
+var sanFranciscoMap;
+
+function changeCharlotteMap(checked) {
+  if (charlotteOn == 0) {
+    charlotteOn = 1;
+    charlotteMap = AddNewMap(1, "Charlotte overlay", "https://maps.ba3.us/FAA/VFR/012016/charlotte/{z}/{x}/{y}.png");
+  } else {
+    charlotteOn = 0;
+    AltusUnified.scene.removeMap(charlotteMap, true);
+    charlotteMap.delete();
+  }
+}
+
+function changeSanFranciscoMap(checked) {
+  if (sanFranciscoOn == 0) {
+    sanFranciscoOn = 1;
+    sanFranciscoMap = AddNewMap(1, "SanFrancisco overlay", "https://maps.ba3.us/FAA/VFR/012016/san-francisco/{z}/{x}/{y}.png");
+  } else {
+    sanFranciscoOn = 0;
+    AltusUnified.scene.removeMap(sanFranciscoMap, true);
+    sanFranciscoMap.delete();
+  }
+}
+
+function changeDallasMap(checked) {
+  if (dallasOn == 0) {
+    dallasOn = 1;
+    dallasMap = AddNewMap(4, "Dallas overlay", "https://maps.ba3.us/FAA/VFR/012016/dallas/{z}/{x}/{y}.png");
+  } else {
+    dallasOn = 0;
+    AltusUnified.scene.removeMap(dallasMap, true);
+    dallasMap.delete();
+  }
+}
+
+function changeLosAngelesMap(checked) {
+  if (losAngelesOn == 0) {
+    losAngelesOn = 1;
+    losAngelesMap = AddNewMap(6, "Los Angeles overlay", "https://maps.ba3.us/FAA/VFR/012016/los-angeles/{z}/{x}/{y}.png");
+  } else {
+    losAngelesOn = 0;
+    AltusUnified.scene.removeMap(losAngelesMap, true);
+    losAngelesMap.delete();
+  }
+}
+
+function changeLasVegasMap(checked) {
+  if (lasVegasOn == 0) {
+    lasVegasOn = 1;
+    lasVegasMap = AddNewMap(6, "Los Vegas overlay", "https://maps.ba3.us/FAA/VFR/012016/las-vegas/{z}/{x}/{y}.png");
+  } else {
+    lasVegasOn = 0;
+    AltusUnified.scene.removeMap(lasVegasMap, true);
+    lasVegasMap.delete();
+  }
+}
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_48_Demo_Showing_Multiple_FAA_Charts_Simultaneously').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

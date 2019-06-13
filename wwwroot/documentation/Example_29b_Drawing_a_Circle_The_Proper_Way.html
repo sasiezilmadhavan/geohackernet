@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #29b - Drawing a Circle (The Proper Way)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_29b_Drawing_a_Circle_The_Proper_Way.html">Altus Platform - Example #29b - Drawing a Circle (The Proper Way)</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Thunderforest.com cycling<span class='spacer'></span></span></h5>
+<font face="arial,helvetica">
+<center>
+<b>Example #29b - Drawing a Circle <br> (The Proper Way) </b>
+</center>
+Demonstrates how to draw a circle in the BA3 Altus Mapping Engine. If you try the simple approach seen in Example 29a, you will find it breaks down near the poles. This version solves that problem. 
+<p>
+Maps: © <a href="http://www.thunderforest.com/">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #29b
+// Demonstrates how to draw a circle in the BA3 Altus Mapping Engine.
+// If you try the simple approach seen in Example 29a, you will find it
+// breaks down near the poles. This version solves that problem. 
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  installBaseMap();
+  createCircleMap();
+};
+
+function drawCircle(map, centerLat, centerLon, radius, numSegments) {
+  // Radius is in meters
+  var d2r = Math.PI / 180; // degrees to radians 
+  var r2d = 180 / Math.PI; // radians to degrees 
+  var earthsradius = 6371000; // radius of the earth in meters
+  var m2r = 1.0 / earthsradius; // meters to radians
+  var m2nm = 1.0 / 1852.0; // nautical miles to meters
+  var lat, lon;
+
+  // find a randomish point along the circle radius
+  var loc2d = new AltusUnified.vec2d(centerLon, centerLat);
+
+  var linePoints = new Array();
+  var start = 0;
+  var end = numSegments + 1;
+  for (var i = start; i < end; i++) {
+    var theta = 360 * (i / numSegments);
+
+    var radialPoint2d = AltusUnified.pointOnRadial(loc2d, theta, radius * m2nm);
+    var radialGeoPos2d = new AltusUnified.GeographicPosition2D(radialPoint2d.y, radialPoint2d.x);
+
+    linePoints.push(radialGeoPos2d);
+    // in-loop clean up
+    radialPoint2d.delete();
+  }
+
+  // Add the line to the map
+  var dynamicLine = new AltusUnified.DynamicLine("line1");
+  pushToVector(dynamicLine.points(), linePoints);
+  deleteElements(linePoints);
+  var colors = [new AltusUnified.Color(255, 0, 0), new AltusUnified.Color(0, 0, 0)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 3, colors[1], 0);
+  deleteElements(colors);
+  map.addDynamicLine(dynamicLine, lineStyle);
+
+  // clean up
+  lineStyle.delete();
+  dynamicLine.delete();
+  loc2d.delete();
+}
+
+function createCircleMap() {
+  var circleMap = new AltusUnified.DynamicVectorMap("circleMap");
+  circleMap.setTesselationThreshold(100000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(circleMap);
+  circleMap.setOrder(200);
+  circleMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+
+  // Create a circle
+  drawCircle(circleMap, 47.6097, -122.3331, 4401010, 32);
+
+  // clean up
+  circleMap.delete();
+}
+
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png";
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_29b_Drawing_a_Circle_The_Proper_Way').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

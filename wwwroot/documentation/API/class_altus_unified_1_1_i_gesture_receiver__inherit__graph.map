@@ -1,0 +1,5 @@
+<map id="AltusUnified::IGestureReceiver" name="AltusUnified::IGestureReceiver">
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_classic_gesture_receiver.html" title="An extendible class that allows a developer to handle Altus gestures (such as panning and zooming) in..." alt="" coords="268,5,459,47"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_list_gesture_receiver.html" title="An extendible class that allows a developer to handle Altus gestures (such as panning and zooming) in..." alt="" coords="279,71,448,112"/>
+<area shape="rect" id="node4" href="$class_altus_unified_1_1_long_press_gesture_receiver.html" title="An extendible class that allows a developer to handle Altus gestures (such as panning and zooming) in..." alt="" coords="257,136,469,177"/>
+</map>

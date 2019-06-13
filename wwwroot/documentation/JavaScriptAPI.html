@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>JavaScript API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="JavaScriptAPI.html">Altus Platform - JavaScript API</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <h3 id="javascript-api">JavaScript API</h3>
+<p>This table is intended to list the JavaScript API in a hierarchical fashion and to be checked in to your source repository so that as you upgrade to future versions of the SDK you can see changes from release to release.</p>
+<p>Refer to <a href="JavaScriptAPI-Unrolled.html">JavaScript API - Unrolled</a> for a non-hierarchical listing.</p>
+<table border="1" cellpadding="0">
+<!--/********************************/-->
+<tr><td>Function</td><td colspan=3> int InitializeMapView() </td></tr> 
+<tr><td>Function</td><td colspan=3>Scene getScene() </td></tr> 
+<tr><td>Function</td><td colspan=3>InputEventManager getInputManager() </td></tr> 
+<tr><td>Function</td><td colspan=3>Timer getTimer() </td></tr> 
+<tr><td>Function</td><td colspan=3> void setDomainName(string) </td></tr> 
+<tr><td>Function</td><td colspan=3> void handlePageVisible(bool) </td></tr> 
+<tr><td rowspan=30>Class</td><td rowspan=30>vec2i</td> <td rowspan=1>Constructors</td> <td>vec2i(int, int)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>int x</td></tr> 
+<tr><td>int y</td></tr> 
+<tr><td rowspan=27>Functions</td> <td> void set(vec2i)</td></tr> 
+<tr><td> vec2i mul(vec2i other)</td></tr> 
+<tr><td> vec2i sub(vec2i other)</td></tr> 
+<tr><td> vec2i add(vec2i other)</td></tr> 
+<tr><td> vec2i div(vec2i other)</td></tr> 
+<tr><td> void mul_inplace(vec2i c)</td></tr> 
+<tr><td> void sub_inplace(vec2i c)</td></tr> 
+<tr><td> void add_inplace(vec2i c)</td></tr> 
+<tr><td> void div_inplace(vec2i c)</td></tr> 
+<tr><td> vec2i negate()</td></tr> 
+<tr><td> bool eq(vec2i other)</td></tr> 
+<tr><td> bool neq(vec2i other)</td></tr> 
+<tr><td> vec2i mul_const(int other)</td></tr> 
+<tr><td> vec2i sub_const(int other)</td></tr> 
+<tr><td> vec2i add_const(int other)</td></tr> 
+<tr><td> vec2i div_const(int other)</td></tr> 
+<tr><td> void mul_const_inplace(int other)</td></tr> 
+<tr><td> void sub_const_inplace(int other)</td></tr> 
+<tr><td> void add_const_inplace(int other)</td></tr> 
+<tr><td> void div_const_inplace(int other)</td></tr> 
+<tr><td> int dot(vec2i other)</td></tr> 
+<tr><td> int normalize()</td></tr> 
+<tr><td> int length()</td></tr> 
+<tr><td> int length_squared()</td></tr> 
+<tr><td> int distance(vec2i other)</td></tr> 
+<tr><td> int distance_squared(vec2i other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=30>Class</td><td rowspan=30>vec2d</td> <td rowspan=1>Constructors</td> <td>vec2d(double, double)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>double x</td></tr> 
+<tr><td>double y</td></tr> 
+<tr><td rowspan=27>Functions</td> <td> void set(vec2d)</td></tr> 
+<tr><td> vec2d mul(vec2d other)</td></tr> 
+<tr><td> vec2d sub(vec2d other)</td></tr> 
+<tr><td> vec2d add(vec2d other)</td></tr> 
+<tr><td> vec2d div(vec2d other)</td></tr> 
+<tr><td> void mul_inplace(vec2d c)</td></tr> 
+<tr><td> void sub_inplace(vec2d c)</td></tr> 
+<tr><td> void add_inplace(vec2d c)</td></tr> 
+<tr><td> void div_inplace(vec2d c)</td></tr> 
+<tr><td> vec2d negate()</td></tr> 
+<tr><td> bool eq(vec2d other)</td></tr> 
+<tr><td> bool neq(vec2d other)</td></tr> 
+<tr><td> vec2d mul_const(double other)</td></tr> 
+<tr><td> vec2d sub_const(double other)</td></tr> 
+<tr><td> vec2d add_const(double other)</td></tr> 
+<tr><td> vec2d div_const(double other)</td></tr> 
+<tr><td> void mul_const_inplace(double other)</td></tr> 
+<tr><td> void sub_const_inplace(double other)</td></tr> 
+<tr><td> void add_const_inplace(double other)</td></tr> 
+<tr><td> void div_const_inplace(double other)</td></tr> 
+<tr><td> double dot(vec2d other)</td></tr> 
+<tr><td> double normalize()</td></tr> 
+<tr><td> double length()</td></tr> 
+<tr><td> double length_squared()</td></tr> 
+<tr><td> double distance(vec2d other)</td></tr> 
+<tr><td> double distance_squared(vec2d other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=30>Class</td><td rowspan=30>vec2f</td> <td rowspan=1>Constructors</td> <td>vec2f(float,  float)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>float x</td></tr> 
+<tr><td>float y</td></tr> 
+<tr><td rowspan=27>Functions</td> <td> void set(vec2f)</td></tr> 
+<tr><td> vec2f mul(vec2f other)</td></tr> 
+<tr><td> vec2f sub(vec2f other)</td></tr> 
+<tr><td> vec2f add(vec2f other)</td></tr> 
+<tr><td> vec2f div(vec2f other)</td></tr> 
+<tr><td> void mul_inplace(vec2f c)</td></tr> 
+<tr><td> void sub_inplace(vec2f c)</td></tr> 
+<tr><td> void add_inplace(vec2f c)</td></tr> 
+<tr><td> void div_inplace(vec2f c)</td></tr> 
+<tr><td> vec2f negate()</td></tr> 
+<tr><td> bool eq(vec2f other)</td></tr> 
+<tr><td> bool neq(vec2f other)</td></tr> 
+<tr><td> vec2f mul_const(float other)</td></tr> 
+<tr><td> vec2f sub_const(float other)</td></tr> 
+<tr><td> vec2f add_const(float other)</td></tr> 
+<tr><td> vec2f div_const(float other)</td></tr> 
+<tr><td> void mul_const_inplace(float other)</td></tr> 
+<tr><td> void sub_const_inplace(float other)</td></tr> 
+<tr><td> void add_const_inplace(float other)</td></tr> 
+<tr><td> void div_const_inplace(float other)</td></tr> 
+<tr><td> float dot(vec2f other)</td></tr> 
+<tr><td> float normalize()</td></tr> 
+<tr><td> float length()</td></tr> 
+<tr><td> float length_squared()</td></tr> 
+<tr><td> float distance(vec2f other)</td></tr> 
+<tr><td> float distance_squared(vec2f other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=32>Class</td><td rowspan=32>vec3d</td> <td rowspan=1>Constructors</td> <td>vec3d(double, double, double)</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>double x</td></tr> 
+<tr><td>double y</td></tr> 
+<tr><td>double z</td></tr> 
+<tr><td rowspan=28>Functions</td> <td> void set(vec3d)</td></tr> 
+<tr><td> vec3d mul(vec3d other)</td></tr> 
+<tr><td> vec3d sub(vec3d other)</td></tr> 
+<tr><td> vec3d add(vec3d other)</td></tr> 
+<tr><td> vec3d div(vec3d other)</td></tr> 
+<tr><td> void mul_inplace(vec3d c)</td></tr> 
+<tr><td> void sub_inplace(vec3d c)</td></tr> 
+<tr><td> void add_inplace(vec3d c)</td></tr> 
+<tr><td> void div_inplace(vec3d c)</td></tr> 
+<tr><td> vec3d negate()</td></tr> 
+<tr><td> bool eq(vec3d other)</td></tr> 
+<tr><td> bool neq(vec3d other)</td></tr> 
+<tr><td> vec3d mul_const(double other)</td></tr> 
+<tr><td> vec3d sub_const(double other)</td></tr> 
+<tr><td> vec3d add_const(double other)</td></tr> 
+<tr><td> vec3d div_const(double other)</td></tr> 
+<tr><td> void mul_const_inplace(double other)</td></tr> 
+<tr><td> void sub_const_inplace(double other)</td></tr> 
+<tr><td> void add_const_inplace(double other)</td></tr> 
+<tr><td> void div_const_inplace(double other)</td></tr> 
+<tr><td> double dot(vec3d other)</td></tr> 
+<tr><td> double normalize()</td></tr> 
+<tr><td> double length()</td></tr> 
+<tr><td> double length_squared()</td></tr> 
+<tr><td> double distance(vec3d other)</td></tr> 
+<tr><td> double distance_squared(vec3d other)</td></tr> 
+<tr><td>vec3d cross(const vec3d other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=32>Class</td><td rowspan=32>vec3f</td> <td rowspan=1>Constructors</td> <td>vec3f(float,  float,  float)</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>float x</td></tr> 
+<tr><td>float y</td></tr> 
+<tr><td>float z</td></tr> 
+<tr><td rowspan=28>Functions</td> <td> void set(vec3f)</td></tr> 
+<tr><td> vec3f mul(vec3f other)</td></tr> 
+<tr><td> vec3f sub(vec3f other)</td></tr> 
+<tr><td> vec3f add(vec3f other)</td></tr> 
+<tr><td> vec3f div(vec3f other)</td></tr> 
+<tr><td> void mul_inplace(vec3f c)</td></tr> 
+<tr><td> void sub_inplace(vec3f c)</td></tr> 
+<tr><td> void add_inplace(vec3f c)</td></tr> 
+<tr><td> void div_inplace(vec3f c)</td></tr> 
+<tr><td> vec3f negate()</td></tr> 
+<tr><td> bool eq(vec3f other)</td></tr> 
+<tr><td> bool neq(vec3f other)</td></tr> 
+<tr><td> vec3f mul_const(float other)</td></tr> 
+<tr><td> vec3f sub_const(float other)</td></tr> 
+<tr><td> vec3f add_const(float other)</td></tr> 
+<tr><td> vec3f div_const(float other)</td></tr> 
+<tr><td> void mul_const_inplace(float other)</td></tr> 
+<tr><td> void sub_const_inplace(float other)</td></tr> 
+<tr><td> void add_const_inplace(float other)</td></tr> 
+<tr><td> void div_const_inplace(float other)</td></tr> 
+<tr><td> float dot(vec3f other)</td></tr> 
+<tr><td> float normalize()</td></tr> 
+<tr><td> float length()</td></tr> 
+<tr><td> float length_squared()</td></tr> 
+<tr><td> float distance(vec3f other)</td></tr> 
+<tr><td> float distance_squared(vec3f other)</td></tr> 
+<tr><td>vec3f cross(const vec3f other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=32>Class</td><td rowspan=32>vec4f</td> <td rowspan=1>Constructors</td> <td>vec4f(float,  float,  float,  float)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>float x</td></tr> 
+<tr><td>float y</td></tr> 
+<tr><td>float z</td></tr> 
+<tr><td>float z</td></tr> 
+<tr><td rowspan=27>Functions</td> <td> void set(vec4f)</td></tr> 
+<tr><td> vec4f mul(vec4f other)</td></tr> 
+<tr><td> vec4f sub(vec4f other)</td></tr> 
+<tr><td> vec4f add(vec4f other)</td></tr> 
+<tr><td> vec4f div(vec4f other)</td></tr> 
+<tr><td> void mul_inplace(vec4f c)</td></tr> 
+<tr><td> void sub_inplace(vec4f c)</td></tr> 
+<tr><td> void add_inplace(vec4f c)</td></tr> 
+<tr><td> void div_inplace(vec4f c)</td></tr> 
+<tr><td> vec4f negate()</td></tr> 
+<tr><td> bool eq(vec4f other)</td></tr> 
+<tr><td> bool neq(vec4f other)</td></tr> 
+<tr><td> vec4f mul_const(float other)</td></tr> 
+<tr><td> vec4f sub_const(float other)</td></tr> 
+<tr><td> vec4f add_const(float other)</td></tr> 
+<tr><td> vec4f div_const(float other)</td></tr> 
+<tr><td> void mul_const_inplace(float other)</td></tr> 
+<tr><td> void sub_const_inplace(float other)</td></tr> 
+<tr><td> void add_const_inplace(float other)</td></tr> 
+<tr><td> void div_const_inplace(float other)</td></tr> 
+<tr><td> float dot(vec4f other)</td></tr> 
+<tr><td> float normalize()</td></tr> 
+<tr><td> float length()</td></tr> 
+<tr><td> float length_squared()</td></tr> 
+<tr><td> float distance(vec4f other)</td></tr> 
+<tr><td> float distance_squared(vec4f other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorCoordsVect = vector(VectorCoordinate)</td><td>Constructors</td><td>VectorCoordsVect()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>VectorCoordinate get(int index)</td></tr> 
+<tr><td>void push_back(VectorCoordinate value)</td></tr> 
+<tr><td>void resize(int size, VectorCoordinate defaultValue)</td></tr> 
+<tr><td>void set(int index, VectorCoordinate value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorPolygon = vector(Polygon)</td><td>Constructors</td><td>VectorPolygon()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Polygon get(int index)</td></tr> 
+<tr><td>void push_back(Polygon value)</td></tr> 
+<tr><td>void resize(int size, Polygon defaultValue)</td></tr> 
+<tr><td>void set(int index, Polygon value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorPointSet = vector(PointSet)</td><td>Constructors</td><td>VectorPointSet()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>PointSet get(int index)</td></tr> 
+<tr><td>void push_back(PointSet value)</td></tr> 
+<tr><td>void resize(int size, PointSet defaultValue)</td></tr> 
+<tr><td>void set(int index, PointSet value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorExtrudedPolygon = vector(ExtrudedPolygon)</td><td>Constructors</td><td>VectorExtrudedPolygon()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>ExtrudedPolygon get(int index)</td></tr> 
+<tr><td>void push_back(ExtrudedPolygon value)</td></tr> 
+<tr><td>void resize(int size, ExtrudedPolygon defaultValue)</td></tr> 
+<tr><td>void set(int index, ExtrudedPolygon value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorPointSet3d = vector(PointSet3d)</td><td>Constructors</td><td>VectorPointSet3d()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>PointSet3d get(int index)</td></tr> 
+<tr><td>void push_back(PointSet3d value)</td></tr> 
+<tr><td>void resize(int size, PointSet3d defaultValue)</td></tr> 
+<tr><td>void set(int index, PointSet3d value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorTriangleSet3d = vector(TriangleSet3d)</td><td>Constructors</td><td>VectorTriangleSet3d()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>TriangleSet3d get(int index)</td></tr> 
+<tr><td>void push_back(TriangleSet3d value)</td></tr> 
+<tr><td>void resize(int size, TriangleSet3d defaultValue)</td></tr> 
+<tr><td>void set(int index, TriangleSet3d value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorByte = vector(byte)</td><td>Constructors</td><td>VectorByte()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>byte get(int index)</td></tr> 
+<tr><td>void push_back(byte value)</td></tr> 
+<tr><td>void resize(int size, byte defaultValue)</td></tr> 
+<tr><td>void set(int index, byte value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorInt = vector(int)</td><td>Constructors</td><td>VectorInt()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>int get(int index)</td></tr> 
+<tr><td>void push_back(int value)</td></tr> 
+<tr><td>void resize(int size, int defaultValue)</td></tr> 
+<tr><td>void set(int index, int value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorGeographicPosition2D = vector(GeographicPosition2D)</td><td>Constructors</td><td>VectorGeographicPosition2D()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>GeographicPosition2D get(int index)</td></tr> 
+<tr><td>void push_back(GeographicPosition2D value)</td></tr> 
+<tr><td>void resize(int size, GeographicPosition2D defaultValue)</td></tr> 
+<tr><td>void set(int index, GeographicPosition2D value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorGeographicPosition = vector(GeographicPosition)</td><td>Constructors</td><td>VectorGeographicPosition()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>GeographicPosition get(int index)</td></tr> 
+<tr><td>void push_back(GeographicPosition value)</td></tr> 
+<tr><td>void resize(int size, GeographicPosition defaultValue)</td></tr> 
+<tr><td>void set(int index, GeographicPosition value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorMapSamplerPointWithPercentage = vector(MapSamplerPointWithPercentage)</td><td>Constructors</td><td>VectorMapSamplerPointWithPercentage()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>MapSamplerPointWithPercentage get(int index)</td></tr> 
+<tr><td>void push_back(MapSamplerPointWithPercentage value)</td></tr> 
+<tr><td>void resize(int size, MapSamplerPointWithPercentage defaultValue)</td></tr> 
+<tr><td>void set(int index, MapSamplerPointWithPercentage value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorVec2d = vector(vec2d)</td><td>Constructors</td><td>VectorVec2d()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>vec2d get(int index)</td></tr> 
+<tr><td>void push_back(vec2d value)</td></tr> 
+<tr><td>void resize(int size, vec2d defaultValue)</td></tr> 
+<tr><td>void set(int index, vec2d value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorVec3d = vector(vec3d)</td><td>Constructors</td><td>VectorVec3d()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>vec3d get(int index)</td></tr> 
+<tr><td>void push_back(vec3d value)</td></tr> 
+<tr><td>void resize(int size, vec3d defaultValue)</td></tr> 
+<tr><td>void set(int index, vec3d value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=4>Map_Type</td><td rowspan=4>MapDoubleColor = map(double, Color)</td><td>Constructors</td><td>MapDoubleColor()</td></tr> 
+<tr><td rowspan=3>Functions</td><td> Color get(double key)</td></tr> 
+<tr><td>void set(double key,  Color value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorMarker = vector(Marker)</td><td>Constructors</td><td>VectorMarker()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Marker get(int index)</td></tr> 
+<tr><td>void push_back(Marker value)</td></tr> 
+<tr><td>void resize(int size, Marker defaultValue)</td></tr> 
+<tr><td>void set(int index, Marker value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=4>Map_Type</td><td rowspan=4>MapUintMarker = map(uint, Marker)</td><td>Constructors</td><td>MapUintMarker()</td></tr> 
+<tr><td rowspan=3>Functions</td><td> Marker get(uint key)</td></tr> 
+<tr><td>void set(uint key,  Marker value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=4>Map_Type</td><td rowspan=4>MapUintMarkerResource = map(uint, MarkerResource)</td><td>Constructors</td><td>MapUintMarkerResource()</td></tr> 
+<tr><td rowspan=3>Functions</td><td> MarkerResource get(uint key)</td></tr> 
+<tr><td>void set(uint key,  MarkerResource value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorColor = vector(Color)</td><td>Constructors</td><td>VectorColor()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Color get(int index)</td></tr> 
+<tr><td>void push_back(Color value)</td></tr> 
+<tr><td>void resize(int size, Color defaultValue)</td></tr> 
+<tr><td>void set(int index, Color value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorUint32_t = vector(uint32_t)</td><td>Constructors</td><td>VectorUint32_t()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>uint32_t get(int index)</td></tr> 
+<tr><td>void push_back(uint32_t value)</td></tr> 
+<tr><td>void resize(int size, uint32_t defaultValue)</td></tr> 
+<tr><td>void set(int index, uint32_t value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorShort = vector(short)</td><td>Constructors</td><td>VectorShort()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>short get(int index)</td></tr> 
+<tr><td>void push_back(short value)</td></tr> 
+<tr><td>void resize(int size, short defaultValue)</td></tr> 
+<tr><td>void set(int index, short value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorGeoBoundingBox = vector(GeoBoundingBox)</td><td>Constructors</td><td>VectorGeoBoundingBox()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>GeoBoundingBox get(int index)</td></tr> 
+<tr><td>void push_back(GeoBoundingBox value)</td></tr> 
+<tr><td>void resize(int size, GeoBoundingBox defaultValue)</td></tr> 
+<tr><td>void set(int index, GeoBoundingBox value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorBoundingBox = vector(BoundingBox)</td><td>Constructors</td><td>VectorBoundingBox()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>BoundingBox get(int index)</td></tr> 
+<tr><td>void push_back(BoundingBox value)</td></tr> 
+<tr><td>void resize(int size, BoundingBox defaultValue)</td></tr> 
+<tr><td>void set(int index, BoundingBox value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorTileId = vector(TileId)</td><td>Constructors</td><td>VectorTileId()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>TileId get(int index)</td></tr> 
+<tr><td>void push_back(TileId value)</td></tr> 
+<tr><td>void resize(int size, TileId defaultValue)</td></tr> 
+<tr><td>void set(int index, TileId value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorTileResult = vector(TileResult)</td><td>Constructors</td><td>VectorTileResult()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>TileResult get(int index)</td></tr> 
+<tr><td>void push_back(TileResult value)</td></tr> 
+<tr><td>void resize(int size, TileResult defaultValue)</td></tr> 
+<tr><td>void set(int index, TileResult value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorUint64_t = vector(uint64_t)</td><td>Constructors</td><td>VectorUint64_t()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>uint64_t get(int index)</td></tr> 
+<tr><td>void push_back(uint64_t value)</td></tr> 
+<tr><td>void resize(int size, uint64_t defaultValue)</td></tr> 
+<tr><td>void set(int index, uint64_t value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorModelHit = vector(ModelHit)</td><td>Constructors</td><td>VectorModelHit()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>ModelHit get(int index)</td></tr> 
+<tr><td>void push_back(ModelHit value)</td></tr> 
+<tr><td>void resize(int size, ModelHit defaultValue)</td></tr> 
+<tr><td>void set(int index, ModelHit value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorTransform = vector(Transform)</td><td>Constructors</td><td>VectorTransform()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Transform get(int index)</td></tr> 
+<tr><td>void push_back(Transform value)</td></tr> 
+<tr><td>void resize(int size, Transform defaultValue)</td></tr> 
+<tr><td>void set(int index, Transform value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorModel = vector(Model)</td><td>Constructors</td><td>VectorModel()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Model get(int index)</td></tr> 
+<tr><td>void push_back(Model value)</td></tr> 
+<tr><td>void resize(int size, Model defaultValue)</td></tr> 
+<tr><td>void set(int index, Model value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorModelVertex = vector(ModelVertex)</td><td>Constructors</td><td>VectorModelVertex()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>ModelVertex get(int index)</td></tr> 
+<tr><td>void push_back(ModelVertex value)</td></tr> 
+<tr><td>void resize(int size, ModelVertex defaultValue)</td></tr> 
+<tr><td>void set(int index, ModelVertex value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorGLushort = vector(GLushort)</td><td>Constructors</td><td>VectorGLushort()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>GLushort get(int index)</td></tr> 
+<tr><td>void push_back(GLushort value)</td></tr> 
+<tr><td>void resize(int size, GLushort defaultValue)</td></tr> 
+<tr><td>void set(int index, GLushort value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorTexture = vector(Texture)</td><td>Constructors</td><td>VectorTexture()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>Texture get(int index)</td></tr> 
+<tr><td>void push_back(Texture value)</td></tr> 
+<tr><td>void resize(int size, Texture defaultValue)</td></tr> 
+<tr><td>void set(int index, Texture value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorMarkerData = vector(MarkerData)</td><td>Constructors</td><td>VectorMarkerData()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>MarkerData get(int index)</td></tr> 
+<tr><td>void push_back(MarkerData value)</td></tr> 
+<tr><td>void resize(int size, MarkerData defaultValue)</td></tr> 
+<tr><td>void set(int index, MarkerData value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorDynamicMarker = vector(DynamicMarker)</td><td>Constructors</td><td>VectorDynamicMarker()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>DynamicMarker get(int index)</td></tr> 
+<tr><td>void push_back(DynamicMarker value)</td></tr> 
+<tr><td>void resize(int size, DynamicMarker defaultValue)</td></tr> 
+<tr><td>void set(int index, DynamicMarker value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorMarkerHit = vector(MarkerHit)</td><td>Constructors</td><td>VectorMarkerHit()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>MarkerHit get(int index)</td></tr> 
+<tr><td>void push_back(MarkerHit value)</td></tr> 
+<tr><td>void resize(int size, MarkerHit defaultValue)</td></tr> 
+<tr><td>void set(int index, MarkerHit value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorString = vector(string)</td><td>Constructors</td><td>VectorString()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>string get(int index)</td></tr> 
+<tr><td>void push_back(string value)</td></tr> 
+<tr><td>void resize(int size, string defaultValue)</td></tr> 
+<tr><td>void set(int index, string value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorPolygonHit = vector(PolygonHit)</td><td>Constructors</td><td>VectorPolygonHit()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>PolygonHit get(int index)</td></tr> 
+<tr><td>void push_back(PolygonHit value)</td></tr> 
+<tr><td>void resize(int size, PolygonHit defaultValue)</td></tr> 
+<tr><td>void set(int index, PolygonHit value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=6>Vector_Type</td><td rowspan=6>VectorFloat = vector(float)</td><td>Constructors</td><td>VectorFloat()</td></tr> 
+<tr><td rowspan=5>Functions</td><td>float get(int index)</td></tr> 
+<tr><td>void push_back(float value)</td></tr> 
+<tr><td>void resize(int size, float defaultValue)</td></tr> 
+<tr><td>void set(int index, float value)</td> 
+<tr><td>int size()</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>BinaryBlob</td> <td rowspan=1>Constructors</td> <td>BinaryBlob()</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>BlobDataPtr data </td></tr> 
+<tr><td>uint sizeInBytes </td></tr> 
+<tr><td rowspan=17>Class</td><td rowspan=17>GeometryGroup</td> <td rowspan=1>Constructors</td> <td>GeometryGroup( )</td></tr> 
+<tr><td rowspan=16>Functions</td> <td>VectorPolygon polygons() </td></tr> 
+<tr><td>void polygons_set(VectorPolygon val) </td></tr> 
+<tr><td>VectorPointSet lines() </td></tr> 
+<tr><td>void lines_set(VectorPointSet val) </td></tr> 
+<tr><td>VectorPointSet triangleSets() </td></tr> 
+<tr><td>void triangleSets_set(VectorPointSet val) </td></tr> 
+<tr><td>VectorExtrudedPolygon extrudedPolygons() </td></tr> 
+<tr><td>void extrudedPolygons_set(VectorExtrudedPolygon val) </td></tr> 
+<tr><td>VectorPointSet3d lines3d() </td></tr> 
+<tr><td>void lines3d_set(VectorPointSet3d val) </td></tr> 
+<tr><td>VectorTriangleSet3d triangleSets3d() </td></tr> 
+<tr><td>void triangleSets3d_set(VectorTriangleSet3d val) </td></tr> 
+<tr><td> void setAllShapeIds(uint shapeId)</td></tr> 
+<tr><td> void appendGeometryGroup(GeometryGroup otherGroup)</td></tr> 
+<tr><td> bool isEmpty()</td></tr> 
+<tr><td> void print()</td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>ExtrudedPolygon</td> <td rowspan=2>Constructors</td> <td>ExtrudedPolygon()</td></tr> 
+<tr><td>ExtrudedPolygon(CoordsVect shell,  double minAltitude,  double maxAltitude)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>uint styleId </td></tr> 
+<tr><td>bool crossesAntimerdian </td></tr> 
+<tr><td>double minAltitude </td></tr> 
+<tr><td>double maxAltitude </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>CoordsVect shell() </td></tr> 
+<tr><td>void shell_set(CoordsVect val) </td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>Polygon</td> <td rowspan=2>Constructors</td> <td>Polygon()</td></tr> 
+<tr><td>Polygon(CoordsVect shell,  bool crossesAntimeridian)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>uint styleId </td></tr> 
+<tr><td>bool crossesAntimerdian </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>CoordsVect shell() </td></tr> 
+<tr><td>void shell_set(CoordsVect val) </td></tr> 
+<tr><td>VectorCoordsVect holes() </td></tr> 
+<tr><td>void holes_set(VectorCoordsVect val) </td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>TriangleSet3d</td> <td rowspan=1>Constructors</td> <td>TriangleSet3d()</td></tr> 
+<tr><td rowspan=1>Properties</td> <td>uint styleId </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>CoordsVect3d positionCoords() </td></tr> 
+<tr><td>void positionCoords_set(CoordsVect3d val) </td></tr> 
+<tr><td>CoordsVect texCoords() </td></tr> 
+<tr><td>void texCoords_set(CoordsVect val) </td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>PointSet3d</td> <td rowspan=2>Constructors</td> <td>PointSet3d()</td></tr> 
+<tr><td>PointSet3d(CoordsVect3d coords)</td></tr> 
+<tr><td rowspan=1>Properties</td> <td>uint styleId </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>CoordsVect3d coords() </td></tr> 
+<tr><td>void coords_set(CoordsVect3d val) </td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>PointSet</td> <td rowspan=2>Constructors</td> <td>PointSet()</td></tr> 
+<tr><td>PointSet(CoordsVect coords)</td></tr> 
+<tr><td rowspan=1>Properties</td> <td>uint styleId </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>CoordsVect coords() </td></tr> 
+<tr><td>void coords_set(CoordsVect val) </td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>ShapeType</td> <td rowspan=3>Values</td> <td>POLYGON</td></tr> 
+<tr><td>LINE</td></tr> 
+<tr><td>TRIANGLE_SET</td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>Timer</td> <td rowspan=1>Class_function</td> <td> unsigned int getTicks()</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>Timer( )</td></tr> 
+<tr><td rowspan=5>Functions</td> <td> void addListener(TimerListener listener)</td></tr> 
+<tr><td> void removeListener(TimerListener listener)</td></tr> 
+<tr><td> void update()</td></tr> 
+<tr><td> bool updateWithoutDrawing()</td></tr> 
+<tr><td>TimeStamp getTimeStamp()</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>ITimerListener</td> <td rowspan=1>Functions</td> <td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>TimeStamp</td> <td rowspan=2>Properties</td> <td>int tickCount </td></tr> 
+<tr><td>double elapsed </td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>IResourceManager</td> </tr> 
+<tr><td rowspan=6>Enum</td><td rowspan=6>ImageFormat</td> <td rowspan=6>Values</td> <td>RGB888</td></tr> 
+<tr><td>RGBA8888</td></tr> 
+<tr><td>RGBA4444</td></tr> 
+<tr><td>RGB565</td></tr> 
+<tr><td>GRAY16</td></tr> 
+<tr><td>GRAY8</td></tr> 
+<tr><td rowspan=20>Class</td><td rowspan=20>Color</td> <td rowspan=5>Class_function</td> <td>Color colorFromARGB(int packedColor)</td></tr> 
+<tr><td> ubyte convert(float value)</td></tr> 
+<tr><td>Color lerp(Color first, Color second,  double t)</td></tr> 
+<tr><td>Color fromVector(vec4f v)</td></tr> 
+<tr><td>Color fromHexWithAlpha(uint value)</td></tr> 
+<tr><td rowspan=4>Constructors</td> <td>Color()</td></tr> 
+<tr><td>Color(ubyte r,  ubyte g,  ubyte b)</td></tr> 
+<tr><td>Color(ubyte r,  ubyte g,  ubyte b,  ubyte a)</td></tr> 
+<tr><td>Color(uint hexcolor)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>ubyte r </td></tr> 
+<tr><td>ubyte g </td></tr> 
+<tr><td>ubyte b </td></tr> 
+<tr><td>ubyte a </td></tr> 
+<tr><td rowspan=7>Functions</td> <td> bool eq(Color other)</td></tr> 
+<tr><td> bool neq(Color other)</td></tr> 
+<tr><td>vec4f toVector()</td></tr> 
+<tr><td> uint toHex()</td></tr> 
+<tr><td>string toHexString()</td></tr> 
+<tr><td> bool isBlack()</td></tr> 
+<tr><td> void setSaturation(float newSaturation)</td></tr> 
+<tr><td rowspan=14>Class</td><td rowspan=14>ColorBar</td> <td rowspan=1>Constructors</td> <td>ColorBar( )</td></tr> 
+<tr><td rowspan=13>Functions</td> <td> double getMinHeight()</td></tr> 
+<tr><td> double getMaxHeight()</td></tr> 
+<tr><td> void addColor(double height, Color color)</td></tr> 
+<tr><td> void setWaterColor(Color color)</td></tr> 
+<tr><td>Color getWaterColor()</td></tr> 
+<tr><td>Color getColor(double height)</td></tr> 
+<tr><td>Color getColorBlended(double height)</td></tr> 
+<tr><td> void setColor(double height, Color color)</td></tr> 
+<tr><td>VectorColor toArray(int resolution)</td></tr> 
+<tr><td>VectorByte toArrayRGB(int resolution)</td></tr> 
+<tr><td>VectorByte toArrayRGBA(int resolution)</td></tr> 
+<tr><td>VectorByte toArrayNearestRGBA(int resolution)</td></tr> 
+<tr><td>ColorMap getColorMap()</td></tr> 
+<tr><td rowspan=36>Class</td><td rowspan=36>Image</td> <td rowspan=4>Constructors</td> <td>Image()</td></tr> 
+<tr><td>Image(string fileName)</td></tr> 
+<tr><td>Image(int width,  int height, VectorByte imageData_byte)</td></tr> 
+<tr><td>Image(int width,  int height)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>int width </td></tr> 
+<tr><td>int height </td></tr> 
+<tr><td>bool hasAlpha </td></tr> 
+<tr><td>bool hadLoadingError </td></tr> 
+<tr><td rowspan=28>Functions</td> <td> void init()</td></tr> 
+<tr><td>VectorByte data() </td></tr> 
+<tr><td>void data_set(VectorByte val) </td></tr> 
+<tr><td>vec2i getSize()</td></tr> 
+<tr><td> void clear()</td></tr> 
+<tr><td> void resize(unsigned int newWidth,  unsigned int newHeight, ImageFormat newFormat)</td></tr> 
+<tr><td> void setPixel(int x,  int y,  byte r,  byte g,  byte b,  byte a)</td></tr> 
+<tr><td> void setPixel(int x,  int y, Color c)</td></tr> 
+<tr><td> void multiplyAlpha()</td></tr> 
+<tr><td>Color getPixel(int x,  int y)</td></tr> 
+<tr><td>Color getPixelInterpolated(float x,  float y)</td></tr> 
+<tr><td> ushort getPixelCompressed(int x,  int y)</td></tr> 
+<tr><td> unsigned int getBytesPerPixel()</td></tr> 
+<tr><td> void createErrorTexture()</td></tr> 
+<tr><td> void createCheckerBoard(int imageWidth,  int imageHeight,  int cellWidth,  int cellHeight, Color color1, Color color2)</td></tr> 
+<tr><td> void fillRect(int x,  int y,  int width,  int height, Color c)</td></tr> 
+<tr><td>Image flip()</td></tr> 
+<tr><td>Image getTransformedImageUsingColorBar(ColorBar colorBar,  uint channel,  bool interpolated)</td></tr> 
+<tr><td> bool loadPngFromMemory(VectorByte pngdata)</td></tr> 
+<tr><td> bool loadFromMemory(VectorByte data)</td></tr> 
+<tr><td> void convertToTwoByte()</td></tr> 
+<tr><td> void convertRGBA8888toRGB888()</td></tr> 
+<tr><td> void convertRGBA8888toRGBA4444()</td></tr> 
+<tr><td> void convertRGBA8888toRGBA4444thenSlim()</td></tr> 
+<tr><td> void convertRGBA8888toRGB565()</td></tr> 
+<tr><td> void convertRGB888toRGB565()</td></tr> 
+<tr><td>ImageFormat getFormat()</td></tr> 
+<tr><td> bool containsClearPixels()</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>Texture</td> <td rowspan=1>Class_function</td> <td>Texture createFromColorBar(ColorBar colorBar)</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>Texture(Image image,  bool mipEnabled )</td></tr> 
+<tr><td rowspan=16>Functions</td> <td> GLuint getId()</td></tr> 
+<tr><td> void update(Image image)</td></tr> 
+<tr><td> void updateR8(VectorByte data_ubyte,  uint width,  uint height)</td></tr> 
+<tr><td> void updateRG88(VectorShort data,  uint width,  uint height,  uint format)</td></tr> 
+<tr><td> void updateRGBA(VectorShort data,  uint width,  uint height,  uint format)</td></tr> 
+<tr><td> size_t getSizeInBytes()</td></tr> 
+<tr><td> void setSizeInBytes(uint size)</td></tr> 
+<tr><td> uint getWidth()</td></tr> 
+<tr><td> uint getHeight()</td></tr> 
+<tr><td> uint getImageWidth()</td></tr> 
+<tr><td> uint getImageHeight()</td></tr> 
+<tr><td>vec2i getSize()</td></tr> 
+<tr><td> void setSize(uint width,  uint height)</td></tr> 
+<tr><td> void setFilter(TextureMagFilter filterMode)</td></tr> 
+<tr><td> void setWrapMode(int wrapMode)</td></tr> 
+<tr><td> bool isNearestSampling()</td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>TextureMagFilter</td> <td rowspan=2>Values</td> <td>Nearest</td></tr> 
+<tr><td>Linear</td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>BoundingRange</td> <td rowspan=2>Constructors</td> <td>BoundingRange()</td></tr> 
+<tr><td>BoundingRange(int x,  int y,  int width,  int height)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>int x </td></tr> 
+<tr><td>int y </td></tr> 
+<tr><td>int width </td></tr> 
+<tr><td>int height </td></tr> 
+<tr><td rowspan=2>Functions</td> <td> bool eq(BoundingRange other)</td></tr> 
+<tr><td> size_t getHash()</td></tr> 
+<tr><td rowspan=14>Class</td><td rowspan=14>GeoBoundingBox</td> <td rowspan=4>Constructors</td> <td>GeoBoundingBox()</td></tr> 
+<tr><td>GeoBoundingBox(double minX,  double minY,  double maxX,  double maxY)</td></tr> 
+<tr><td>GeoBoundingBox(vec2d min, vec2d max)</td></tr> 
+<tr><td>GeoBoundingBox(VectorVec2d points)</td></tr> 
+<tr><td rowspan=10>Functions</td> <td> bool intersects(BoundingBox a, BoundingBox b)</td></tr> 
+<tr><td> bool intersects(BoundingBox box)</td></tr> 
+<tr><td> bool contains(vec2d point)</td></tr> 
+<tr><td>BoundingBox toBoundingBox()</td></tr> 
+<tr><td> bool crossesMeridian()</td></tr> 
+<tr><td>VectorGeoBoundingBox splitAcrossMeridian()</td></tr> 
+<tr><td>vec2d bottomLeft() </td></tr> 
+<tr><td>void bottomLeft_set(vec2d val) </td></tr> 
+<tr><td>vec2d topRight() </td></tr> 
+<tr><td>void topRight_set(vec2d val) </td></tr> 
+<tr><td rowspan=22>Class</td><td rowspan=22>BoundingBox</td> <td rowspan=4>Constructors</td> <td>BoundingBox()</td></tr> 
+<tr><td>BoundingBox(vec2d min, vec2d max)</td></tr> 
+<tr><td>BoundingBox(double minX,  double minY,  double maxX,  double maxY)</td></tr> 
+<tr><td>BoundingBox(VectorVec2d points)</td></tr> 
+<tr><td rowspan=18>Functions</td> <td> bool isValid()</td></tr> 
+<tr><td> bool intersects(BoundingBox box)</td></tr> 
+<tr><td> bool contains(vec2d point)</td></tr> 
+<tr><td> bool contains(BoundingBox bounds)</td></tr> 
+<tr><td>vec2d center()</td></tr> 
+<tr><td>vec2d size()</td></tr> 
+<tr><td>GeoBoundingBox toGeoBoundingBox()</td></tr> 
+<tr><td> bool crossesMeridian()</td></tr> 
+<tr><td>BoundingBox intersect(BoundingBox otherBox)</td></tr> 
+<tr><td>BoundingBox combine(BoundingBox other)</td></tr> 
+<tr><td>BoundingBox relativeBounds(BoundingBox other)</td></tr> 
+<tr><td> double distanceToPoint(vec2d point)</td></tr> 
+<tr><td>VectorBoundingBox divide(int xSides,  int ySides)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td>vec2d min() </td></tr> 
+<tr><td>void min_set(vec2d val) </td></tr> 
+<tr><td>vec2d max() </td></tr> 
+<tr><td>void max_set(vec2d val) </td></tr> 
+<tr><td rowspan=20>Class</td><td rowspan=20>Marker</td> <td rowspan=1>Constructors</td> <td>Marker(uint uid,  double longitude,  double latitude,  float weight, string metadata )</td></tr> 
+<tr><td rowspan=8>Properties</td> <td>uint uid </td></tr> 
+<tr><td>float weight </td></tr> 
+<tr><td>int minimumLevel </td></tr> 
+<tr><td>string metadata </td></tr> 
+<tr><td>string cachedImageName </td></tr> 
+<tr><td>double rotation </td></tr> 
+<tr><td>MarkerRotationType rotationType </td></tr> 
+<tr><td>double altitude </td></tr> 
+<tr><td rowspan=11>Functions</td> <td> bool lessthan(Marker otherMarker)</td></tr> 
+<tr><td>vec2d location() </td></tr> 
+<tr><td>void location_set(vec2d val) </td></tr> 
+<tr><td>Texture texture() </td></tr> 
+<tr><td>void texture_set(Texture val) </td></tr> 
+<tr><td>vec2d anchorPoint() </td></tr> 
+<tr><td>void anchorPoint_set(vec2d val) </td></tr> 
+<tr><td>vec2i hitTestSize() </td></tr> 
+<tr><td>void hitTestSize_set(vec2i val) </td></tr> 
+<tr><td>vec2d offset() </td></tr> 
+<tr><td>void offset_set(vec2d val) </td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>MarkerRotationType</td> <td rowspan=2>Values</td> <td>ROTATION_SCREENEDGE_ALIGNED</td></tr> 
+<tr><td>ROTATION_TRUENORTH_ALIGNED</td></tr> 
+<tr><td rowspan=16>Class</td><td rowspan=16>MarkerResource</td> <td rowspan=1>Constructors</td> <td>MarkerResource(Marker marker )</td></tr> 
+<tr><td rowspan=11>Properties</td> <td>bool isVisible </td></tr> 
+<tr><td>bool isDeleted </td></tr> 
+<tr><td>bool nearestNeighborTextureSampling </td></tr> 
+<tr><td>double rotation </td></tr> 
+<tr><td>double alpha </td></tr> 
+<tr><td>string cachedImageName </td></tr> 
+<tr><td>uint sizeInBytes </td></tr> 
+<tr><td>MarkerRotationType rotationType </td></tr> 
+<tr><td>MarkerPtr marker </td></tr> 
+<tr><td>TexturePtr texture </td></tr> 
+<tr><td>double altitude </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>vec2i hitTestSize() </td></tr> 
+<tr><td>void hitTestSize_set(vec2i val) </td></tr> 
+<tr><td>vec2d anchorPoint() </td></tr> 
+<tr><td>void anchorPoint_set(vec2d val) </td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>Neighbor</td> <td rowspan=3>Values</td> <td>NONE</td></tr> 
+<tr><td>TOP</td></tr> 
+<tr><td>BOTTOM</td></tr> 
+<tr><td rowspan=4>Enum</td><td rowspan=4>TreeRegion</td> <td rowspan=4>Values</td> <td>ROOT</td></tr> 
+<tr><td>CENTER</td></tr> 
+<tr><td>NORTH</td></tr> 
+<tr><td>SOUTH</td></tr> 
+<tr><td rowspan=28>Class</td><td rowspan=28>TileId</td> <td rowspan=8>Class_function</td> <td>TileId fromXYLevelCenter(int x,  int y,  ubyte level)</td></tr> 
+<tr><td>TileId fromLocationAndLevelPolar(vec2d location,  ubyte level)</td></tr> 
+<tr><td>TileId fromLocationAndLevelCenter(vec2d location,  ubyte level)</td></tr> 
+<tr><td>TileId fromLocationAndLevel(vec2d location,  ubyte level)</td></tr> 
+<tr><td>TileId getRoot()</td></tr> 
+<tr><td> uint getLevel(uint64_t uid)</td></tr> 
+<tr><td>TreeRegion getRegion(uint64_t uid)</td></tr> 
+<tr><td> double getMaxArcLength(TileId tileId, BoundingBox bounds)</td></tr> 
+<tr><td rowspan=3>Constructors</td> <td>TileId()</td></tr> 
+<tr><td>TileId(int x,  int y,  ubyte level,  ubyte region,  ubyte width,  ubyte height)</td></tr> 
+<tr><td>TileId(Uint64_LowHigh uid)</td></tr> 
+<tr><td rowspan=6>Properties</td> <td>int x </td></tr> 
+<tr><td>int y </td></tr> 
+<tr><td>ubyte level </td></tr> 
+<tr><td>ubyte region </td></tr> 
+<tr><td>ubyte width </td></tr> 
+<tr><td>ubyte height </td></tr> 
+<tr><td rowspan=11>Functions</td> <td>TileId getChildThatContains(vec2d location)</td></tr> 
+<tr><td> uint64_t getId()</td></tr> 
+<tr><td>Uint64_LowHigh getId_LowHigh()</td></tr> 
+<tr><td>BoundingBox getBounds()</td></tr> 
+<tr><td>BoundingBox get3857Bounds()</td></tr> 
+<tr><td>BoundingBox getNormalized()</td></tr> 
+<tr><td> int getWidthLevel()</td></tr> 
+<tr><td>BoundingRange getChildRange(TileId child)</td></tr> 
+<tr><td>Neighbor getNeighbor(TileId other)</td></tr> 
+<tr><td> bool eq(TileId other)</td></tr> 
+<tr><td> bool neq(TileId other)</td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>Uint64_LowHigh</td> <td rowspan=2>Properties</td> <td>uint32_t high </td></tr> 
+<tr><td>uint32_t low </td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>ITileProvider</td> <td rowspan=4>Functions</td> <td> void requestTileAsync(TileResult result, ITileLoader loader)</td></tr> 
+<tr><td> void requestTileAsync(TileResult result, TileLoader loader)</td></tr> 
+<tr><td>LoadingInstructions loadingInstructions() </td></tr> 
+<tr><td>void loadingInstructions_set(LoadingInstructions val) </td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>LoadingInstructions</td> <td rowspan=2>Properties</td> <td>int maxParentOffset </td></tr> 
+<tr><td>int startOffset </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorInt loadOrder() </td></tr> 
+<tr><td>void loadOrder_set(VectorInt val) </td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>ITileLoader</td> <td rowspan=5>Functions</td> <td>ITileLoader duplicate() </td></tr> 
+<tr><td> void tileLoadComplete(TileResult result)</td></tr> 
+<tr><td> void vectorTileLoadComplete(TileResult result, GeometryGroup geometryGroup)</td></tr> 
+<tr><td> void markerTileLoadComplete(TileResult result, MarkerResourceList markerResources)</td></tr> 
+<tr><td> bool tileIsNeeded(TileResult tileResult)</td></tr> 
+<tr><td rowspan=17>Class</td><td rowspan=17>TileResult</td> <td rowspan=1>Constructors</td> <td>TileResult(uint width,  uint height,  uint64_t uid,  size_t mapId, VectorUint64_t tiles)</td></tr> 
+<tr><td rowspan=6>Properties</td> <td>bool isOpaque </td></tr> 
+<tr><td>TileProviderResponse tileProviderResponse </td></tr> 
+<tr><td>string fileName </td></tr> 
+<tr><td>string cachedImageName </td></tr> 
+<tr><td>bool dirty </td></tr> 
+<tr><td>bool proxy </td></tr> 
+<tr><td rowspan=10>Functions</td> <td>TileResult duplicate() </td></tr> 
+<tr><td>Image image() </td></tr> 
+<tr><td>void image_set(Image val) </td></tr> 
+<tr><td>BoundingBox bounds() </td></tr> 
+<tr><td>void bounds_set(BoundingBox val) </td></tr> 
+<tr><td> uint64_t getId()</td></tr> 
+<tr><td>Uint64_LowHigh getId_LowHigh()</td></tr> 
+<tr><td> size_t getMapId()</td></tr> 
+<tr><td> uint getImageWidth()</td></tr> 
+<tr><td> uint getImageHeight()</td></tr> 
+<tr><td rowspan=8>Enum</td><td rowspan=8>TileProviderResponse</td> <td rowspan=8>Values</td> <td>UNKNOWN_RESPONSE</td></tr> 
+<tr><td>IMAGE_FILE_NAME</td></tr> 
+<tr><td>IMAGE_DATA</td></tr> 
+<tr><td>CACHED_IMAGE_NAME</td></tr> 
+<tr><td>TRANSPARENT_WITH_CHILDREN</td></tr> 
+<tr><td>TRANSPARENT_WITHOUT_CHILDREN</td></tr> 
+<tr><td>WAS_CANCELLED</td></tr> 
+<tr><td>NOT_AVAILABLE</td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>VectorWindingOrder</td> <td rowspan=3>Values</td> <td>CLOCKWISE</td></tr> 
+<tr><td>COUNTER_CLOCKWISE</td></tr> 
+<tr><td>BOTH</td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>MarkerImageLoadingStrategy</td> <td rowspan=3>Values</td> <td>IMAGE_LOAD_ASYNC</td></tr> 
+<tr><td>IMAGE_LOAD_SYNC</td></tr> 
+<tr><td>IMAGE_LOAD_PRECACHED</td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>TargetImageFormat</td> <td rowspan=2>Values</td> <td>TWO_BPP</td></tr> 
+<tr><td>FOUR_BPP</td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>StorageType</td> <td rowspan=2>Values</td> <td>DISK</td></tr> 
+<tr><td>MEMORY</td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>ContentType</td> <td rowspan=2>Values</td> <td>ZOOM_DEPENDENT</td></tr> 
+<tr><td>ZOOM_INDEPENDENT</td></tr> 
+<tr><td rowspan=5>Enum</td><td rowspan=5>StreamType</td> <td rowspan=5>Values</td> <td>LOWEST_DETAIL_FIRST</td></tr> 
+<tr><td>HIGHEST_DETAIL_ONLY</td></tr> 
+<tr><td>PRELOADED</td></tr> 
+<tr><td>HYBRID</td></tr> 
+<tr><td>NONE</td></tr> 
+<tr><td rowspan=28>Enum</td><td rowspan=28>MapFormat</td> <td rowspan=28>Values</td> <td>UNKNOWN</td></tr> 
+<tr><td>PNG</td></tr> 
+<tr><td>JPG</td></tr> 
+<tr><td>PVR</td></tr> 
+<tr><td>HGT</td></tr> 
+<tr><td>VIRTUAL</td></tr> 
+<tr><td>VECTOR</td></tr> 
+<tr><td>VIRTUAL_ASYNCHRONOUS</td></tr> 
+<tr><td>CUSTOM_BOUNDS_IMAGE</td></tr> 
+<tr><td>MARKER</td></tr> 
+<tr><td>HGT_TAWS</td></tr> 
+<tr><td>PVR_RAW</td></tr> 
+<tr><td>DYNAMIC_MARKER</td></tr> 
+<tr><td>VIRTUAL_VECTOR</td></tr> 
+<tr><td>VIRTUAL_MARKER</td></tr> 
+<tr><td>VIRTUAL_LABEL</td></tr> 
+<tr><td>VIRTUAL_TERRAIN</td></tr> 
+<tr><td>DATA_GRID</td></tr> 
+<tr><td>TERRAIN_HEIGHT</td></tr> 
+<tr><td>TERRAIN_MESH</td></tr> 
+<tr><td>RASTER</td></tr> 
+<tr><td>GRID_SMOOTH</td></tr> 
+<tr><td>HGT_PNG</td></tr> 
+<tr><td>MODEL</td></tr> 
+<tr><td>WEATHER_GRID</td></tr> 
+<tr><td>CACHED_IMAGE</td></tr> 
+<tr><td>DYNAMIC_VECTOR_MARKER</td></tr> 
+<tr><td>DEPTH_TEST</td></tr> 
+<tr><td rowspan=21>Class</td><td rowspan=21>MapDesc</td> <td rowspan=2>Constructors</td> <td>MapDesc()</td></tr> 
+<tr><td>MapDesc(string name, MapFormat dataType,  int layer, GeoBoundingBox bounds,  uint border, TargetImageFormat targetImageFormat)</td></tr> 
+<tr><td rowspan=15>Properties</td> <td>string name </td></tr> 
+<tr><td>string sqliteFileName </td></tr> 
+<tr><td>string tableNamePrefix </td></tr> 
+<tr><td>string dataFileName </td></tr> 
+<tr><td>string defaultTileName </td></tr> 
+<tr><td>MapFormat format </td></tr> 
+<tr><td>int layer </td></tr> 
+<tr><td>int priority </td></tr> 
+<tr><td>int borderSize </td></tr> 
+<tr><td>int maxLevel </td></tr> 
+<tr><td>StreamType streamType </td></tr> 
+<tr><td>ContentType contentType </td></tr> 
+<tr><td>StorageType storageType </td></tr> 
+<tr><td>VectorWindingOrder windingOrder </td></tr> 
+<tr><td>TargetImageFormat targetImageFormat </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>GeoBoundingBox bounds() </td></tr> 
+<tr><td>void bounds_set(GeoBoundingBox val) </td></tr> 
+<tr><td>vec2i imageSize() </td></tr> 
+<tr><td>void imageSize_set(vec2i val) </td></tr> 
+<tr><td rowspan=9>Class</td><td rowspan=9>quatd</td> <td rowspan=4>Constructors</td> <td>quatd()</td></tr> 
+<tr><td>quatd(quatd q)</td></tr> 
+<tr><td>quatd(double x,  double y,  double z,  double w)</td></tr> 
+<tr><td>quatd(vec3d axis,  double angle)</td></tr> 
+<tr><td rowspan=5>Functions</td> <td>quatd mul(quatd a)</td></tr> 
+<tr><td>quatd sub(quatd a)</td></tr> 
+<tr><td>quatd add(quatd a)</td></tr> 
+<tr><td>vec3d rotate(vec3d x)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>Orientation</td> <td rowspan=2>Constructors</td> <td>Orientation()</td></tr> 
+<tr><td>Orientation(double roll,  double pitch,  double yaw)</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>double roll </td></tr> 
+<tr><td>double pitch </td></tr> 
+<tr><td>double yaw </td></tr> 
+<tr><td rowspan=2>Functions</td> <td> bool eq(Orientation other)</td></tr> 
+<tr><td> bool neq(Orientation other)</td></tr> 
+<tr><td rowspan=10>Class</td><td rowspan=10>Polar</td> <td rowspan=2>Class_function</td> <td>vec3d getPosition(double theta,  double psi,  double radius)</td></tr> 
+<tr><td>Polar createFromPosition(vec3d position2)</td></tr> 
+<tr><td rowspan=2>Constructors</td> <td>Polar()</td></tr> 
+<tr><td>Polar(double theta,  double psi,  double radius)</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>double theta </td></tr> 
+<tr><td>double psi </td></tr> 
+<tr><td>double radius </td></tr> 
+<tr><td rowspan=3>Functions</td> <td>vec3d getPosition()</td></tr> 
+<tr><td> bool eq(Polar other)</td></tr> 
+<tr><td> bool neq(Polar other)</td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>Sphere</td> <td rowspan=2>Constructors</td> <td>Sphere()</td></tr> 
+<tr><td>Sphere(vec3d center,  double radius)</td></tr> 
+<tr><td rowspan=1>Properties</td> <td>double radius </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>vec3f center() </td></tr> 
+<tr><td>void center_set(vec3f val) </td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>LineSegmentHit : VectorGeometryHit</td> <td rowspan=1>Constructors</td> <td>LineSegmentHit(string mapName, string shapeId, vec2d geoCoord,  int startPointIndex,  int endPointIndex )</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>int startPointIndex </td></tr> 
+<tr><td>int endPointIndex </td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>VertexHit : VectorGeometryHit</td> <td rowspan=1>Constructors</td> <td>VertexHit(string mapName, string shapeId, vec2d geoCoord,  int vertexIndex )</td></tr> 
+<tr><td rowspan=1>Properties</td> <td>int vertexIndex </td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>VectorGeometryHit</td> <td rowspan=1>Constructors</td> <td>VectorGeometryHit(string mapName, string shapeId, vec2d geoCoord, VectorGeometryHitType hitType )</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>string mapName </td></tr> 
+<tr><td>string shapeId </td></tr> 
+<tr><td>VectorGeometryHitType hitType </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>vec2d geoCoord() </td></tr> 
+<tr><td>void geoCoord_set(vec2d val) </td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>VectorGeometryHitType</td> <td rowspan=2>Values</td> <td>Vertex</td></tr> 
+<tr><td>LineSegment</td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>GeographicPosition2D</td> <td rowspan=3>Constructors</td> <td>GeographicPosition2D()</td></tr> 
+<tr><td>GeographicPosition2D(double latitude,  double longitude)</td></tr> 
+<tr><td>GeographicPosition2D(GeographicPosition geoPos)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>double latitude </td></tr> 
+<tr><td>double longitude </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>string toString()</td></tr> 
+<tr><td> bool eq(GeographicPosition2D other)</td></tr> 
+<tr><td rowspan=10>Class</td><td rowspan=10>MultiGestureEvent</td> <td rowspan=8>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>float dTheta </td></tr> 
+<tr><td>float dDist </td></tr> 
+<tr><td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td>Uint16 numFingers </td></tr> 
+<tr><td>Uint16 padding </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>TouchID touchId() </td></tr> 
+<tr><td>void touchId_set(TouchID val) </td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>KeyboardEvent</td> <td rowspan=5>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>Uint32 windowID </td></tr> 
+<tr><td>Uint8 state </td></tr> 
+<tr><td>Uint8 repeat </td></tr> 
+<tr><td rowspan=3>Functions</td> <td>KeyboardEvent duplicate() </td></tr> 
+<tr><td>Keysym keysym() </td></tr> 
+<tr><td>void keysym_set(Keysym val) </td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>Keysym</td> <td rowspan=1>Properties</td> <td>Uint16 mod </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>Scancode scancode() </td></tr> 
+<tr><td>void scancode_set(Scancode val) </td></tr> 
+<tr><td>Keycode sym() </td></tr> 
+<tr><td>void sym_set(Keycode val) </td></tr> 
+<tr><td rowspan=38>Enum</td><td rowspan=38>EventType</td> <td rowspan=38>Values</td> <td>NOEVENT</td></tr> 
+<tr><td>FIRSTEVENT</td></tr> 
+<tr><td>QUIT</td></tr> 
+<tr><td>WINDOWEVENT</td></tr> 
+<tr><td>SYSWMEVENT</td></tr> 
+<tr><td>KEYDOWN</td></tr> 
+<tr><td>KEYUP</td></tr> 
+<tr><td>TEXTEDITING</td></tr> 
+<tr><td>TEXTINPUT</td></tr> 
+<tr><td>MOUSEMOTION</td></tr> 
+<tr><td>MOUSEBUTTONDOWN</td></tr> 
+<tr><td>MOUSEBUTTONUP</td></tr> 
+<tr><td>MOUSEWHEEL</td></tr> 
+<tr><td>INPUTMOTION</td></tr> 
+<tr><td>INPUTBUTTONDOWN</td></tr> 
+<tr><td>INPUTBUTTONUP</td></tr> 
+<tr><td>INPUTWHEEL</td></tr> 
+<tr><td>INPUTPROXIMITYIN</td></tr> 
+<tr><td>INPUTPROXIMITYOUT</td></tr> 
+<tr><td>JOYAXISMOTION</td></tr> 
+<tr><td>JOYBALLMOTION</td></tr> 
+<tr><td>JOYHATMOTION</td></tr> 
+<tr><td>JOYBUTTONDOWN</td></tr> 
+<tr><td>JOYBUTTONUP</td></tr> 
+<tr><td>FINGERDOWN</td></tr> 
+<tr><td>FINGERUP</td></tr> 
+<tr><td>FINGERMOTION</td></tr> 
+<tr><td>TOUCHBUTTONDOWN</td></tr> 
+<tr><td>TOUCHBUTTONUP</td></tr> 
+<tr><td>DOLLARGESTURE</td></tr> 
+<tr><td>DOLLARRECORD</td></tr> 
+<tr><td>MULTIGESTURE</td></tr> 
+<tr><td>CLIPBOARDUPDATE</td></tr> 
+<tr><td>EVENT_COMPAT1</td></tr> 
+<tr><td>EVENT_COMPAT2</td></tr> 
+<tr><td>EVENT_COMPAT3</td></tr> 
+<tr><td>USEREVENT</td></tr> 
+<tr><td>LASTEVENT</td></tr> 
+<tr><td rowspan=232>Enum</td><td rowspan=232>Keycode</td> <td rowspan=232>Values</td> <td>KEYCODE_UNKNOWN</td></tr> 
+<tr><td>KEYCODE_SPACE</td></tr> 
+<tr><td>KEYCODE_EXCLAIM</td></tr> 
+<tr><td>KEYCODE_QUOTEDBL</td></tr> 
+<tr><td>KEYCODE_HASH</td></tr> 
+<tr><td>KEYCODE_PERCENT</td></tr> 
+<tr><td>KEYCODE_DOLLAR</td></tr> 
+<tr><td>KEYCODE_AMPERSAND</td></tr> 
+<tr><td>KEYCODE_QUOTE</td></tr> 
+<tr><td>KEYCODE_LEFTPAREN</td></tr> 
+<tr><td>KEYCODE_RIGHTPAREN</td></tr> 
+<tr><td>KEYCODE_ASTERISK</td></tr> 
+<tr><td>KEYCODE_PLUS</td></tr> 
+<tr><td>KEYCODE_COMMA</td></tr> 
+<tr><td>KEYCODE_MINUS</td></tr> 
+<tr><td>KEYCODE_PERIOD</td></tr> 
+<tr><td>KEYCODE_SLASH</td></tr> 
+<tr><td>KEYCODE_0</td></tr> 
+<tr><td>KEYCODE_1</td></tr> 
+<tr><td>KEYCODE_2</td></tr> 
+<tr><td>KEYCODE_3</td></tr> 
+<tr><td>KEYCODE_4</td></tr> 
+<tr><td>KEYCODE_5</td></tr> 
+<tr><td>KEYCODE_6</td></tr> 
+<tr><td>KEYCODE_7</td></tr> 
+<tr><td>KEYCODE_8</td></tr> 
+<tr><td>KEYCODE_9</td></tr> 
+<tr><td>KEYCODE_COLON</td></tr> 
+<tr><td>KEYCODE_SEMICOLON</td></tr> 
+<tr><td>KEYCODE_LESS</td></tr> 
+<tr><td>KEYCODE_EQUALS</td></tr> 
+<tr><td>KEYCODE_GREATER</td></tr> 
+<tr><td>KEYCODE_QUESTION</td></tr> 
+<tr><td>KEYCODE_AT</td></tr> 
+<tr><td>KEYCODE_LEFTBRACKET</td></tr> 
+<tr><td>KEYCODE_BACKSLASH</td></tr> 
+<tr><td>KEYCODE_RIGHTBRACKET</td></tr> 
+<tr><td>KEYCODE_CARET</td></tr> 
+<tr><td>KEYCODE_UNDERSCORE</td></tr> 
+<tr><td>KEYCODE_BACKQUOTE</td></tr> 
+<tr><td>KEYCODE_a</td></tr> 
+<tr><td>KEYCODE_b</td></tr> 
+<tr><td>KEYCODE_c</td></tr> 
+<tr><td>KEYCODE_d</td></tr> 
+<tr><td>KEYCODE_e</td></tr> 
+<tr><td>KEYCODE_f</td></tr> 
+<tr><td>KEYCODE_g</td></tr> 
+<tr><td>KEYCODE_h</td></tr> 
+<tr><td>KEYCODE_i</td></tr> 
+<tr><td>KEYCODE_j</td></tr> 
+<tr><td>KEYCODE_k</td></tr> 
+<tr><td>KEYCODE_l</td></tr> 
+<tr><td>KEYCODE_m</td></tr> 
+<tr><td>KEYCODE_n</td></tr> 
+<tr><td>KEYCODE_o</td></tr> 
+<tr><td>KEYCODE_p</td></tr> 
+<tr><td>KEYCODE_q</td></tr> 
+<tr><td>KEYCODE_r</td></tr> 
+<tr><td>KEYCODE_s</td></tr> 
+<tr><td>KEYCODE_t</td></tr> 
+<tr><td>KEYCODE_u</td></tr> 
+<tr><td>KEYCODE_v</td></tr> 
+<tr><td>KEYCODE_w</td></tr> 
+<tr><td>KEYCODE_x</td></tr> 
+<tr><td>KEYCODE_y</td></tr> 
+<tr><td>KEYCODE_z</td></tr> 
+<tr><td>KEYCODE_CAPSLOCK</td></tr> 
+<tr><td>KEYCODE_F1</td></tr> 
+<tr><td>KEYCODE_F2</td></tr> 
+<tr><td>KEYCODE_F3</td></tr> 
+<tr><td>KEYCODE_F4</td></tr> 
+<tr><td>KEYCODE_F5</td></tr> 
+<tr><td>KEYCODE_F6</td></tr> 
+<tr><td>KEYCODE_F7</td></tr> 
+<tr><td>KEYCODE_F8</td></tr> 
+<tr><td>KEYCODE_F9</td></tr> 
+<tr><td>KEYCODE_F10</td></tr> 
+<tr><td>KEYCODE_F11</td></tr> 
+<tr><td>KEYCODE_F12</td></tr> 
+<tr><td>KEYCODE_PRINTSCREEN</td></tr> 
+<tr><td>KEYCODE_SCROLLLOCK</td></tr> 
+<tr><td>KEYCODE_PAUSE</td></tr> 
+<tr><td>KEYCODE_INSERT</td></tr> 
+<tr><td>KEYCODE_HOME</td></tr> 
+<tr><td>KEYCODE_PAGEUP</td></tr> 
+<tr><td>KEYCODE_DELETE</td></tr> 
+<tr><td>KEYCODE_END</td></tr> 
+<tr><td>KEYCODE_PAGEDOWN</td></tr> 
+<tr><td>KEYCODE_RIGHT</td></tr> 
+<tr><td>KEYCODE_LEFT</td></tr> 
+<tr><td>KEYCODE_DOWN</td></tr> 
+<tr><td>KEYCODE_UP</td></tr> 
+<tr><td>KEYCODE_NUMLOCKCLEAR</td></tr> 
+<tr><td>KEYCODE_KP_DIVIDE</td></tr> 
+<tr><td>KEYCODE_KP_MULTIPLY</td></tr> 
+<tr><td>KEYCODE_KP_MINUS</td></tr> 
+<tr><td>KEYCODE_KP_PLUS</td></tr> 
+<tr><td>KEYCODE_KP_ENTER</td></tr> 
+<tr><td>KEYCODE_KP_1</td></tr> 
+<tr><td>KEYCODE_KP_2</td></tr> 
+<tr><td>KEYCODE_KP_3</td></tr> 
+<tr><td>KEYCODE_KP_4</td></tr> 
+<tr><td>KEYCODE_KP_5</td></tr> 
+<tr><td>KEYCODE_KP_6</td></tr> 
+<tr><td>KEYCODE_KP_7</td></tr> 
+<tr><td>KEYCODE_KP_8</td></tr> 
+<tr><td>KEYCODE_KP_9</td></tr> 
+<tr><td>KEYCODE_KP_0</td></tr> 
+<tr><td>KEYCODE_KP_PERIOD</td></tr> 
+<tr><td>KEYCODE_APPLICATION</td></tr> 
+<tr><td>KEYCODE_POWER</td></tr> 
+<tr><td>KEYCODE_KP_EQUALS</td></tr> 
+<tr><td>KEYCODE_F13</td></tr> 
+<tr><td>KEYCODE_F14</td></tr> 
+<tr><td>KEYCODE_F15</td></tr> 
+<tr><td>KEYCODE_F16</td></tr> 
+<tr><td>KEYCODE_F17</td></tr> 
+<tr><td>KEYCODE_F18</td></tr> 
+<tr><td>KEYCODE_F19</td></tr> 
+<tr><td>KEYCODE_F20</td></tr> 
+<tr><td>KEYCODE_F21</td></tr> 
+<tr><td>KEYCODE_F22</td></tr> 
+<tr><td>KEYCODE_F23</td></tr> 
+<tr><td>KEYCODE_F24</td></tr> 
+<tr><td>KEYCODE_EXECUTE</td></tr> 
+<tr><td>KEYCODE_HELP</td></tr> 
+<tr><td>KEYCODE_MENU</td></tr> 
+<tr><td>KEYCODE_SELECT</td></tr> 
+<tr><td>KEYCODE_STOP</td></tr> 
+<tr><td>KEYCODE_AGAIN</td></tr> 
+<tr><td>KEYCODE_UNDO</td></tr> 
+<tr><td>KEYCODE_CUT</td></tr> 
+<tr><td>KEYCODE_COPY</td></tr> 
+<tr><td>KEYCODE_PASTE</td></tr> 
+<tr><td>KEYCODE_FIND</td></tr> 
+<tr><td>KEYCODE_MUTE</td></tr> 
+<tr><td>KEYCODE_VOLUMEUP</td></tr> 
+<tr><td>KEYCODE_VOLUMEDOWN</td></tr> 
+<tr><td>KEYCODE_KP_COMMA</td></tr> 
+<tr><td>KEYCODE_KP_EQUALSAS400</td></tr> 
+<tr><td>KEYCODE_ALTERASE</td></tr> 
+<tr><td>KEYCODE_SYSREQ</td></tr> 
+<tr><td>KEYCODE_CANCEL</td></tr> 
+<tr><td>KEYCODE_CLEAR</td></tr> 
+<tr><td>KEYCODE_PRIOR</td></tr> 
+<tr><td>KEYCODE_RETURN2</td></tr> 
+<tr><td>KEYCODE_SEPARATOR</td></tr> 
+<tr><td>KEYCODE_OUT</td></tr> 
+<tr><td>KEYCODE_OPER</td></tr> 
+<tr><td>KEYCODE_CLEARAGAIN</td></tr> 
+<tr><td>KEYCODE_CRSEL</td></tr> 
+<tr><td>KEYCODE_EXSEL</td></tr> 
+<tr><td>KEYCODE_KP_00</td></tr> 
+<tr><td>KEYCODE_KP_000</td></tr> 
+<tr><td>KEYCODE_THOUSANDSSEPARATOR</td></tr> 
+<tr><td>KEYCODE_DECIMALSEPARATOR</td></tr> 
+<tr><td>KEYCODE_CURRENCYUNIT</td></tr> 
+<tr><td>KEYCODE_CURRENCYSUBUNIT</td></tr> 
+<tr><td>KEYCODE_KP_LEFTPAREN</td></tr> 
+<tr><td>KEYCODE_KP_RIGHTPAREN</td></tr> 
+<tr><td>KEYCODE_KP_LEFTBRACE</td></tr> 
+<tr><td>KEYCODE_KP_RIGHTBRACE</td></tr> 
+<tr><td>KEYCODE_KP_TAB</td></tr> 
+<tr><td>KEYCODE_KP_BACKSPACE</td></tr> 
+<tr><td>KEYCODE_KP_A</td></tr> 
+<tr><td>KEYCODE_KP_B</td></tr> 
+<tr><td>KEYCODE_KP_C</td></tr> 
+<tr><td>KEYCODE_KP_D</td></tr> 
+<tr><td>KEYCODE_KP_E</td></tr> 
+<tr><td>KEYCODE_KP_F</td></tr> 
+<tr><td>KEYCODE_KP_XOR</td></tr> 
+<tr><td>KEYCODE_KP_POWER</td></tr> 
+<tr><td>KEYCODE_KP_PERCENT</td></tr> 
+<tr><td>KEYCODE_KP_LESS</td></tr> 
+<tr><td>KEYCODE_KP_GREATER</td></tr> 
+<tr><td>KEYCODE_KP_AMPERSAND</td></tr> 
+<tr><td>KEYCODE_KP_DBLAMPERSAND</td></tr> 
+<tr><td>KEYCODE_KP_VERTICALBAR</td></tr> 
+<tr><td>KEYCODE_KP_DBLVERTICALBAR</td></tr> 
+<tr><td>KEYCODE_KP_COLON</td></tr> 
+<tr><td>KEYCODE_KP_HASH</td></tr> 
+<tr><td>KEYCODE_KP_SPACE</td></tr> 
+<tr><td>KEYCODE_KP_AT</td></tr> 
+<tr><td>KEYCODE_KP_EXCLAM</td></tr> 
+<tr><td>KEYCODE_KP_MEMSTORE</td></tr> 
+<tr><td>KEYCODE_KP_MEMRECALL</td></tr> 
+<tr><td>KEYCODE_KP_MEMCLEAR</td></tr> 
+<tr><td>KEYCODE_KP_MEMADD</td></tr> 
+<tr><td>KEYCODE_KP_MEMSUBTRACT</td></tr> 
+<tr><td>KEYCODE_KP_MEMMULTIPLY</td></tr> 
+<tr><td>KEYCODE_KP_MEMDIVIDE</td></tr> 
+<tr><td>KEYCODE_KP_PLUSMINUS</td></tr> 
+<tr><td>KEYCODE_KP_CLEAR</td></tr> 
+<tr><td>KEYCODE_KP_CLEARENTRY</td></tr> 
+<tr><td>KEYCODE_KP_BINARY</td></tr> 
+<tr><td>KEYCODE_KP_OCTAL</td></tr> 
+<tr><td>KEYCODE_KP_DECIMAL</td></tr> 
+<tr><td>KEYCODE_KP_HEXADECIMAL</td></tr> 
+<tr><td>KEYCODE_LCTRL</td></tr> 
+<tr><td>KEYCODE_LSHIFT</td></tr> 
+<tr><td>KEYCODE_LALT</td></tr> 
+<tr><td>KEYCODE_LGUI</td></tr> 
+<tr><td>KEYCODE_RCTRL</td></tr> 
+<tr><td>KEYCODE_RSHIFT</td></tr> 
+<tr><td>KEYCODE_RALT</td></tr> 
+<tr><td>KEYCODE_RGUI</td></tr> 
+<tr><td>KEYCODE_MODE</td></tr> 
+<tr><td>KEYCODE_AUDIONEXT</td></tr> 
+<tr><td>KEYCODE_AUDIOPREV</td></tr> 
+<tr><td>KEYCODE_AUDIOSTOP</td></tr> 
+<tr><td>KEYCODE_AUDIOPLAY</td></tr> 
+<tr><td>KEYCODE_AUDIOMUTE</td></tr> 
+<tr><td>KEYCODE_MEDIASELECT</td></tr> 
+<tr><td>KEYCODE_WWW</td></tr> 
+<tr><td>KEYCODE_MAIL</td></tr> 
+<tr><td>KEYCODE_CALCULATOR</td></tr> 
+<tr><td>KEYCODE_COMPUTER</td></tr> 
+<tr><td>KEYCODE_AC_SEARCH</td></tr> 
+<tr><td>KEYCODE_AC_HOME</td></tr> 
+<tr><td>KEYCODE_AC_BACK</td></tr> 
+<tr><td>KEYCODE_AC_FORWARD</td></tr> 
+<tr><td>KEYCODE_AC_STOP</td></tr> 
+<tr><td>KEYCODE_AC_REFRESH</td></tr> 
+<tr><td>KEYCODE_AC_BOOKMARKS</td></tr> 
+<tr><td>KEYCODE_BRIGHTNESSDOWN</td></tr> 
+<tr><td>KEYCODE_BRIGHTNESSUP</td></tr> 
+<tr><td>KEYCODE_DISPLAYSWITCH</td></tr> 
+<tr><td>KEYCODE_KBDILLUMTOGGLE</td></tr> 
+<tr><td>KEYCODE_KBDILLUMDOWN</td></tr> 
+<tr><td>KEYCODE_KBDILLUMUP</td></tr> 
+<tr><td>KEYCODE_EJECT</td></tr> 
+<tr><td>KEYCODE_SLEEP</td></tr> 
+<tr><td rowspan=242>Enum</td><td rowspan=242>Scancode</td> <td rowspan=242>Values</td> <td>SCANCODE_UNKNOWN</td></tr> 
+<tr><td>SCANCODE_A</td></tr> 
+<tr><td>SCANCODE_B</td></tr> 
+<tr><td>SCANCODE_C</td></tr> 
+<tr><td>SCANCODE_D</td></tr> 
+<tr><td>SCANCODE_E</td></tr> 
+<tr><td>SCANCODE_F</td></tr> 
+<tr><td>SCANCODE_G</td></tr> 
+<tr><td>SCANCODE_H</td></tr> 
+<tr><td>SCANCODE_I</td></tr> 
+<tr><td>SCANCODE_J</td></tr> 
+<tr><td>SCANCODE_K</td></tr> 
+<tr><td>SCANCODE_L</td></tr> 
+<tr><td>SCANCODE_M</td></tr> 
+<tr><td>SCANCODE_N</td></tr> 
+<tr><td>SCANCODE_O</td></tr> 
+<tr><td>SCANCODE_P</td></tr> 
+<tr><td>SCANCODE_Q</td></tr> 
+<tr><td>SCANCODE_R</td></tr> 
+<tr><td>SCANCODE_S</td></tr> 
+<tr><td>SCANCODE_T</td></tr> 
+<tr><td>SCANCODE_U</td></tr> 
+<tr><td>SCANCODE_V</td></tr> 
+<tr><td>SCANCODE_W</td></tr> 
+<tr><td>SCANCODE_X</td></tr> 
+<tr><td>SCANCODE_Y</td></tr> 
+<tr><td>SCANCODE_Z</td></tr> 
+<tr><td>SCANCODE_1</td></tr> 
+<tr><td>SCANCODE_2</td></tr> 
+<tr><td>SCANCODE_3</td></tr> 
+<tr><td>SCANCODE_4</td></tr> 
+<tr><td>SCANCODE_5</td></tr> 
+<tr><td>SCANCODE_6</td></tr> 
+<tr><td>SCANCODE_7</td></tr> 
+<tr><td>SCANCODE_8</td></tr> 
+<tr><td>SCANCODE_9</td></tr> 
+<tr><td>SCANCODE_0</td></tr> 
+<tr><td>SCANCODE_RETURN</td></tr> 
+<tr><td>SCANCODE_ESCAPE</td></tr> 
+<tr><td>SCANCODE_BACKSPACE</td></tr> 
+<tr><td>SCANCODE_TAB</td></tr> 
+<tr><td>SCANCODE_SPACE</td></tr> 
+<tr><td>SCANCODE_MINUS</td></tr> 
+<tr><td>SCANCODE_EQUALS</td></tr> 
+<tr><td>SCANCODE_LEFTBRACKET</td></tr> 
+<tr><td>SCANCODE_RIGHTBRACKET</td></tr> 
+<tr><td>SCANCODE_BACKSLASH</td></tr> 
+<tr><td>SCANCODE_NONUSHASH</td></tr> 
+<tr><td>SCANCODE_SEMICOLON</td></tr> 
+<tr><td>SCANCODE_APOSTROPHE</td></tr> 
+<tr><td>SCANCODE_GRAVE</td></tr> 
+<tr><td>SCANCODE_COMMA</td></tr> 
+<tr><td>SCANCODE_PERIOD</td></tr> 
+<tr><td>SCANCODE_SLASH</td></tr> 
+<tr><td>SCANCODE_CAPSLOCK</td></tr> 
+<tr><td>SCANCODE_F1</td></tr> 
+<tr><td>SCANCODE_F2</td></tr> 
+<tr><td>SCANCODE_F3</td></tr> 
+<tr><td>SCANCODE_F4</td></tr> 
+<tr><td>SCANCODE_F5</td></tr> 
+<tr><td>SCANCODE_F6</td></tr> 
+<tr><td>SCANCODE_F7</td></tr> 
+<tr><td>SCANCODE_F8</td></tr> 
+<tr><td>SCANCODE_F9</td></tr> 
+<tr><td>SCANCODE_F10</td></tr> 
+<tr><td>SCANCODE_F11</td></tr> 
+<tr><td>SCANCODE_F12</td></tr> 
+<tr><td>SCANCODE_PRINTSCREEN</td></tr> 
+<tr><td>SCANCODE_SCROLLLOCK</td></tr> 
+<tr><td>SCANCODE_PAUSE</td></tr> 
+<tr><td>SCANCODE_INSERT</td></tr> 
+<tr><td>SCANCODE_HOME</td></tr> 
+<tr><td>SCANCODE_PAGEUP</td></tr> 
+<tr><td>SCANCODE_DELETE</td></tr> 
+<tr><td>SCANCODE_END</td></tr> 
+<tr><td>SCANCODE_PAGEDOWN</td></tr> 
+<tr><td>SCANCODE_RIGHT</td></tr> 
+<tr><td>SCANCODE_LEFT</td></tr> 
+<tr><td>SCANCODE_DOWN</td></tr> 
+<tr><td>SCANCODE_UP</td></tr> 
+<tr><td>SCANCODE_NUMLOCKCLEAR</td></tr> 
+<tr><td>SCANCODE_KP_DIVIDE</td></tr> 
+<tr><td>SCANCODE_KP_MULTIPLY</td></tr> 
+<tr><td>SCANCODE_KP_MINUS</td></tr> 
+<tr><td>SCANCODE_KP_PLUS</td></tr> 
+<tr><td>SCANCODE_KP_ENTER</td></tr> 
+<tr><td>SCANCODE_KP_1</td></tr> 
+<tr><td>SCANCODE_KP_2</td></tr> 
+<tr><td>SCANCODE_KP_3</td></tr> 
+<tr><td>SCANCODE_KP_4</td></tr> 
+<tr><td>SCANCODE_KP_5</td></tr> 
+<tr><td>SCANCODE_KP_6</td></tr> 
+<tr><td>SCANCODE_KP_7</td></tr> 
+<tr><td>SCANCODE_KP_8</td></tr> 
+<tr><td>SCANCODE_KP_9</td></tr> 
+<tr><td>SCANCODE_KP_0</td></tr> 
+<tr><td>SCANCODE_KP_PERIOD</td></tr> 
+<tr><td>SCANCODE_NONUSBACKSLASH</td></tr> 
+<tr><td>SCANCODE_APPLICATION</td></tr> 
+<tr><td>SCANCODE_POWER</td></tr> 
+<tr><td>SCANCODE_KP_EQUALS</td></tr> 
+<tr><td>SCANCODE_F13</td></tr> 
+<tr><td>SCANCODE_F14</td></tr> 
+<tr><td>SCANCODE_F15</td></tr> 
+<tr><td>SCANCODE_F16</td></tr> 
+<tr><td>SCANCODE_F17</td></tr> 
+<tr><td>SCANCODE_F18</td></tr> 
+<tr><td>SCANCODE_F19</td></tr> 
+<tr><td>SCANCODE_F20</td></tr> 
+<tr><td>SCANCODE_F21</td></tr> 
+<tr><td>SCANCODE_F22</td></tr> 
+<tr><td>SCANCODE_F23</td></tr> 
+<tr><td>SCANCODE_F24</td></tr> 
+<tr><td>SCANCODE_EXECUTE</td></tr> 
+<tr><td>SCANCODE_HELP</td></tr> 
+<tr><td>SCANCODE_MENU</td></tr> 
+<tr><td>SCANCODE_SELECT</td></tr> 
+<tr><td>SCANCODE_STOP</td></tr> 
+<tr><td>SCANCODE_AGAIN</td></tr> 
+<tr><td>SCANCODE_UNDO</td></tr> 
+<tr><td>SCANCODE_CUT</td></tr> 
+<tr><td>SCANCODE_COPY</td></tr> 
+<tr><td>SCANCODE_PASTE</td></tr> 
+<tr><td>SCANCODE_FIND</td></tr> 
+<tr><td>SCANCODE_MUTE</td></tr> 
+<tr><td>SCANCODE_VOLUMEUP</td></tr> 
+<tr><td>SCANCODE_VOLUMEDOWN</td></tr> 
+<tr><td>SCANCODE_KP_COMMA</td></tr> 
+<tr><td>SCANCODE_KP_EQUALSAS400</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL1</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL2</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL3</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL4</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL5</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL6</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL7</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL8</td></tr> 
+<tr><td>SCANCODE_INTERNATIONAL9</td></tr> 
+<tr><td>SCANCODE_LANG1</td></tr> 
+<tr><td>SCANCODE_LANG2</td></tr> 
+<tr><td>SCANCODE_LANG3</td></tr> 
+<tr><td>SCANCODE_LANG4</td></tr> 
+<tr><td>SCANCODE_LANG5</td></tr> 
+<tr><td>SCANCODE_LANG6</td></tr> 
+<tr><td>SCANCODE_LANG7</td></tr> 
+<tr><td>SCANCODE_LANG8</td></tr> 
+<tr><td>SCANCODE_LANG9</td></tr> 
+<tr><td>SCANCODE_ALTERASE</td></tr> 
+<tr><td>SCANCODE_SYSREQ</td></tr> 
+<tr><td>SCANCODE_CANCEL</td></tr> 
+<tr><td>SCANCODE_CLEAR</td></tr> 
+<tr><td>SCANCODE_PRIOR</td></tr> 
+<tr><td>SCANCODE_RETURN2</td></tr> 
+<tr><td>SCANCODE_SEPARATOR</td></tr> 
+<tr><td>SCANCODE_OUT</td></tr> 
+<tr><td>SCANCODE_OPER</td></tr> 
+<tr><td>SCANCODE_CLEARAGAIN</td></tr> 
+<tr><td>SCANCODE_CRSEL</td></tr> 
+<tr><td>SCANCODE_EXSEL</td></tr> 
+<tr><td>SCANCODE_KP_00</td></tr> 
+<tr><td>SCANCODE_KP_000</td></tr> 
+<tr><td>SCANCODE_THOUSANDSSEPARATOR</td></tr> 
+<tr><td>SCANCODE_DECIMALSEPARATOR</td></tr> 
+<tr><td>SCANCODE_CURRENCYUNIT</td></tr> 
+<tr><td>SCANCODE_CURRENCYSUBUNIT</td></tr> 
+<tr><td>SCANCODE_KP_LEFTPAREN</td></tr> 
+<tr><td>SCANCODE_KP_RIGHTPAREN</td></tr> 
+<tr><td>SCANCODE_KP_LEFTBRACE</td></tr> 
+<tr><td>SCANCODE_KP_RIGHTBRACE</td></tr> 
+<tr><td>SCANCODE_KP_TAB</td></tr> 
+<tr><td>SCANCODE_KP_BACKSPACE</td></tr> 
+<tr><td>SCANCODE_KP_A</td></tr> 
+<tr><td>SCANCODE_KP_B</td></tr> 
+<tr><td>SCANCODE_KP_C</td></tr> 
+<tr><td>SCANCODE_KP_D</td></tr> 
+<tr><td>SCANCODE_KP_E</td></tr> 
+<tr><td>SCANCODE_KP_F</td></tr> 
+<tr><td>SCANCODE_KP_XOR</td></tr> 
+<tr><td>SCANCODE_KP_POWER</td></tr> 
+<tr><td>SCANCODE_KP_PERCENT</td></tr> 
+<tr><td>SCANCODE_KP_LESS</td></tr> 
+<tr><td>SCANCODE_KP_GREATER</td></tr> 
+<tr><td>SCANCODE_KP_AMPERSAND</td></tr> 
+<tr><td>SCANCODE_KP_DBLAMPERSAND</td></tr> 
+<tr><td>SCANCODE_KP_VERTICALBAR</td></tr> 
+<tr><td>SCANCODE_KP_DBLVERTICALBAR</td></tr> 
+<tr><td>SCANCODE_KP_COLON</td></tr> 
+<tr><td>SCANCODE_KP_HASH</td></tr> 
+<tr><td>SCANCODE_KP_SPACE</td></tr> 
+<tr><td>SCANCODE_KP_AT</td></tr> 
+<tr><td>SCANCODE_KP_EXCLAM</td></tr> 
+<tr><td>SCANCODE_KP_MEMSTORE</td></tr> 
+<tr><td>SCANCODE_KP_MEMRECALL</td></tr> 
+<tr><td>SCANCODE_KP_MEMCLEAR</td></tr> 
+<tr><td>SCANCODE_KP_MEMADD</td></tr> 
+<tr><td>SCANCODE_KP_MEMSUBTRACT</td></tr> 
+<tr><td>SCANCODE_KP_MEMMULTIPLY</td></tr> 
+<tr><td>SCANCODE_KP_MEMDIVIDE</td></tr> 
+<tr><td>SCANCODE_KP_PLUSMINUS</td></tr> 
+<tr><td>SCANCODE_KP_CLEAR</td></tr> 
+<tr><td>SCANCODE_KP_CLEARENTRY</td></tr> 
+<tr><td>SCANCODE_KP_BINARY</td></tr> 
+<tr><td>SCANCODE_KP_OCTAL</td></tr> 
+<tr><td>SCANCODE_KP_DECIMAL</td></tr> 
+<tr><td>SCANCODE_KP_HEXADECIMAL</td></tr> 
+<tr><td>SCANCODE_LCTRL</td></tr> 
+<tr><td>SCANCODE_LSHIFT</td></tr> 
+<tr><td>SCANCODE_LALT</td></tr> 
+<tr><td>SCANCODE_LGUI</td></tr> 
+<tr><td>SCANCODE_RCTRL</td></tr> 
+<tr><td>SCANCODE_RSHIFT</td></tr> 
+<tr><td>SCANCODE_RALT</td></tr> 
+<tr><td>SCANCODE_RGUI</td></tr> 
+<tr><td>SCANCODE_MODE</td></tr> 
+<tr><td>SCANCODE_AUDIONEXT</td></tr> 
+<tr><td>SCANCODE_AUDIOPREV</td></tr> 
+<tr><td>SCANCODE_AUDIOSTOP</td></tr> 
+<tr><td>SCANCODE_AUDIOPLAY</td></tr> 
+<tr><td>SCANCODE_AUDIOMUTE</td></tr> 
+<tr><td>SCANCODE_MEDIASELECT</td></tr> 
+<tr><td>SCANCODE_WWW</td></tr> 
+<tr><td>SCANCODE_MAIL</td></tr> 
+<tr><td>SCANCODE_CALCULATOR</td></tr> 
+<tr><td>SCANCODE_COMPUTER</td></tr> 
+<tr><td>SCANCODE_AC_SEARCH</td></tr> 
+<tr><td>SCANCODE_AC_HOME</td></tr> 
+<tr><td>SCANCODE_AC_BACK</td></tr> 
+<tr><td>SCANCODE_AC_FORWARD</td></tr> 
+<tr><td>SCANCODE_AC_STOP</td></tr> 
+<tr><td>SCANCODE_AC_REFRESH</td></tr> 
+<tr><td>SCANCODE_AC_BOOKMARKS</td></tr> 
+<tr><td>SCANCODE_BRIGHTNESSDOWN</td></tr> 
+<tr><td>SCANCODE_BRIGHTNESSUP</td></tr> 
+<tr><td>SCANCODE_DISPLAYSWITCH</td></tr> 
+<tr><td>SCANCODE_KBDILLUMTOGGLE</td></tr> 
+<tr><td>SCANCODE_KBDILLUMDOWN</td></tr> 
+<tr><td>SCANCODE_KBDILLUMUP</td></tr> 
+<tr><td>SCANCODE_EJECT</td></tr> 
+<tr><td>SCANCODE_SLEEP</td></tr> 
+<tr><td>SCANCODE_APP1</td></tr> 
+<tr><td>SCANCODE_APP2</td></tr> 
+<tr><td>NUM_SCANCODES</td></tr> 
+<tr><td rowspan=13>Enum</td><td rowspan=13>Keymod</td> <td rowspan=13>Values</td> <td>KMOD_NONE</td></tr> 
+<tr><td>KMOD_LSHIFT</td></tr> 
+<tr><td>KMOD_RSHIFT</td></tr> 
+<tr><td>KMOD_LCTRL</td></tr> 
+<tr><td>KMOD_RCTRL</td></tr> 
+<tr><td>KMOD_LALT</td></tr> 
+<tr><td>KMOD_RALT</td></tr> 
+<tr><td>KMOD_LGUI</td></tr> 
+<tr><td>KMOD_RGUI</td></tr> 
+<tr><td>KMOD_NUM</td></tr> 
+<tr><td>KMOD_CAPS</td></tr> 
+<tr><td>KMOD_MODE</td></tr> 
+<tr><td>KMOD_RESERVED</td></tr> 
+<tr><td rowspan=12>Class</td><td rowspan=12>TouchFingerEvent</td> <td rowspan=7>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td>float dx </td></tr> 
+<tr><td>float dy </td></tr> 
+<tr><td>float pressure </td></tr> 
+<tr><td rowspan=5>Functions</td> <td>TouchFingerEvent duplicate() </td></tr> 
+<tr><td>TouchID touchId() </td></tr> 
+<tr><td>void touchId_set(TouchID val) </td></tr> 
+<tr><td>FingerID fingerId() </td></tr> 
+<tr><td>void fingerId_set(FingerID val) </td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>MouseWheelEvent</td> <td rowspan=7>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>Uint32 windowID </td></tr> 
+<tr><td>Uint32 which </td></tr> 
+<tr><td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td>Uint32 direction </td></tr> 
+<tr><td rowspan=1>Functions</td> <td>MouseWheelEvent duplicate() </td></tr> 
+<tr><td rowspan=11>Class</td><td rowspan=11>MouseButtonEvent</td> <td rowspan=10>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>Uint32 windowID </td></tr> 
+<tr><td>Uint32 which </td></tr> 
+<tr><td>Uint8 button </td></tr> 
+<tr><td>Uint8 state </td></tr> 
+<tr><td>Uint8 clicks </td></tr> 
+<tr><td>Uint8 padding1 </td></tr> 
+<tr><td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td rowspan=1>Functions</td> <td>MouseButtonEvent duplicate() </td></tr> 
+<tr><td rowspan=10>Class</td><td rowspan=10>MouseMotionEvent</td> <td rowspan=9>Properties</td> <td>Uint32 type </td></tr> 
+<tr><td>Uint32 timestamp </td></tr> 
+<tr><td>Uint32 windowID </td></tr> 
+<tr><td>Uint32 which </td></tr> 
+<tr><td>Uint32 state </td></tr> 
+<tr><td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td>float xrel </td></tr> 
+<tr><td>float yrel </td></tr> 
+<tr><td rowspan=1>Functions</td> <td>MouseMotionEvent duplicate() </td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>Buttonstate</td> <td rowspan=2>Values</td> <td>RELEASED</td></tr> 
+<tr><td>PRESSED</td></tr> 
+<tr><td rowspan=17>Class</td><td rowspan=17>LongPressInputHandler : RawInputHandler</td> <td rowspan=1>Constructors</td> <td>LongPressInputHandler(Scene scene, LongPressDelegate del, RawInputHandler nextInputHandler )</td></tr> 
+<tr><td rowspan=16>Functions</td> <td> void setLongPressDuration(float durationInSeconds)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void motion(MouseMotionEvent motionEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void down(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void up(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void wheel(MouseWheelEvent wheelEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void zoomIn(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void zoomOut(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void keyDown(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void keyUp(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerDown(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerUp(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerMotion(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>LongPressGestureReceiver : IGestureReceiver</td> <td rowspan=1>Constructors</td> <td>LongPressGestureReceiver(Scene scene, LongPressDelegate del, GestureReceiver nextGestureReceiver )</td></tr> 
+<tr><td rowspan=17>Functions</td> <td> void setLongPressDuration(float durationInSeconds)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void click(uint button,  float x,  float y)</td></tr> 
+<tr><td> void doubleClick(uint button,  float x,  float y)</td></tr> 
+<tr><td> void panBegin(float x,  float y)</td></tr> 
+<tr><td> void panUpdate(float x,  float y)</td></tr> 
+<tr><td> void panEnd(float x,  float y,  float vx,  float vy)</td></tr> 
+<tr><td> void zoomIn(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomOut(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomInCenter(double animationDuration)</td></tr> 
+<tr><td> void zoomOutCenter(double animationDuration)</td></tr> 
+<tr><td> void rotationZoomBegin(float x,  float y,  uint touchCount)</td></tr> 
+<tr><td> void rotationZoom(float origX,  float origY,  float curX,  float curY,  uint touchCount,  float deltaRotAmount,  float deltaZoomAmount)</td></tr> 
+<tr><td> void rotationZoomEnd(float origX,  float origY,  float curX,  float curY,  uint touchCount)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>ILongPressDelegate</td> <td rowspan=5>Functions</td> <td> void withholdingInput()</td></tr> 
+<tr><td> void stoppedWitholdingInput()</td></tr> 
+<tr><td> bool startLongPress(float x,  float y)</td></tr> 
+<tr><td> void updateLongPress(float x,  float y)</td></tr> 
+<tr><td> void stoppedLongPress()</td></tr> 
+<tr><td rowspan=16>Class</td><td rowspan=16>FreeAxisInputHandler : RawInputHandler</td> <td rowspan=1>Constructors</td> <td>FreeAxisInputHandler(Scene scene )</td></tr> 
+<tr><td rowspan=15>Functions</td> <td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void motion(MouseMotionEvent motionEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void up(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void down(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void wheel(MouseWheelEvent wheelEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void zoomIn(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void zoomOut(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void keyDown(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void keyUp(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerDown(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerUp(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerMotion(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>ClassicInputHandler : GestureInputHandler</td> <td rowspan=1>Constructors</td> <td>ClassicInputHandler(Scene scene )</td></tr> 
+<tr><td rowspan=16>Class</td><td rowspan=16>GestureInputHandler : RawInputHandler</td> <td rowspan=1>Constructors</td> <td>GestureInputHandler(IGestureReceiver, Scene scene )</td></tr> 
+<tr><td rowspan=15>Functions</td> <td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void motion(MouseMotionEvent motionEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void up(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void down(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void wheel(MouseWheelEvent wheelEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void zoomIn(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void zoomOut(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void keyDown(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void keyUp(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerDown(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerUp(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerMotion(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>ListInputHandler : RawInputHandler</td> <td rowspan=1>Constructors</td> <td>ListInputHandler( )</td></tr> 
+<tr><td rowspan=17>Functions</td> <td> void addInputHandler(RawInputHandler receiver)</td></tr> 
+<tr><td> bool removeInputHandler(RawInputHandler handler)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void motion(MouseMotionEvent motionEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void down(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void up(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void wheel(MouseWheelEvent wheelEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void zoomIn(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void zoomOut(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void keyDown(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void keyUp(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerDown(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerUp(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerMotion(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=15>Class</td><td rowspan=15>RawInputHandler</td> <td rowspan=15>Functions</td> <td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void motion(MouseMotionEvent motionEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void down(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void up(MouseButtonEvent buttonEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void wheel(MouseWheelEvent wheelEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void zoomIn(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void zoomOut(ScreenSpacePercentagePoint curScreenPoint,  double amount)</td></tr> 
+<tr><td> void keyDown(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void keyUp(KeyboardEvent keyEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerDown(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerUp(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void fingerMotion(TouchFingerEvent touchEvent, TimeStamp timeStamp)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=19>Class</td><td rowspan=19>ListGestureReceiver : IGestureReceiver</td> <td rowspan=1>Constructors</td> <td>ListGestureReceiver( )</td></tr> 
+<tr><td rowspan=18>Functions</td> <td> void addGestureReceiver(GestureReceiver receiver)</td></tr> 
+<tr><td> bool removeGestureReceiver(GestureReceiver receiver)</td></tr> 
+<tr><td> void click(uint button,  float x,  float y)</td></tr> 
+<tr><td> void doubleClick(uint button,  float x,  float y)</td></tr> 
+<tr><td> void panBegin(float x,  float y)</td></tr> 
+<tr><td> void panUpdate(float x,  float y)</td></tr> 
+<tr><td> void panEnd(float x,  float y,  float vx,  float vy)</td></tr> 
+<tr><td> void zoomIn(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomOut(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomInCenter(double animationDuration)</td></tr> 
+<tr><td> void zoomOutCenter(double animationDuration)</td></tr> 
+<tr><td> void rotationZoomBegin(float x,  float y,  uint touchCount)</td></tr> 
+<tr><td> void rotationZoom(float origX,  float origY,  float curX,  float curY,  uint touchCount,  float deltaRotAmount,  float deltaZoomAmount)</td></tr> 
+<tr><td> void rotationZoomEnd(float origX,  float origY,  float curX,  float curY,  uint touchCount)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td rowspan=19>Class</td><td rowspan=19>ClassicGestureReceiver : IGestureReceiver</td> <td rowspan=1>Constructors</td> <td>ClassicGestureReceiver(Scene scene )</td></tr> 
+<tr><td rowspan=18>Functions</td> <td> void click(uint button,  float x,  float y)</td></tr> 
+<tr><td> void doubleClick(uint button,  float x,  float y)</td></tr> 
+<tr><td> void panBegin(float x,  float y)</td></tr> 
+<tr><td> void panUpdate(float x,  float y)</td></tr> 
+<tr><td> void panEnd(float x,  float y,  float vx,  float vy)</td></tr> 
+<tr><td> void zoomIn(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomOut(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomInCenter(double animationDuration)</td></tr> 
+<tr><td> void zoomOutCenter(double animationDuration)</td></tr> 
+<tr><td> void rotationZoomBegin(float x,  float y,  uint touchCount)</td></tr> 
+<tr><td> void rotationZoom(float origX,  float origY,  float curX,  float curY,  uint touchCount,  float deltaRotAmount,  float deltaZoomAmount)</td></tr> 
+<tr><td> void rotationZoomEnd(float origX,  float origY,  float curX,  float curY,  uint touchCount)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void setPanVelocityScale(float scale)</td></tr> 
+<tr><td> void setPanAcceleration(float acceleration)</td></tr> 
+<tr><td rowspan=16>Class</td><td rowspan=16>IGestureReceiver</td> <td rowspan=16>Functions</td> <td> void click(uint button,  float x,  float y)</td></tr> 
+<tr><td> void doubleClick(uint button,  float x,  float y)</td></tr> 
+<tr><td> void panBegin(float x,  float y)</td></tr> 
+<tr><td> void panUpdate(float x,  float y)</td></tr> 
+<tr><td> void panEnd(float x,  float y,  float vx,  float vy)</td></tr> 
+<tr><td> void zoomIn(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomOut(float x,  float y,  double animationDuration)</td></tr> 
+<tr><td> void zoomInCenter(double animationDuration)</td></tr> 
+<tr><td> void zoomOutCenter(double animationDuration)</td></tr> 
+<tr><td> void rotationZoomBegin(float x,  float y,  uint touchCount)</td></tr> 
+<tr><td> void rotationZoom(float origX,  float origY,  float curX,  float curY,  uint touchCount,  float deltaRotAmount,  float deltaZoomAmount)</td></tr> 
+<tr><td> void rotationZoomEnd(float origX,  float origY,  float curX,  float curY,  uint touchCount)</td></tr> 
+<tr><td> void setMinMaxAltitude(double minAltitudeInMeters,  double maxAltitudeInMeters)</td></tr> 
+<tr><td> void setPanEnabled(bool enabled)</td></tr> 
+<tr><td> void setZoomEnabled(bool enabled)</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td rowspan=11>Class</td><td rowspan=11>ScreenSpacePercentagePoint</td> <td rowspan=3>Constructors</td> <td>ScreenSpacePercentagePoint()</td></tr> 
+<tr><td>ScreenSpacePercentagePoint(float x,  float y)</td></tr> 
+<tr><td>ScreenSpacePercentagePoint(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>float x </td></tr> 
+<tr><td>float y </td></tr> 
+<tr><td rowspan=6>Functions</td> <td>ScreenSpacePercentagePoint sub(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td>ScreenSpacePercentagePoint add(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td> void sub_inplace(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td> void add_inplace(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td> float squaredDistance(ScreenSpacePercentagePoint other)</td></tr> 
+<tr><td>string toString()</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>ModelTransform : Transform</td> <td rowspan=1>Constructors</td> <td>ModelTransform(GeographicPosition geoPos, Orientation orientation, vec3d worldScale )</td></tr> 
+<tr><td rowspan=23>Class</td><td rowspan=23>Transform</td> <td rowspan=1>Class_function</td> <td>Transform createFromGeographicCoordinatesAndNauticalMiles(double latitudeInDegrees,  double longitudeInDegrees,  double altitudeInNauticalMiles,  double rollInDegrees,  double pitchInDegrees,  double yawInDegrees,  double scaleXInNauticalMiles,  double scaleYInNauticalMiles,  double scaleZInNauticalMiles)</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>Transform(GeographicPosition geoPos, Orientation orientation, vec3d worldScale )</td></tr> 
+<tr><td rowspan=21>Functions</td> <td> void setParent(Transform parent)</td></tr> 
+<tr><td> void set(Transform other)</td></tr> 
+<tr><td> void set(vec3d pos, quatd orientation)</td></tr> 
+<tr><td> void set(vec3d pos, quatd orientation, vec3d scale)</td></tr> 
+<tr><td> void setScale(vec3d scale)</td></tr> 
+<tr><td> bool eq(Transform other)</td></tr> 
+<tr><td> bool neq(Transform other)</td></tr> 
+<tr><td> void lookAt(vec3d lookAtWorldPos, vec3d approximateWorldUp)</td></tr> 
+<tr><td> void setPositionAndMaintainGeographicOrientation(GeographicPosition geoPos)</td></tr> 
+<tr><td> void setGeographicOrientationAndMaintainPosition(Orientation orientation)</td></tr> 
+<tr><td> void rotate(quatd rotation)</td></tr> 
+<tr><td>vec3d worldPosition()</td></tr> 
+<tr><td>quatd worldOrientation()</td></tr> 
+<tr><td>vec3d scale()</td></tr> 
+<tr><td>vec3d up()</td></tr> 
+<tr><td>vec3d forward()</td></tr> 
+<tr><td>vec3d right()</td></tr> 
+<tr><td>GeographicPosition geographicPosition()</td></tr> 
+<tr><td>Orientation geographicOrientation()</td></tr> 
+<tr><td> double altitude()</td></tr> 
+<tr><td>Transform localTransform()</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>IModelMapDelegate</td> <td rowspan=1>Functions</td> <td> void onModelHit(VectorModelHit modelHits)</td></tr> 
+<tr><td rowspan=10>Class</td><td rowspan=10>ModelHit</td> <td rowspan=2>Constructors</td> <td>ModelHit()</td></tr> 
+<tr><td>ModelHit(string mapName, Model model,  uint index, vec2d screenPoint, vec3d worldHitPoint,  float distanceFromCamera)</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>string mapName </td></tr> 
+<tr><td>ModelPtr model </td></tr> 
+<tr><td>uint index </td></tr> 
+<tr><td>float distanceFromCamera </td></tr> 
+<tr><td rowspan=4>Functions</td> <td>vec2d screenPoint() </td></tr> 
+<tr><td>void screenPoint_set(vec2d val) </td></tr> 
+<tr><td>vec3d worldHitPoint() </td></tr> 
+<tr><td>void worldHitPoint_set(vec3d val) </td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>Model : InstancedModel</td> <td rowspan=1>Constructors</td> <td>Model(string name, Mesh mesh )</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>InstancedModel</td> <td rowspan=1>Class_function</td> <td>VectorModel> createModelsFromJSONData(string jsonData, Transform rootTransform)</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>InstancedModel(string name, Mesh mesh )</td></tr> 
+<tr><td rowspan=4>Functions</td> <td>VectorTransform transforms()</td></tr> 
+<tr><td>string getName()</td></tr> 
+<tr><td>Transform transform()</td></tr> 
+<tr><td>Mesh mesh()</td></tr> 
+<tr><td rowspan=9>Class</td><td rowspan=9>Mesh</td> <td rowspan=4>Class_function</td> <td>Mesh createCubeMesh(Texture tex)</td></tr> 
+<tr><td>Mesh createCylinderMesh(uint segments, Texture tex)</td></tr> 
+<tr><td>Mesh createSphereMesh(uint segments, Texture tex)</td></tr> 
+<tr><td>Mesh createConeMesh(uint segments, Texture tex)</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>Mesh(VectorModelVertex vb, VectorGLushort ib, Texture tex )</td></tr> 
+<tr><td rowspan=4>Functions</td> <td> void setGLBuffers()</td></tr> 
+<tr><td>Texture texture()</td></tr> 
+<tr><td>vec3f boundingSphereCenter()</td></tr> 
+<tr><td> float boundingSphereRadius()</td></tr> 
+<tr><td rowspan=13>Class</td><td rowspan=13>ModelVertex</td> <td rowspan=1>Class_function</td> <td> GLfloat convertDoubleToUShort(GLfloat value)</td></tr> 
+<tr><td rowspan=3>Constructors</td> <td>ModelVertex()</td></tr> 
+<tr><td>ModelVertex(ModelVertex v)</td></tr> 
+<tr><td>ModelVertex(GLfloat x,  GLfloat y,  GLfloat z,  GLfloat nx,  GLfloat ny,  GLfloat nz,  GLfloat u,  GLfloat v)</td></tr> 
+<tr><td rowspan=8>Properties</td> <td>GLfloat x </td></tr> 
+<tr><td>GLfloat y </td></tr> 
+<tr><td>GLfloat z </td></tr> 
+<tr><td>GLfloat nx </td></tr> 
+<tr><td>GLfloat ny </td></tr> 
+<tr><td>GLfloat nz </td></tr> 
+<tr><td>GLfloat u </td></tr> 
+<tr><td>GLfloat v </td></tr> 
+<tr><td rowspan=1>Functions</td> <td> void update(GLfloat x,  GLfloat y,  GLfloat z,  GLfloat nx,  GLfloat ny,  GLfloat nz,  GLfloat u,  GLfloat v)</td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>InternetTileProvider : ITileProvider</td> <td rowspan=1>Class_function</td> <td>InternetTileProvider createFromURLWithSubdomainsAndFormat(string mapSource, string urlTemplate, string subDomains,  bool altusServer, MapFormat format)</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>InternetTileProvider(string mapSource, string urlTemplate )</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>WeatherGridMap : VirtualMap</td> <td rowspan=1>Constructors</td> <td>WeatherGridMap(string name, TileProvider tileProvider, VectorTexture )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td> void setColorBars(VectorTexture colorBarTextures)</td></tr> 
+<tr><td>VectorTexture getColorBarTextures()</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>ClusteredMarkerMap : MarkerMap</td> <td rowspan=1>Constructors</td> <td>ClusteredMarkerMap(string name, VectorMarkerData markers,  int clusterDistance,  uint maxLevel, TargetImageFormat targetImageFormat,  bool bHitTestingEnabled )</td></tr> 
+<tr><td rowspan=5>Functions</td> <td> void setClusterDistance(int clusterDistance)</td></tr> 
+<tr><td> void setMaxLevel(uint maxLevel)</td></tr> 
+<tr><td> void setTargetImageFormat(TargetImageFormat targetImageFormat)</td></tr> 
+<tr><td> void setHitTestingEnabled(bool hitTestingEnabled)</td></tr> 
+<tr><td> void updateMarkerRotation(string name,  double rotation)</td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>DynamicMarkerMap : MarkerMap</td> <td rowspan=1>Constructors</td> <td>DynamicMarkerMap(string name )</td></tr> 
+<tr><td rowspan=3>Functions</td> <td> uint addMarkers(VectorDynamicMarker markers)</td></tr> 
+<tr><td> void removeMarker(DynamicMarker marker)</td></tr> 
+<tr><td>DynamicMarker getMarker(string markerName)</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>MarkerMap : Map</td> <td rowspan=3>Functions</td> <td> void setDelegate(MarkerMapDelegate delegate)</td></tr> 
+<tr><td> void setDepthRead(BooleanState depthRead)</td></tr> 
+<tr><td>VectorMarkerData getVisibleMarkers()</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>IMarkerMapDelegate</td> <td rowspan=3>Functions</td> <td> void onMarkerTapped(MarkerData marker, vec2d screenPoint, vec2d markerPoint, string mapName)</td></tr> 
+<tr><td> void onMarkersTapped(VectorMarkerHit markerHits)</td></tr> 
+<tr><td> void getMarkerImage(MarkerImageInfo markerInfo, string mapName)</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>MarkerImageInfo</td> <td rowspan=1>Properties</td> <td>TexturePtr textureCreatedOnMainThread </td></tr> 
+<tr><td rowspan=5>Functions</td> <td>MarkerImageInfo duplicate() </td></tr> 
+<tr><td>MarkerData markerData() </td></tr> 
+<tr><td>void markerData_set(MarkerData val) </td></tr> 
+<tr><td>Image image() </td></tr> 
+<tr><td>void image_set(Image val) </td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>MarkerHit</td> <td rowspan=1>Properties</td> <td>string mapName </td></tr> 
+<tr><td rowspan=6>Functions</td> <td>MarkerData marker() </td></tr> 
+<tr><td>void marker_set(MarkerData val) </td></tr> 
+<tr><td>vec2d screenPoint() </td></tr> 
+<tr><td>void screenPoint_set(vec2d val) </td></tr> 
+<tr><td>vec2d markerPoint() </td></tr> 
+<tr><td>void markerPoint_set(vec2d val) </td></tr> 
+<tr><td rowspan=19>Class</td><td rowspan=19>MarkerData</td> <td rowspan=3>Constructors</td> <td>MarkerData()</td></tr> 
+<tr><td>MarkerData(Marker marker)</td></tr> 
+<tr><td>MarkerData(uint uid,  double latitude,  double longitude,  double altitude,  float weight, string metadata, Texture texture)</td></tr> 
+<tr><td rowspan=7>Properties</td> <td>uint uid </td></tr> 
+<tr><td>float weight </td></tr> 
+<tr><td>int minimumLevel </td></tr> 
+<tr><td>string metadata </td></tr> 
+<tr><td>TexturePtr texture </td></tr> 
+<tr><td>double rotation </td></tr> 
+<tr><td>MarkerRotationType rotationType </td></tr> 
+<tr><td rowspan=9>Functions</td> <td>MarkerData duplicate() </td></tr> 
+<tr><td>GeographicPosition location() </td></tr> 
+<tr><td>void location_set(GeographicPosition val) </td></tr> 
+<tr><td>vec2d anchorPoint() </td></tr> 
+<tr><td>void anchorPoint_set(vec2d val) </td></tr> 
+<tr><td>vec2i hitTestSize() </td></tr> 
+<tr><td>void hitTestSize_set(vec2i val) </td></tr> 
+<tr><td>vec2d offset() </td></tr> 
+<tr><td>void offset_set(vec2d val) </td></tr> 
+<tr><td rowspan=17>Class</td><td rowspan=17>DynamicMarker</td> <td rowspan=1>Constructors</td> <td>DynamicMarker(string name,  float weight, Transform transform, Texture texture, vec2d anchorPoint, vec2d offset, MarkerRotationType rotationType, vec2i hitTestSize )</td></tr> 
+<tr><td rowspan=4>Properties</td> <td>float weight </td></tr> 
+<tr><td>TransformPtr transform </td></tr> 
+<tr><td>TexturePtr texture </td></tr> 
+<tr><td>MarkerRotationType rotationType </td></tr> 
+<tr><td rowspan=12>Functions</td> <td>string getName()</td></tr> 
+<tr><td> void updateTexture(Texture texture)</td></tr> 
+<tr><td> void setVisibility(bool visible)</td></tr> 
+<tr><td> void updateAnchorPoint(vec2d anchorPoint)</td></tr> 
+<tr><td> void updateOffset(vec2d offset)</td></tr> 
+<tr><td> void updateHitTestSize(vec2d hitTestSize)</td></tr> 
+<tr><td>vec2d offset() </td></tr> 
+<tr><td>void offset_set(vec2d val) </td></tr> 
+<tr><td>vec2d anchorPoint() </td></tr> 
+<tr><td>void anchorPoint_set(vec2d val) </td></tr> 
+<tr><td>vec2i hitTestSize() </td></tr> 
+<tr><td>void hitTestSize_set(vec2i val) </td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>ModelMap : Map</td> <td rowspan=1>Constructors</td> <td>ModelMap(string name )</td></tr> 
+<tr><td rowspan=5>Functions</td> <td> void addModel(InstancedModel model)</td></tr> 
+<tr><td> void removeModel(InstancedModel model)</td></tr> 
+<tr><td> void setDelegate(ModelMapDelegate delegate)</td></tr> 
+<tr><td> void setDepthWrite(BooleanState depthWrite)</td></tr> 
+<tr><td> uint addModelsFromJSONData(string jsonData, Transform rootTransform)</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>VirtualMap : Map</td> <td rowspan=7>Class_function</td> <td>MapDesc defaultRasterMapDesc()</td></tr> 
+<tr><td>MapDesc defaultVectorMapDesc()</td></tr> 
+<tr><td>MapDesc defaultLabelMapDesc()</td></tr> 
+<tr><td>MapDesc defaultMarkerMapDesc()</td></tr> 
+<tr><td>MapDesc defaultShadedReliefMapDesc()</td></tr> 
+<tr><td>MapDesc defaultTerrainMapDesc()</td></tr> 
+<tr><td>MapDesc defaultTawsMapDesc()</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>VirtualMap(string name, MapDesc desc, TileProvider tileProvider )</td></tr> 
+<tr><td rowspan=10>Functions</td> <td>MapDesc getDesc()</td></tr> 
+<tr><td> void setOrder(uint order)</td></tr> 
+<tr><td> void setPriority(int priority)</td></tr> 
+<tr><td> void setMaxLevel(uint level)</td></tr> 
+<tr><td> void applyVectorMapLineStyle(uint styleID,  uint layerOrder, LineStyle style,  double animationDuration)</td></tr> 
+<tr><td> void applyVectorMapPolygonStyle(uint styleID,  uint layerOrder, PolygonStyle style,  double animationDuration)</td></tr> 
+<tr><td> void setVectorWindingOrder(VectorWindingOrder windingOrder)</td></tr> 
+<tr><td> void setDepthRead(BooleanState depthRead)</td></tr> 
+<tr><td> void setTesselationThreshold(double thresholdInMeters)</td></tr> 
+<tr><td> void setStaticStyles(bool bStaticStyles)</td></tr> 
+<tr><td rowspan=10>Class</td><td rowspan=10>Map</td> <td rowspan=10>Functions</td> <td>string getName()</td></tr> 
+<tr><td> void setAlpha(double alpha)</td></tr> 
+<tr><td> void setOrder(uint order)</td></tr> 
+<tr><td> void setPriority(int priority)</td></tr> 
+<tr><td> void setMaxLevel(uint level)</td></tr> 
+<tr><td> void setVisibility(bool visible)</td></tr> 
+<tr><td> void setLightingParameters(float minLightness,  bool nightAlphaMaskEnabled)</td></tr> 
+<tr><td>MapType getMapType()</td></tr> 
+<tr><td> void reload()</td></tr> 
+<tr><td> void reloadRegion(BoundingBox boundingBox)</td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>BooleanState</td> <td rowspan=3>Values</td> <td>Default</td></tr> 
+<tr><td>On</td></tr> 
+<tr><td>Off</td></tr> 
+<tr><td rowspan=12>Enum</td><td rowspan=12>MapType</td> <td rowspan=12>Values</td> <td>Unknown</td></tr> 
+<tr><td>Virtual</td></tr> 
+<tr><td>Package</td></tr> 
+<tr><td>PackageTerrain</td></tr> 
+<tr><td>Model</td></tr> 
+<tr><td>DynamicMarkerMap</td></tr> 
+<tr><td>VectorMap</td></tr> 
+<tr><td>DynamicVectorMap</td></tr> 
+<tr><td>ClusteredMarkerMap</td></tr> 
+<tr><td>WeatherGridMap</td></tr> 
+<tr><td>DynamicVectorMarkerMap</td></tr> 
+<tr><td>VirtualMarker</td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>DynamicVectorMarkerMap : VectorMapBase</td> <td rowspan=1>Constructors</td> <td>DynamicVectorMarkerMap(string name )</td></tr> 
+<tr><td rowspan=3>Functions</td> <td> void addVectorMarker(AnimatedCircle circle)</td></tr> 
+<tr><td> void removeVectorMarker(AnimatedCircle circle)</td></tr> 
+<tr><td> void updateLineStyle(LineStyle style,  double animationDuration)</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>AnimatedCircle</td> <td rowspan=1>Constructors</td> <td>AnimatedCircle(string name, LineStyle lineStyle, Transform transform,  double minRadiusInMetersOrPoints,  double maxRadiusInMetersOrPoints,  double animationDuration,  double repeatDelay,  bool fade,  double fadeDelay,  unsigned int segmentCount,  bool useMeters )</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>VectorMap : VectorMapBase</td> <td rowspan=1>Constructors</td> <td>VectorMap(string name )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td> void addLine(VectorGeographicPosition2D points, LineStyle style)</td></tr> 
+<tr><td> void addPolygon(string shapeId, VectorGeographicPosition2D points, PolygonStyle style)</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>DynamicVectorMap : VectorMapBase</td> <td rowspan=1>Constructors</td> <td>DynamicVectorMap(string name )</td></tr> 
+<tr><td rowspan=17>Functions</td> <td> void addDynamicLine(DynamicLine line, LineStyle style)</td></tr> 
+<tr><td> void addDynamicLine3D(DynamicLine3D line, LineStyle style)</td></tr> 
+<tr><td> void addDynamicPolygon(DynamicPolygon polygon, PolygonStyle style)</td></tr> 
+<tr><td> void addDynamicExtrudedPolygon(DynamicExtrudedPolygon polygon, PolygonStyle style)</td></tr> 
+<tr><td> void addDynamicPolygon3D(DynamicPolygon3D polygon, PolygonStyle style)</td></tr> 
+<tr><td> void removeDynamicLineFromCache(DynamicLine line)</td></tr> 
+<tr><td> void removeDynamicLine3DFromCache(DynamicLine3D line)</td></tr> 
+<tr><td> void removeDynamicPolygonFromCache(DynamicPolygon polygon)</td></tr> 
+<tr><td> void removeDynamicExtrudedPolygonFromCache(DynamicExtrudedPolygon polygon)</td></tr> 
+<tr><td> void removeDynamicPolygon3DFromCache(DynamicPolygon3D polygon)</td></tr> 
+<tr><td>DynamicLine findDynamicLineByShapeIDInCache(string name)</td></tr> 
+<tr><td>DynamicLine3D findDynamicLine3DByShapeIDInCache(string name)</td></tr> 
+<tr><td>DynamicPolygon findDynamicPolygonByShapeIDInCache(string name)</td></tr> 
+<tr><td>DynamicExtrudedPolygon findDynamicExtrudedPolygonByShapeIDInCache(string name)</td></tr> 
+<tr><td>DynamicPolygon3D findDynamicPolygon3DByShapeIDInCache(string name)</td></tr> 
+<tr><td> void rebuildMapUsingCachedShapes()</td></tr> 
+<tr><td> void clearCache()</td></tr> 
+<tr><td rowspan=9>Class</td><td rowspan=9>VectorMapBase : Map</td> <td rowspan=9>Functions</td> <td> void setDelegate(VectorMapDelegate delegate)</td></tr> 
+<tr><td> void setTesselationThreshold(double thresholdInMeters)</td></tr> 
+<tr><td> void setForce3DLines(bool enabled)</td></tr> 
+<tr><td>VectorGeometryHit triggerLineHitDetection(vec2d point,  double maxPointDistanceToVertex,  double maxPointDistanceToLine)</td></tr> 
+<tr><td>VectorString getPolygonHitShapeIds(vec2d point)</td></tr> 
+<tr><td> void updateLineStyle(LineStyle style,  double animationDuration)</td></tr> 
+<tr><td> void updatePolygonStyle(PolygonStyle style,  double animationDuration)</td></tr> 
+<tr><td> void setVectorWindingOrder(VectorWindingOrder windingOrder)</td></tr> 
+<tr><td> void setDepthRead(BooleanState depthRead)</td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>IVectorMapDelegate</td> <td rowspan=7>Functions</td> <td> void onLineSegmentHit(string mapName, string shapeId, GeographicPosition2D geoHitPoint, vec2d screenPoint,  int segmentStartIndex,  int segmentEndIndex)</td></tr> 
+<tr><td> void onVertexHit(string mapName, string shapeId, GeographicPosition2D geoHitPoint, vec2d screenPoint,  int vertexIndex)</td></tr> 
+<tr><td> void onPolygonHit(VectorPolygonHit hits, GeographicPosition2D geoHitPoint, vec2d screenPoint)</td></tr> 
+<tr><td> void onPolygonHit3d(VectorPolygonHit hits, vec2d screenPoint)</td></tr> 
+<tr><td> bool polygonHitDetectionEnabled()</td></tr> 
+<tr><td> double lineSegmentHitTestPixelBufferDistance()</td></tr> 
+<tr><td> double vertexHitTestPixelBufferDistance()</td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>PolygonHit</td> <td rowspan=2>Properties</td> <td>string mapName </td></tr> 
+<tr><td>string shapeId </td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>DynamicPolygon3D : DynamicShape</td> <td rowspan=1>Constructors</td> <td>DynamicPolygon3D(string shapeId )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorGeographicPosition points() </td></tr> 
+<tr><td>void points_set(VectorGeographicPosition val) </td></tr> 
+<tr><td rowspan=5>Class</td><td rowspan=5>DynamicExtrudedPolygon : DynamicShape</td> <td rowspan=1>Constructors</td> <td>DynamicExtrudedPolygon(string shapeId )</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>double minAltitude </td></tr> 
+<tr><td>double maxAltitude </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorGeographicPosition2D points() </td></tr> 
+<tr><td>void points_set(VectorGeographicPosition2D val) </td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>DynamicPolygon : DynamicShape</td> <td rowspan=1>Constructors</td> <td>DynamicPolygon(string shapeId )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorGeographicPosition2D points() </td></tr> 
+<tr><td>void points_set(VectorGeographicPosition2D val) </td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>DynamicLine3D : DynamicShape</td> <td rowspan=1>Constructors</td> <td>DynamicLine3D(string shapeId )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorGeographicPosition points() </td></tr> 
+<tr><td>void points_set(VectorGeographicPosition val) </td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>DynamicLine : DynamicShape</td> <td rowspan=1>Constructors</td> <td>DynamicLine(string shapeId )</td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorGeographicPosition2D points() </td></tr> 
+<tr><td>void points_set(VectorGeographicPosition2D val) </td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>DynamicShape</td> <td rowspan=1>Properties</td> <td>bool visible </td></tr> 
+<tr><td rowspan=1>Functions</td> <td>string shapeID()</td></tr> 
+<tr><td rowspan=18>Class</td><td rowspan=18>PolygonStyle</td> <td rowspan=1>Constructors</td> <td>PolygonStyle(Color fillColor, Color strokeColor,  float strokeWidth, Color outlineColor,  float outlineWidth )</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>float strokeWidth </td></tr> 
+<tr><td>float outlineWidth </td></tr> 
+<tr><td>float dashOffset </td></tr> 
+<tr><td rowspan=14>Functions</td> <td>Color fillColor() </td></tr> 
+<tr><td>void fillColor_set(Color val) </td></tr> 
+<tr><td>Color strokeColor() </td></tr> 
+<tr><td>void strokeColor_set(Color val) </td></tr> 
+<tr><td>Color outlineColor() </td></tr> 
+<tr><td>void outlineColor_set(Color val) </td></tr> 
+<tr><td>Color shadowColor() </td></tr> 
+<tr><td>void shadowColor_set(Color val) </td></tr> 
+<tr><td>vec2f shadowOffset() </td></tr> 
+<tr><td>void shadowOffset_set(vec2f val) </td></tr> 
+<tr><td> void setStyleId(uint styleId)</td></tr> 
+<tr><td> uint getStyleId()</td></tr> 
+<tr><td> void setDashArray2(float dash,  float gap)</td></tr> 
+<tr><td> void setDashArray4(float dash0,  float gap0,  float dash1,  float gap1)</td></tr> 
+<tr><td rowspan=12>Class</td><td rowspan=12>LineStyle</td> <td rowspan=1>Constructors</td> <td>LineStyle(Color strokeColor,  float strokeWidth, Color outlineColor,  float outlineWidth )</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>float strokeWidth </td></tr> 
+<tr><td>float outlineWidth </td></tr> 
+<tr><td>float dashOffset </td></tr> 
+<tr><td rowspan=8>Functions</td> <td>Color strokeColor() </td></tr> 
+<tr><td>void strokeColor_set(Color val) </td></tr> 
+<tr><td>Color outlineColor() </td></tr> 
+<tr><td>void outlineColor_set(Color val) </td></tr> 
+<tr><td> void setStyleId(uint styleId)</td></tr> 
+<tr><td> uint getStyleId()</td></tr> 
+<tr><td> void setDashArray2(float dash,  float gap)</td></tr> 
+<tr><td> void setDashArray4(float dash0,  float gap0,  float dash1,  float gap1)</td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>InputEventManager : ITimerListener</td> <td rowspan=1>Constructors</td> <td>InputEventManager(Scene scene, RawInputHandler inputHandler )</td></tr> 
+<tr><td rowspan=6>Functions</td> <td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> bool requestedQuit()</td></tr> 
+<tr><td>RawInputHandler rawInputHandler()</td></tr> 
+<tr><td>GestureReceiver getstureReceiver()</td></tr> 
+<tr><td> void setRawInputHandler(RawInputHandler inputHandler)</td></tr> 
+<tr><td> void setGestureReceiver(GestureReceiver gestureReceiver)</td></tr> 
+<tr><td rowspan=29>Class</td><td rowspan=29>Scene : ITimerListener</td> <td rowspan=2>Class_function</td> <td>string versionTag()</td></tr> 
+<tr><td>string versionHash()</td></tr> 
+<tr><td rowspan=1>Constructors</td> <td>Scene(string name,  uint width,  uint height )</td></tr> 
+<tr><td rowspan=26>Functions</td> <td>string getName()</td></tr> 
+<tr><td> void update(TimeStamp timeStamp)</td></tr> 
+<tr><td> void setLicenseKey(string licenseKey)</td></tr> 
+<tr><td> void setLicenseKey(string licenseKey, string domain)</td></tr> 
+<tr><td> void addMap(Map map)</td></tr> 
+<tr><td> void removeMap(Map map,  bool clearCache)</td></tr> 
+<tr><td> void setBaseMapImage(Image image)</td></tr> 
+<tr><td>Map findMap(string name)</td></tr> 
+<tr><td>VectorString getMapNames()</td></tr> 
+<tr><td> void setShadedReliefColorBar(ColorBar colorBar)</td></tr> 
+<tr><td> void setTawsColorBar(ColorBar colorBar)</td></tr> 
+<tr><td> void setTawsAltitude(float altitude)</td></tr> 
+<tr><td> void setAltitudeScale(double altitudeScale,  double animationDuration)</td></tr> 
+<tr><td>ResourceManager getResourceManager()</td></tr> 
+<tr><td>Screen screen()  </td></tr> 
+<tr><td>Camera camera()  </td></tr> 
+<tr><td>AnimationManager animationManager()  </td></tr> 
+<tr><td>ClassicCameraModifier classicCameraModifier()  </td></tr> 
+<tr><td>Atmospherics atmospherics()  </td></tr> 
+<tr><td>HitTesting hitTesting()  </td></tr> 
+<tr><td>Framerate framerate()  </td></tr> 
+<tr><td>Diagnostics diagnostics()  </td></tr> 
+<tr><td>FrameRenderer frameRenderer()  </td></tr> 
+<tr><td> void setDelegate(SceneDelegate delegate)</td></tr> 
+<tr><td> void addDelegate(SceneDelegate delegate)</td></tr> 
+<tr><td> bool removeDelegate(SceneDelegate delegate)</td></tr> 
+<tr><td rowspan=4>Enum</td><td rowspan=4>RenderEventFlags</td> <td rowspan=4>Values</td> <td>NONE</td></tr> 
+<tr><td>PRE_RENDER</td></tr> 
+<tr><td>POST_RENDER</td></tr> 
+<tr><td>PRE_AND_POST_RENDER</td></tr> 
+<tr><td rowspan=3>Class</td><td rowspan=3>ISceneDelegate</td> <td rowspan=3>Functions</td> <td>RenderEventFlags getRenderEventFlags()</td></tr> 
+<tr><td> void preRender(double elapsed)</td></tr> 
+<tr><td> void postRender(double elapsed)</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>FrameRenderer</td> <td rowspan=1>Functions</td> <td>VectorFloat renderDepthOfModels_OnMainThread(VectorModel models, Transform cameraTransform,  uint imageWidth,  uint imageHeight,  float verticalFOVInRadians,  float horizontalFOVInRadians,  float nearPlaneInMeters,  float farPlaneInMeters)</td></tr> 
+<tr><td rowspan=1>Class</td><td rowspan=1>Diagnostics</td> <td rowspan=1>Functions</td> <td> void setVerboseMessagesEnabled(bool enabled)</td></tr> 
+<tr><td rowspan=9>Class</td><td rowspan=9>Framerate</td> <td rowspan=9>Functions</td> <td> void setGreenModeCruiseFramerate(double framesPerSecond)</td></tr> 
+<tr><td> void setGreenModeIdleFramerate(double framesPerSecond)</td></tr> 
+<tr><td> void setFullFramerate(double framesPerSecond)</td></tr> 
+<tr><td> void setCameraMovementForcesUpdatesAtFullFramerate(bool updateSceneOnCameraMotion)</td></tr> 
+<tr><td> void temporaryFullThrottle(double seconds)</td></tr> 
+<tr><td> void setGreenMode(bool bGreenMode)</td></tr> 
+<tr><td> void forceDrawSingleFrame()</td></tr> 
+<tr><td> void forceDrawSingleFrameAtFullFramerate()</td></tr> 
+<tr><td> void forceDrawSingleFrameAtCruiseFramerate()</td></tr> 
+<tr><td rowspan=9>Class</td><td rowspan=9>HitTesting</td> <td rowspan=9>Functions</td> <td>VectorMarkerHit getMarkerHits(vec2d point,  bool onlyFirstHit)</td></tr> 
+<tr><td>VectorPolygonHit getPolygonHits(vec2d point,  bool onlyFirstHit)</td></tr> 
+<tr><td>VectorModelHit getModelHits(vec2d point,  bool onlyFirstHit)</td></tr> 
+<tr><td> void setAutomaticLineHitDetection(bool autoLineHitDetect)</td></tr> 
+<tr><td> void setAutomaticPolygonHitDetection(bool autoPolygonHitDetect)</td></tr> 
+<tr><td> void setAutomaticMarkerHitDetection(bool autoMarkerHitDetect)</td></tr> 
+<tr><td> void setAutomaticModelHitDetection(bool autoModelHitDetect)</td></tr> 
+<tr><td>vec3d getWorldPositionOfTerrainAtScreenPoint(vec2d screenPoint)</td></tr> 
+<tr><td>GeographicPosition getGeographicPositionOfTerrainAtScreenPoint(vec2d screenPoint)</td></tr> 
+<tr><td rowspan=3>Enum</td><td rowspan=3>LocationType</td> <td rowspan=3>Values</td> <td>DIRECTION_ABSOLUTE</td></tr> 
+<tr><td>DIRECTION_VIEW_OFFSET</td></tr> 
+<tr><td>DIRECTION_ACCURATE</td></tr> 
+<tr><td rowspan=2>Enum</td><td rowspan=2>LightingType</td> <td rowspan=2>Values</td> <td>REALISTIC</td></tr> 
+<tr><td>CLASSIC</td></tr> 
+<tr><td rowspan=8>Class</td><td rowspan=8>Atmospherics</td> <td rowspan=8>Functions</td> <td> void setLightingType(LightingType lightingType)</td></tr> 
+<tr><td> void setStarsEnabled(bool bEnableStars)</td></tr> 
+<tr><td> void setSunTextureEnabled(bool bEnableSun)</td></tr> 
+<tr><td> void setAtmosphereAlpha(float atmosphereAlpha)</td></tr> 
+<tr><td> void setSunLocationType(LocationType locationType)</td></tr> 
+<tr><td> void setSunLocation(GeographicPosition2D location)</td></tr> 
+<tr><td> void setSunTexture(Texture texture)</td></tr> 
+<tr><td> void setBackgroundColor(Color color)</td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>ClassicCameraModifier</td> <td rowspan=4>Functions</td> <td> void setTrackUp(bool enabled,  double animationDuration)</td></tr> 
+<tr><td> void setTrackUpForwardDistance(double distance,  double animationDuration)</td></tr> 
+<tr><td> void setCameraLocation(Transform transform,  double animationDuration)</td></tr> 
+<tr><td> void setCameraLocation(double lat,  double lon,  double heightInMeters,  double roll,  double pitch,  double yaw,  double animationDuration)</td></tr> 
+<tr><td rowspan=11>Class</td><td rowspan=11>Camera</td> <td rowspan=1>Properties</td> <td>TransformPtr transform </td></tr> 
+<tr><td rowspan=10>Functions</td> <td>GeographicPosition getLocationThatFitsCoordinates(VectorGeographicPosition2D coords,  double horizontalBuffer,  double verticalBuffer)</td></tr> 
+<tr><td>GeographicPosition getLocationThatFitsBoundingBox(BoundingBox bounds,  double horizontalBuffer,  double verticalBuffer)</td></tr> 
+<tr><td>vec3d getRay(ScreenSpacePercentagePoint p)</td></tr> 
+<tr><td>ScreenSpacePercentagePoint getScreenSpacePercentagePoint(GeographicPosition geographicPosition)</td></tr> 
+<tr><td>GeographicPosition2D getGeographicPosition2D(ScreenSpacePercentagePoint p)</td></tr> 
+<tr><td> void setVerticalFov(float verticalFovInRadiansWhenPortrait,  float verticalFovInRadiansWhenLandscape)</td></tr> 
+<tr><td> double verticalFov()</td></tr> 
+<tr><td> double aspectHorizontalOverVertical()</td></tr> 
+<tr><td> float getScreenSpaceRotationForGeographicPosition(GeographicPosition2D geographicPosition,  float headingInRadians)</td></tr> 
+<tr><td> float getScreenSpaceRotationForPoint(ScreenSpacePercentagePoint p,  float headingInRadians)</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>AnimationManager</td> <td rowspan=6>Functions</td> <td> void animateTransformAroundEarth(Transform transform, Transform newTransform,  double animationDuration)</td></tr> 
+<tr><td> void orbitAroundPoint(Transform transform, GeographicPosition point,  double rateRadiansPerSecond,  double accelRadiansPerSecondPerSecond,  double animationDuration)</td></tr> 
+<tr><td> void orbitAroundTransform(Transform transform, Transform center,  double rateRadiansPerSecond,  double accelRadiansPerSecondPerSecond,  double animationDuration)</td></tr> 
+<tr><td> void orbitAroundAxis(Transform transform, vec3d center, vec3d axis,  double rateRadiansPerSecond,  double momentum,  double rateLimit)</td></tr> 
+<tr><td> void continuallyLookAt(Transform transform, Transform target)</td></tr> 
+<tr><td> void stopAnimations(Transform transform)</td></tr> 
+<tr><td rowspan=14>Class</td><td rowspan=14>Screen</td> <td rowspan=14>Functions</td> <td> void setSize(uint pointWidth,  uint pointHeight)</td></tr> 
+<tr><td> void setDeviceScale(double deviceScale)</td></tr> 
+<tr><td> void setTilePointSize(double tilePointSize)</td></tr> 
+<tr><td> double getTilePointSize()</td></tr> 
+<tr><td> void setTileLevelBias(double tileBias)</td></tr> 
+<tr><td> void setTileLevelBiasSmoothingEnabled(bool enabled)</td></tr> 
+<tr><td> void setDistanceScale(double tileDistanceScale)</td></tr> 
+<tr><td> double getDistanceScale()</td></tr> 
+<tr><td> double getDeviceScale()</td></tr> 
+<tr><td>vec2i getScreenSizeInPoints()</td></tr> 
+<tr><td>vec2i getScreenSizeInPixels()</td></tr> 
+<tr><td>ScreenSpacePercentagePoint getPercentagePoint(float pointX,  float pointY)</td></tr> 
+<tr><td>vec2d getScreenPoint(ScreenSpacePercentagePoint point)</td></tr> 
+<tr><td> float getPixelValueFromPointValue(float pointValue)</td></tr> 
+<tr><td rowspan=4>Class</td><td rowspan=4>MapView</td> <td rowspan=1>Constructors</td> <td>MapView(string name,  uint width,  uint height)</td></tr> 
+<tr><td rowspan=3>Functions</td> <td>Scene scene()</td></tr> 
+<tr><td>Timer timer()</td></tr> 
+<tr><td>InputEventManager inputManager()</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>MapSamplerDesc</td> <td rowspan=1>Constructors</td> <td>MapSamplerDesc(int tileLevel,  int tileResolutionOffset,  bool preferSingleTileLevel,  double widthOfPath,  bool useCache)</td></tr> 
+<tr><td rowspan=5>Properties</td> <td>int tileLevel </td></tr> 
+<tr><td>int tileResolutionOffset </td></tr> 
+<tr><td>bool preferSingleTileLevel </td></tr> 
+<tr><td>bool useCache </td></tr> 
+<tr><td>double widthOfPath </td></tr> 
+<tr><td rowspan=4>Enum</td><td rowspan=4>MapSamplerStatus</td> <td rowspan=4>Values</td> <td>Done</td></tr> 
+<tr><td>MoreTasksCanStart</td></tr> 
+<tr><td>MaximumTasksExecuting</td></tr> 
+<tr><td>TasksExecuting</td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>MapSamplerExtrudedVectorData</td> <td rowspan=1>Constructors</td> <td>MapSamplerExtrudedVectorData()</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>double minAltitude </td></tr> 
+<tr><td>double maxAltitude </td></tr> 
+<tr><td>uint styleId </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>VectorMapSamplerPointWithPercentage points() </td></tr> 
+<tr><td>void points_set(VectorMapSamplerPointWithPercentage val) </td></tr> 
+<tr><td rowspan=6>Class</td><td rowspan=6>MapSamplerPointWithPercentage</td> <td rowspan=2>Constructors</td> <td>MapSamplerPointWithPercentage()</td></tr> 
+<tr><td>MapSamplerPointWithPercentage(GeographicPosition2D location,  float percentageAlongPath,  float percentageAlongPathY)</td></tr> 
+<tr><td rowspan=2>Properties</td> <td>float percentageAlongPath </td></tr> 
+<tr><td>float percentageAlongPathY </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>GeographicPosition2D location() </td></tr> 
+<tr><td>void location_set(GeographicPosition2D val) </td></tr> 
+<tr><td rowspan=7>Class</td><td rowspan=7>MapSamplerMarkerResourceData</td> <td rowspan=2>Constructors</td> <td>MapSamplerMarkerResourceData()</td></tr> 
+<tr><td>MapSamplerMarkerResourceData(GeographicPosition2D location, MarkerResource marker,  float percentageAlongPath,  float percentageAlongPathY)</td></tr> 
+<tr><td rowspan=3>Properties</td> <td>float percentageAlongPath </td></tr> 
+<tr><td>float percentageAlongPathY </td></tr> 
+<tr><td>MarkerResourcePtr marker </td></tr> 
+<tr><td rowspan=2>Functions</td> <td>GeographicPosition2D location() </td></tr> 
+<tr><td>void location_set(GeographicPosition2D val) </td></tr> 
+<tr><td>Constant</td><td colspan = 3>double EARTH_RADIUS_METERS </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double EARTH_RADIUS </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double ATMOSPHERE_RADIUS_METERS </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double ATMOSPHERE_RADIUS </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double RADIAN_TO_DEGREE </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double DEGREE_TO_RADIAN </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double EPSILON </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double MERCATOR_MAX </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double MERCATOR_MIN </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>double HEIGHTSCALE_DIVISOR </td> </tr> 
+<tr><td>Constant</td><td colspan = 3>int MAX_LEVEL </td> </tr> 
+<tr><td>Function</td><td colspan=3> size_t hashString(string s) </td></tr> 
+<tr><td>Function</td><td colspan=3> double toDegreesUnchecked(double radians) </td></tr> 
+<tr><td>Function</td><td colspan=3> double toRadiansUnchecked(double degrees) </td></tr> 
+<tr><td>Function</td><td colspan=3> double toDegrees(double radians) </td></tr> 
+<tr><td>Function</td><td colspan=3> double toRadians(double degrees) </td></tr> 
+<tr><td>Function</td><td colspan=3> double toRadians(double degrees,  double minutes) </td></tr> 
+<tr><td>Function</td><td colspan=3> double convertCoordinate(double hour,  double min,  double sec,  char direction) </td></tr> 
+<tr><td>Function</td><td colspan=3> bool areEqual(double a,  double b) </td></tr> 
+<tr><td>Function</td><td colspan=3> double arcLength(double minLat,  double maxLat) </td></tr> 
+<tr><td>Function</td><td colspan=3> double arcLength(double lat,  double minLon,  double maxLon) </td></tr> 
+<tr><td>Function</td><td colspan=3> double maxArcLength(vec2d minCoord, vec2d maxCoord) </td></tr> 
+<tr><td>Function</td><td colspan=3> bool isValidCoordinate(vec2d coord) </td></tr> 
+<tr><td>Function</td><td colspan=3> double distanceBetween(vec2d point0, vec2d point1) </td></tr> 
+<tr><td>Function</td><td colspan=3> double nauticalMilesBetween(vec2d point0, vec2d point1) </td></tr> 
+<tr><td>Function</td><td colspan=3> double nauticalMilesInRoute(VectorVec2d points) </td></tr> 
+<tr><td>Function</td><td colspan=3> double radiansToNauticalMiles(double radians) </td></tr> 
+<tr><td>Function</td><td colspan=3> double nauticalMilesToRadians(double nauticalMiles) </td></tr> 
+<tr><td>Function</td><td colspan=3> double nauticalMilesToMeters(double nauticalMiles) </td></tr> 
+<tr><td>Function</td><td colspan=3> double metersToNauticalMiles(double meters) </td></tr> 
+<tr><td>Function</td><td colspan=3> double getEarthCircumferenceInMeters() </td></tr> 
+<tr><td>Function</td><td colspan=3> double getEarthCircumferenceInNauticalMiles() </td></tr> 
+<tr><td>Function</td><td colspan=3> double courseFromPointToPoint(vec2d point1, vec2d point2) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec2d pointBetween(vec2d point1, vec2d point2,  double f) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec2d pointOnRadial(vec2d origin,  double radial,  double distance) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec2d closestPointOnLineToPoint(vec2d point, vec2d line0, vec2d line1) </td></tr> 
+<tr><td>Function</td><td colspan=3> bool isAngleBetweenAngles(double angle,  double angleStart,  double angleEnd) </td></tr> 
+<tr><td>Function</td><td colspan=3>VectorVec2d tesselateRoute(vec2d point1, vec2d point2,  unsigned int numPoints) </td></tr> 
+<tr><td>Function</td><td colspan=3>VectorVec2d tesselateRouteFast(vec2d point1, vec2d point2,  unsigned int numPoints) </td></tr> 
+<tr><td>Function</td><td colspan=3>VectorVec2d tesselateRoute(VectorVec2d wayPoints,  unsigned int numSamples) </td></tr> 
+<tr><td>Function</td><td colspan=3>quatd make_quaternion(Orientation orientation) </td></tr> 
+<tr><td>Function</td><td colspan=3>Orientation make_orientation(quatd q) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d rotate(quatd q, vec3d x) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d slerp(vec3d fromVec3d, vec3d end,  double alpha) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d make_orientationRPY(quatd q) </td></tr> 
+<tr><td>Function</td><td colspan=3>quatd make_quaternion(vec3d Axis,  double angle) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d getWorldPosition(GeographicPosition position) </td></tr> 
+<tr><td>Function</td><td colspan=3>quatd getLocalOrientation(Polar polarPosition, quatd orientation) </td></tr> 
+<tr><td>Function</td><td colspan=3>Orientation getGeographicOrientation(vec3d worldPosition, quatd worldOrientation) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d intersectRayWithUnitSphereOrClosestPoint(vec3d worldPosition, vec3d worldRay) </td></tr> 
+<tr><td>Function</td><td colspan=3>vec3d intersectRayWithSphereOrClosestPoint(double sphereRadius, vec3d worldPosition, vec3d worldRay2) </td></tr> 
+<tr><td>Function</td><td colspan=3> double lerpAngle(double start,  double end,  double t) </td></tr> 
+<tr><td>Function</td><td colspan=3> double lerpAngleRadians(double start,  double end,  double t) </td></tr> 
+<tr><td>Function</td><td colspan=3> double wrapAngle(double value,  double lower,  double upper) </td></tr> 
+<tr><td>Function</td><td colspan=3> double wrapAngleRadians(double value) </td></tr> 
+<tr><td>Function</td><td colspan=3> double wrapLongitude(double value) </td></tr> 
+<tr><td>Function</td><td colspan=3> double getGeographicLength(vec2d a, vec2d b) </td></tr> 
+<tr><td>Function</td><td colspan=3> double maxArcLength(BoundingBox bounds) </td></tr> 
+<tr><td>Function</td><td colspan=3>GeographicPosition getGeographicPosition(vec3d worldPosition) </td></tr> 
+<tr><td>Function</td><td colspan=3>GeographicPosition2D getGeographicPosition2D(vec3d worldPosition) </td></tr> 
+<tr><td rowspan=2>Class</td><td rowspan=2>GeographicPosition : GeographicPosition</td> <td rowspan=2>Constructors</td> <td>GeographicPosition()</td></tr> 
+<tr><td>GeographicPosition(double, double, double)</td></tr> 
+
+
+<!--/********************************/-->
+
+
+</table>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('JavaScriptAPI').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

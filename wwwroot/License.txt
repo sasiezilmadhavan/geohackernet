@@ -1,0 +1,33 @@
+NOTICE TO USER: 
+
+THIS IS A CONTRACT. BY INSTALLING THIS SOFTWARE THE USER AGREES TO ALL THE TERMS AND CONDITIONS OF THIS AGREEMENT. 
+
+End-User License Agreement for Altus Mapping Engine (any platform) and Altus Server components, copyright (c) 2016 BA3, LLC. ALL RIGHTS RESERVED.
+
+This Altus End User License Agreement accompanies any Altus product and related explanatory materials ("Software"). The term "Software" also shall include upgrades, modified versions or updates of the Software licensed to the user by BA3. 
+
+1. LICENSE AND USE 
+The Software, including any copy which the user makes, is owned by BA3 and is copyrighted and licensed, not sold, and must be returned to BA3 or destroyed upon termination of this Agreement.
+
+2. RESTRICTIONS 
+The user may not decompile, disassemble, modify, adapt, translate, reverse engineer or otherwise attempt to discover the source code of the Software.
+
+The user may not distribute copies of the Software to any third party. If licensed to a specific department within an enterprise, the user may not distribute copies to other departments.
+
+The user may use the Software externally and/or for public display/sale only with the express permission of BA3, conveyed in the form of a valid, time-limited license key issued by BA3. Payment terms and conditions for the key will be determined by a separate payment agreement signed at the time of license key issuance. The user may use the Software internally, without a license key, for testing, prototyping, evaluation, etc. purposes. A watermark shall be appear automatically on all such copies and the watermark shall not be deleted, disabled, tampered with, etc.  
+
+3. TERM AND TERMINATION 
+This End User License Agreement commences upon the user’s installation of the software.
+
+BA3 may terminate this End User License, with or without cause, by providing notice to the user at which time all copies of the Software and documentation must be returned, deleted or destroyed. Additionally, license keys are time-limited. 
+
+4. WARRANTY DISCLAIMER AND LIMITATION OF LIABILITY 
+BA3 DOES NOT AND CANNOT WARRANT THE PERFORMANCE OR RESULTS THE USER MAY OBTAIN BY USING THE SOFTWARE. THE SOFTWARE IS BEING PROVIDED TO THE USER AS IS, WITHOUT ANY WARRANTIES (EXPRESS OR IMPLIED) WHATSOEVER, INCLUDING, BUT NOT LIMITED TO ANY IMPLIED WARRANTIES OF MERCHANTABILITY, QUALITY, PERFORMANCE OR FITNESS FOR A PARTICULAR PURPOSE.
+
+BA3 accepts no liability for any damages the user may suffer as a result of the use of the Software. In no event will BA3 be liable for any indirect, special or consequential damages, even if BA3 has been advised of the possibility of their occurrence.
+
+5. GENERAL 
+This End User License Agreement shall be governed by the laws of the State of North Carolina. If any part of this Agreement is found void and unenforceable, it will not affect the validity of the balance of the Agreement, which shall remain valid and enforceable according to its terms.
+
+YOUR ACCEPTANCE OF THE FOREGOING AGREEMENT WAS INDICATED DURING INSTALLATION. If you do not agree with these terms, please uninstall and delete all copies of the software in your possession. 
+

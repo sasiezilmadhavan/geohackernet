@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #18 - TAWS (Terrain Awareness Warning System) Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_18_TAWS_Terrain_Awareness_Warning_System_demo.html">Altus Platform - Example #18 - TAWS (Terrain Awareness Warning System) Demo</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Mapbox.com Aerial<span class='spacer'></span></span></h5>
+
+<font face="arial,helvetica">
+<center>
+<b>Example #18 - TAWS (Terrain Awareness Warning System) Demo  </b>
+</center>
+Imagine that you are creating an EFB (an Electronic Flight Bag) application and you want to warn the pilot about the terrain he/she might run into.  For example, if the pilot is flying at 4,000 feet, you want the application to paint all terrain over 4,000 feet red, and all terrain near 4,000 feet yellow.  In the BA3 Altus Mapping Engine, this is done with TAWS (the Terrain awareness and warning system). By setting up a TAWS color bar, the terrain is painted appropriately.
+<p>
+Maps: © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #18
+// Imagine that you are creating an EFB (an Electronic Flight Bag) application 
+// and you want to warn the pilot about the terrain he/she might run into.  
+// For example, if the pilot is flying at 4,000 feet, you want the application 
+// to paint all terrain over 4,000 feet red, and all terrain near 4,000 feet yellow.  
+// In the BA3 Altus Mapping Engine, this is done with TAWS (the Terrain awareness 
+// and warning system). By setting up a TAWS color bar, the terrain is painted appropriately.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  solveJsfiddleProblem();
+  installBaseMap();
+  add3DTerrain();
+  doTAWS();
+};
+
+function doTAWS() {
+  var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("baseMapHeight_nomax", "https://maps.ba3.us/terrain/nomaxheights/{z}/{x}/{y}.png", "", true, AltusUnified.MapFormat.HGT_TAWS);
+  var tawsDesc = AltusUnified.VirtualMap.defaultTawsMapDesc();
+  var tawsMap = new AltusUnified.VirtualMap("tawsMap", tawsDesc, internetTileProvider);
+  AltusUnified.scene.addMap(tawsMap);
+
+  var red = new AltusUnified.Color(0xff0000e0);
+  var orange = new AltusUnified.Color(0xff7f00af);
+  var yellow = new AltusUnified.Color(0xafaf005f);
+  var clear = new AltusUnified.Color(0x00000000);
+  var water = new AltusUnified.Color(20, 20, 50, 255);
+
+  var colorbar = new AltusUnified.ColorBar();
+  colorbar.addColor(-2000.00001, clear);
+  colorbar.addColor(-2000, yellow);
+  colorbar.addColor(-1000.000001, yellow);
+  colorbar.addColor(-1000, orange);
+  colorbar.addColor(-1.000001, orange);
+  colorbar.addColor(-1, red);
+  colorbar.setWaterColor(water);
+  AltusUnified.scene.setTawsColorBar(colorbar);
+  AltusUnified.scene.setTawsAltitude(3000);
+
+  colorbar.delete();
+  red.delete();
+  orange.delete();
+  yellow.delete();
+  clear.delete();
+  water.delete();
+
+  tawsMap.delete();
+  tawsDesc.delete();
+  internetTileProvider.delete();
+}
+
+
+//This function exists to solve a problem in jsfiddle with keyboard
+//clicks in the canvas. Without this function, shift-drag and
+//ctrl-drag work do not work in jsfiddle. You should not need
+//this function outside of jsfiddle. You should not need
+//this function outside of jsfiddle. 
+function solveJsfiddleProblem() {
+  AltusUnified.canvas.setAttribute('tabindex', '1');
+  AltusUnified.canvas.addEventListener('click', function(event) {
+    AltusUnified.canvas.blur();
+    AltusUnified.canvas.focus();
+  });
+}
+
+//Loads 3D terrain
+function add3DTerrain() {
+  //Create the tile provider
+  var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(
+    "baseMapHeight",
+    "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png",
+    "",
+    true,
+    AltusUnified.MapFormat.TERRAIN_HEIGHT);
+
+  var loadOrder = new AltusUnified.VectorInt();
+  var loadingInstructions = internetTileProvider.loadingInstructions();
+  loadingInstructions.loadOrder_set(loadOrder);
+  loadingInstructions.maxParentOffset = 10;
+  var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+  var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+  AltusUnified.scene.addMap(terrainMap);
+  AltusUnified.scene.screen().setTileLevelBias(0);
+
+  //loadingInstructions.delete();
+  loadOrder.delete();
+  internetTileProvider.delete();
+  baseDesc.delete();
+  terrainMap.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Make the sky blue
+  AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_18_TAWS_Terrain_Awareness_Warning_System_demo').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

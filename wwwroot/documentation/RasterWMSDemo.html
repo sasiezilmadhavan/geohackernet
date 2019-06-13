@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Raster WMS - Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="RasterWMSDemo.html">Altus Platform - Raster WMS - Demo</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+        <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script type="text/javascript">
+    /*C1*/
+    //Called by the mapping engine after it has initialized
+    function onAltusEngineReady() {
+        
+        //Set camera location
+        setCameraPosition(39, -98, 4000000); //see altusutil.js
+        
+        //Load a color bar terrain base map
+        setColorbarTerrainBaseMap1(); //see altusutil.js
+        
+        //Load projection library and wms utility scripts (we do this after the engine is intialized)
+        loadScripts(["proj4.js", "altuswmsutil.js"]).then(function(){
+        
+            //Enable user interface contorls
+            document.getElementById("wmsGroup").disabled = false;
+            
+            //Turn on a WMS layer
+            setNexradWMSLayerEnabled(true, "nexrad-n0r"); //See altuswmsutil.js
+        });
+    };
+    /*C1*/
+
+    </script>
+
+    <table><tr>
+        <!--Controls for WMS map type-->
+        <fieldset id="wmsGroup" disabled="true">
+        <legend>WMS Layers</legend>
+        <td class="controlgroup">
+
+            <input type="checkbox" name="nexrad" id="nexrad" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad').checked, 'nexrad-n0r')" checked/>
+            <label>Iowa State University - Nexrad - Current</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad15" id="nexrad15" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad15').checked, 'nexrad-n0r-m15m')"/>
+            <label>Iowa State University - Nexrad - 15 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad30" id="nexrad30" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad30').checked, 'nexrad-n0r-m30m')"/>
+            <label>Iowa State University - Nexrad - 30 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad45" id="nexrad45" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad45').checked, 'nexrad-n0r-m45m')"/>
+            <label>Iowa State University - Nexrad - 45 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+        </td>
+        <td class="controlgroup">
+
+            <input type="checkbox" name="states" id="states" onchange="setTigerWebWMSLayerEnabled(document.getElementById('states').checked, 'States')" />
+            <label>TigerWeb - State Boundaries</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="stateslabels" id="stateslabels" onchange="setTigerWebWMSLayerEnabled(document.getElementById('stateslabels').checked, 'States Labels')" />
+            <label>TigerWeb - State Labels</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="counties" id="counties" onchange="setTigerWebWMSLayerEnabled(document.getElementById('counties').checked, 'Counties')" />
+            <label>TigerWeb - County Boundaries</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="countylabels" id="countylabels" onchange="setTigerWebWMSLayerEnabled(document.getElementById('countylabels').checked, 'Counties Labels')" />
+            <label>TigerWeb - County Labels</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+        </td>
+        </fieldset>
+    </tr>
+    </table>
+<h4 id="see-tutorial"><a href="RasterWMSTutorial.html">See Tutorial</a></h4>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('RasterWMSDemo').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

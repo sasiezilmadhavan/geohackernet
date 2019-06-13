@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #51 - Creating and Deleting Dynamic Markers on Long Click</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_51_Creating_and_Deleting_Dynamic_Markers_on_Long_Click.html">Altus Platform - Example #51 - Creating and Deleting Dynamic Markers on Long Click</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:80vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Thunderforest.com cycling<span class='spacer'></span></span></h5>
+
+<font face="arial,helvetica">
+  <center><b>Example #51 - Creating and Deleting Dynamic Markers on Long Mouse Click</b></center>
+  <p>
+Add a dynamic marker to the map by using a long press on the mouse.  Once markers are on the map, use the long press again on the marker to delete it.
+  
+<p>
+Maps: © <a href="http://www.thunderforest.com/">Thunderforest</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #12
+// Demonstrates how to create dynamic markers when the mouse is long clicked.
+// If a long click is applied to an existing dynamic marker, that marker is deleted.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details.
+
+var numMarkers = 0;
+var markerMap;
+var markerHeight = 8; // height of the marker
+var markerWidth = 8; // width of the marker
+
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  installBaseMap();
+  setUpDynamicMarkerMap();
+  handleMouseLongClick();
+}
+
+// THis function will set up the map that holds the dynamic markers.
+// It also sets up the delegate for when an action is applied to a marker
+function setUpDynamicMarkerMap() {
+
+  var dynamicMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+    onMarkersTapped: function(markerHit) {},
+    onMarkerTapped: function(marker, screenPoint, markerPoint, mapName) {},
+    getMarkerImage: function(markerInfo, mapName) {},
+    phrase: "phrase"
+  });
+  markerMap = new AltusUnified.DynamicMarkerMap("markers");
+  var del = new dynamicMarkerMapDelegate();
+  del.phrase = "marker";
+  markerMap.setDelegate(del);
+  AltusUnified.scene.addMap(markerMap);
+  markerMap.setOrder(100);
+}
+
+function handleMouseLongClick() {
+
+  var MarkerMover =
+    AltusUnified.ILongPressDelegate.extend("ILongPressDelegate", {
+      withholdingInput: function() {},
+      stoppedWitholdingInput: function() {},
+      startLongPress: function(x, y) {
+        var screenPoint = new AltusUnified.vec2d(x, y);
+
+        // if we long clicked on a marker, return the first marker
+        var markerHitArray = this._scene.hitTesting().getMarkerHits(screenPoint, true);
+        numHitMarkers = markerHitArray.size();
+        // if number of hits is zero, then there is no marker where the mouse clicked
+        if (numHitMarkers == 0) {
+          // if no markers hit, then convert to lat and longitude and add a marker
+          var latlonPoint = convertXYtoLatLon(x, y);
+          addMarker(latlonPoint.x, latlonPoint.y);
+          markerHitArray.delete();
+        } else {
+          // a marker was hit so get the markerHit object.  For this program, markers are deleted one at a time so if there is more than one marker hit, only the first marker hit will be deleted
+          var markerHit = markerHitArray.get(0);
+          // this program has one map level.  If there was more than one, then the map with the marker hit needs to be retrieved.  The following line of code will do this but for this example with only one map level, it is not needed so is commented out
+          //          markertMap = this._scene.findMap(markerHit.mapName);
+          markerMap.removeMarker(markerMap.getMarker(markerHit.marker().metadata));
+        }
+      },
+      updateLongPress: function(x, y) {},
+      stoppedLongPress: function() {
+        if (this._selectedMarker) {
+          this._selectedMarker.delete();
+          this._selectedMarker = null;
+        }
+      },
+      _scene: null,
+      _selectedMarker: null,
+      _pressStartPoint: null,
+      _deltaPoint: null
+    });
+
+  var prevInputHandler = AltusUnified.inputManager.rawInputHandler();
+  var markerMoverDelegate = new MarkerMover();
+  markerMoverDelegate._scene = AltusUnified.scene;
+
+  var longPressInputHandler = new AltusUnified.LongPressInputHandler(AltusUnified.scene, markerMoverDelegate, prevInputHandler);
+  AltusUnified.inputManager.setRawInputHandler(longPressInputHandler);
+  //clean up
+  markerMoverDelegate.delete();
+  prevInputHandler.delete();
+  longPressInputHandler.delete();
+}
+
+// This function will add a dynamic marker at a given latitude and longitude
+function addMarker(lat, lon) {
+  var alt = 0;
+  var scale = 0.2;
+  var markerTex = squareTexture(markerWidth, markerHeight, 255, 0, 0, 255);
+  var zero = new AltusUnified.vec2d(0, 0);
+  var hitTestSize = new AltusUnified.vec2i(markerWidth, markerHeight);
+  var anchor = new AltusUnified.vec2d(markerWidth / 2, markerHeight / 2);
+  var markers = new AltusUnified.VectorDynamicMarker();
+
+  markerMap.addMarkers(markers);
+  numMarkers = numMarkers + 1;
+  var markertrans = new AltusUnified.Transform(new AltusUnified.GeographicPosition(lat, lon, alt), new AltusUnified.Orientation(0, 0, 0), new AltusUnified.vec3d(scale, scale, scale));
+
+  var newMarker = new AltusUnified.DynamicMarker("mark" + numMarkers, 1, markertrans, markerTex, anchor, zero, AltusUnified.MarkerRotationType.ROTATION_SCREENEDGE_ALIGNED, hitTestSize);
+  markers.push_back(newMarker);
+  markerMap.addMarkers(markers);
+  newMarker.delete();
+  markertrans.delete();
+  zero.delete();
+}
+
+// This function will convert a screen point into a latitude and longitude and return that new point in latitude and longitude
+function convertXYtoLatLon(xPosition, yPosition) {
+
+  var geographicPosition = createNearestGeographicPosition(xPosition, yPosition);
+  var mouseDownLat = geographicPosition.latitude;
+  var mouseDownLon = geographicPosition.longitude;
+  geographicPosition.delete();
+
+  var latlonPoint = new AltusUnified.vec2d(mouseDownLat, mouseDownLon);
+  return (latlonPoint);
+}
+
+//****************************************************
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha) {
+  var image = squareImage(width, height, red, green, blue, alpha);
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha) {
+  var arr = new AltusUnified.VectorByte();
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(red);
+    arr.push_back(green);
+    arr.push_back(blue);
+    arr.push_back(alpha);
+  }
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+  return image;
+}
+
+// creates a layer to hold the markers and then all the markers
+// for the layer.
+function createNearestGeographicPosition(x, y) {
+  var screenSpacePercentagePoint = AltusUnified.scene.screen().getPercentagePoint(x, y);
+  var ray = AltusUnified.scene.camera().getRay(screenSpacePercentagePoint);
+  var worldPosition = AltusUnified.scene.camera().transform.worldPosition();
+
+  var closestPointToSphere = AltusUnified.intersectRayWithUnitSphereOrClosestPoint(worldPosition, ray);
+
+  //If we are in space, move to point on earth
+  closestPointToSphere.normalize();
+
+  //Create a position (must be deleted later)
+  var geographicPosition = AltusUnified.getGeographicPosition(closestPointToSphere);
+
+  //Clean up
+  screenSpacePercentagePoint.delete();
+  ray.delete();
+  worldPosition.delete();
+  closestPointToSphere.delete();
+
+  return geographicPosition;
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap"
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png"
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_51_Creating_and_Deleting_Dynamic_Markers_on_Long_Click').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

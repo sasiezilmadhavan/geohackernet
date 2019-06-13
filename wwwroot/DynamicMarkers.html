@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Altus Web - Dynamic Markers</title>
+    <link href="altus.css" rel="stylesheet">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+<style>
+body {
+    padding:0px;
+    margin:0px;
+}
+</style>
+
+    <style>td.controlgroup{padding: 10px; vertical-align: text-top;}</style>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script type="text/javascript">
+
+        function viewDialogBoxMarker(){
+            setCameraPosition(47.619709, -122.34811, 680);
+        }
+
+        function viewAirplane(){
+            setCameraPosition(40.62255,-73.78548, 680);
+        }
+
+        function viewBillboardMarkers(){
+            setCameraPosition(40,-100, 432000);
+        }
+
+        //Called by the mapping engine after it has initialized
+        function onAltusEngineReady() {
+            enableAltusVerboseMessages(true);
+            loadScripts(["DynamicMarkers.js",]).then(function (){
+                viewDialogBoxMarker();
+                initStats();
+                setMapBoxStreetsBaseMap();
+                sunLocationOffset();
+                setSunLocation(0,0);
+                setStarsEnabled(false);
+                enablePlaceLabels(true);
+                addDynamicMarkerMap();
+                
+                //Enable UI
+                document.getElementById("layerGroup").disabled = false;
+                
+                document.getElementById("cameraOrientationGroup").disabled = false;
+                document.getElementById("statsGroup").disabled = false;
+                document.getElementById("miscGroup").disabled = false;
+                document.getElementById("whichMarkerGroup").disabled = false;
+            });
+        };
+        
+    </script>
+    
+
+    <table width="100%">
+        <tr>
+            <td width="80%" valign="top">
+                <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+            </td>
+            
+            <td class="controlgroup" valign="top">
+                <fieldset id="whichMarkerGroup" disabled="true">
+                    <legend>Marker</legend>
+                    <input type="radio" name="whichMarker" onclick="viewDialogBoxMarker()" checked/>
+                    <label>Dialog Box</label>
+                    <br/>
+                    
+                    <input type="radio" name="whichMarker" onclick="viewAirplane()"/>
+                    <label>Airplane</label>
+                    <br/>
+                    
+                    <input type="radio" name="whichMarker" onclick="viewBillboardMarkers()"/>
+                    <label>Billboards</label>
+                </fieldset>
+                <br/>
+                <fieldset id="markerAttributes" disabled="true">
+                    <legend>Dynamic Marker Attributes</legend>
+                    <label for="markerRotationAmount">Rotation:</label>
+                    <input type="text" id="markerRotationAmount" readonly style="width:50px; border:0; font-weight:bold;"/>
+                    <div style="width=100px" id="sliderMarkerRotation"></div><br/>
+                    <label for="markerOffsetX">OffsetX:</label>
+                    <input type="text" id="markerOffsetX" readonly style="width:50px; border:0; font-weight:bold;"/>
+                    <div style="width=100px" id="sliderMarkerOffsetX"></div><br/>
+                    <label for="markerOffsetY">OffsetX:</label>
+                    <input type="text" id="markerOffsetY" readonly style="width:50px; border:0; font-weight:bold;"/>
+                    <div style="width=100px" id="sliderMarkerOffsetY"></div><br/>
+                </fieldset>
+                <br/>
+                <fieldset id="cameraOrientationGroup" disabled="true">
+                    <legend>Camera Orientation</legend>
+                    <label for="rollamount">Roll:</label>
+                    <input type="text" id="rollamount" readonly style="width:50px; border:0; font-weight:bold;"/>
+                    <label for="pitchamount">Pitch:</label>
+                    <input type="text" id="pitchamount" readonly style="width:50px; height:25px; border:0; font-weight:bold;"/>
+                    <label for="yawamount">Yaw:</label>
+                    <input type="text" id="yawamount" readonly style="width:50px; border:0; font-weight:bold;"/>
+                    <div style="width=100px" id="sliderRoll"></div><br/>
+                    <div id="sliderPitch"></div><br/>
+                    <div id="sliderYaw"></div>
+                </fieldset>
+        <br/>
+
+            </td>
+        </tr>
+        
+        <tr>
+        
+        <td class="controlgroup" valign="top">
+            <fieldset id="layerGroup" disabled="true">
+                <legend>Layers</legend>
+                
+                <input type="checkbox" name="terrainHeight" id="terrainHeight" onchange="enableTerrainHeightLayer(document.getElementById('terrainHeight').checked)"/>
+                <label for="stars">Terrain Height (3D)</label>
+                <br/>
+                <input type="radio" name="rasterLayer" value="none" onclick="removeAllBaseMaps()" checked/>
+                <label>None</label>
+                <br/>
+                
+                <input type="radio" name="rasterLayer" value="mapboxAerial" onclick="setMapBoxAerialBaseMap()"/>
+                <label>MapBox Aerial</label>
+                <br/>
+                
+                <input type="radio" name="rasterLayer" value="mapquestAerial" onclick="setMapQuestAerialBaseMap()"/>
+                <label>MapQuest Aerial</label>
+                <br/>
+                
+                <input type="radio" name="rasterLayer" value="mapboxStreets" onclick="setMapBoxStreetsBaseMap()" checked/>
+                <label>MapBox Streets</label>
+                
+                <hr>
+                <input type="radio" name="rasterLayer" value="colorBarTerrain1" onclick="setColorbarTerrainBaseMap1()"/>
+                <label>Colorbar Terrain (1 Byte PNG)</label>
+                <br/>
+                <table id="colorbartable">
+                </table>
+                <br/>
+                <hr>
+                
+                <input type="radio" name="rasterLayer" value="colorBarTerrain2" onclick="setColorbarTerrainBaseMap2()"/>
+                <label>Colorbar Terrain (2 Byte PNG)</label>
+                
+            </fieldset>
+            
+        </td>
+        <td class="controlgroup" valign="top">
+
+
+
+        <fieldset id="statsGroup" disabled="true">
+                    <legend>Stats</legend>
+                    <table><tr><td>
+                    <label for="statslat">Lat:</label>
+                     <input type="text" id="statslat" readonly style="width:150px; border:0; font-weight:bold;"/>
+                     <br/>
+                    <label for="statslon">Lon:</label>
+                     <input type="text" id="statslon" readonly style="width:150px; border:0; font-weight:bold;"/>
+                     <br/>
+                     <label for="statsalt">Alt:</label>
+                     <input type="text" id="statsalt" readonly style="width:150px; border:0; font-weight:bold;"/>
+                    </td>
+                    <td>
+                     <label for="statsroll">Roll:</label>
+                     <input type="text" id="statsroll" readonly style="width:150px; border:0; font-weight:bold;"/>
+                     <br/>
+                     <label for="statspitch">Pitch:</label>
+                     <input type="text" id="statspitch" readonly style="width:150px; border:0; font-weight:bold;"/>
+                     <br/>
+                     <label for="statsyaw">Yaw:</label>
+                     <input type="text" id="statsyaw" readonly style="width:150px; border:0; font-weight:bold;"/>
+                     </td></tr></table>
+                </fieldset>
+                <br/>
+
+        <fieldset id="miscGroup" disabled="true">
+                <legend>Misc</legend>
+                <input type="checkbox" name="stars" id="stars" onchange="setStarsEnabled(document.getElementById('stars').checked)"/>
+                <label for="stars">Stars</label>
+                <br/>
+                <input id="backgroundColor" type="color" onchange="setBackgroundColor(document.getElementById('backgroundColor').value)">
+                <label for="color">Background Color</label>
+                <br/>
+                <input id="placeLabels" type="checkbox" onchange="enablePlaceLabels(document.getElementById('placeLabels').checked)" checked>
+                <label for="placeLabels">Place Labels</label>
+        </fieldset>
+        
+        
+        </td>
+    </tr></table>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Altus Web - Tile Providers</title>
+
+    <link href="altus/altus.css" rel="stylesheet">
+    <script src="./resources/jquery-1.11.3.min.js" charset="utf-8"></script>
+  </head>
+  <body style="padding:0px; margin:0px;">
+
+    <!--H1-->
+    <script>
+
+/*C1*/
+function createTileProviderExample() {
+
+  /*C2*/
+  var currentMap;
+
+  var addRasterLayer = function(mapUrl) {
+      
+    // Just set the internal map name to the url
+    var mapName = mapUrl;
+    
+    // Create a tile provider that will serve up the tiles
+    var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+    
+    // Create a map description and map object
+    var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+    currentMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+    
+    // Add the new map
+    AltusUnified.scene.addMap(currentMap);
+    
+    // Clean up
+    desc.delete();
+    internetTileProvider.delete();
+  };
+  /*C2*/
+
+  /*C3*/
+  var changeTileServer = function(url) {
+
+    // Remove the virtual map we created in addRasterLayer().  Pass true to clear the tile cache as well.
+    AltusUnified.scene.removeMap(currentMap, true);
+
+    // Clean up
+    currentMap.delete();
+
+    // Add new layer from user input
+    addRasterLayer(url);
+  }
+  /*C3*/
+
+  /*C4*/
+  var maps = {};
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+
+  var addCachedRasterLayer = function(mapUrl) {
+      
+    // Just set the internal map name to the url
+    var mapName = mapUrl;
+    
+    // Create a tile provider that will serve up the tiles
+    var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+    
+    // Create a map object if it does not already exist and store it in an object keyed on the url
+    if (!maps[mapUrl]) {
+        maps[mapUrl] = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+    }
+
+    // Keep track of the current map
+    currentMap = maps[mapUrl];
+
+    // Add the map to the scene
+    AltusUnified.scene.addMap(maps[mapUrl]);
+    
+    //Clean up
+    internetTileProvider.delete();       
+  };
+  /*C4*/
+
+  /*C5*/
+  var changeTileServerAndLeaveCacheIntact = function(url) {
+
+    //Remove the map, but leave the tile cache intact
+    AltusUnified.scene.removeMap(currentMap, false);
+
+    addCachedRasterLayer(url);
+  }
+  /*C5*/
+
+  /*C6*/
+  var cleanUp = function() {
+    var url;
+
+    mapDesc.delete();
+
+    for (url in maps) {
+      if (maps.hasOwnProperty(url)) {
+        maps[url].delete();
+      }
+    }
+  }
+  /*C6*/
+
+  return {
+    // addRasterLayer: addRasterLayer,
+    // changeTileServer: changeTileServer,
+    addCachedRasterLayer: addCachedRasterLayer,
+    changeTileServerAndLeaveCacheIntact: changeTileServerAndLeaveCacheIntact,
+    cleanUp: cleanUp
+  }
+};
+/*C1*/
+
+$(document).ready(function() {
+
+  /*C7*/
+  /** Set sun location to be over a specific geographic point. */
+  var setSunLocation = function(lat, lon) {
+    var location = new AltusUnified.GeographicPosition2D(lat, lon);
+    AltusUnified.scene.atmospherics().setSunLocation(location);
+    location.delete();
+  };
+  /*C7*/
+
+  /*C8*/
+  /** Set camera position */
+  var setCameraPosition = function(lat, lon, altitude) {
+    var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+    var orientation = new AltusUnified.Orientation(0, 90, 0);
+    var scale = new AltusUnified.vec3d(1, 1, 1);
+    var trans = new AltusUnified.Transform(pos, orientation, scale);
+    AltusUnified.scene.camera().transform.set(trans);
+    trans.delete();
+    pos.delete();
+    orientation.delete();
+    scale.delete();
+  };
+  /*C8*/
+
+  /*C9*/
+  $('#GetURL').click(function() {
+    //get user input
+    var url = $('#ServerURL').val();
+    TileProviderExample.changeTileServerAndLeaveCacheIntact(url);
+  });
+  $('#TileServers li button').click(function() {
+    var url = $(this).attr("data-url");
+    if (url) {
+      $('#ServerURL').val(url);
+      TileProviderExample.changeTileServerAndLeaveCacheIntact(url);
+    }
+  });
+  $('#LatLons li button').click(function() {
+    var lat = parseFloat($(this).attr("data-lat"));
+    var lon = parseFloat($(this).attr("data-lon"));
+    $('#lat').val(lat);
+    $('#lon').val(lon);
+
+    //set sun and camera location
+    var altitude = 1000; //meters
+    setSunLocation(lat, lon);
+    setCameraPosition(lat, lon, altitude);
+  });
+  $('#GoLatLon').click(function() {
+    var lat = parseFloat($('#lat').val());
+    var lon = parseFloat($('#lon').val());
+
+    //set sun and camera location
+    var altitude = 1000; //meters
+    setSunLocation(lat, lon);
+    setCameraPosition(lat, lon, altitude);
+  });
+  /*C9*/
+});
+
+    </script>
+    <!--H1-->
+
+    <!--H2-->
+    <div style="position:relative; width:100%; height:60vh; overflow:hidden;" id="AltusDiv"></div>
+    <style>
+        li { margin: 3px 0; }
+    </style>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script>
+
+
+        onAltusEngineReady = function() {
+            TileProviderExample = createTileProviderExample();
+
+            TileProviderExample.addCachedRasterLayer("https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA");
+
+            window.onbeforeunload = TileProviderExample.cleanUp
+        };
+
+    </script>
+    <!--H2-->
+
+
+    <!--H3-->
+    <div>
+      <div id="TileServers" style="display: inline-block; width: 65%; vertical-align: top;">
+        <ul style="list-style-type: none; padding-left: 20px; overflow-x: scroll">
+          <li>Try a different tile server</li>
+          <li><button class="btn btn-default" data-url="http://b.tile.openstreetmap.org/{z}/{x}/{y}.png">Try http://b.tile.openstreetmap.org/{z}/{x}/{y}.png</button></li>
+          <li><button class="btn btn-default" data-url="https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA">Try https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA</button></li>
+          <li><button class="btn btn-default" data-url="http://tile.stamen.com/toner/{z}/{x}/{y}.png">Try http://tile.stamen.com/toner/{z}/{x}/{y}.png</button></li>
+          <li><button class="btn btn-default" data-url="http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg">Try http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg</button></li>
+          <li><button class="btn btn-default" data-url="http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg">Try http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg</button></li>
+          <li><button class="btn btn-default" data-url="http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png">Try http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png</button></li>
+          <li><button class="btn btn-default" data-url="https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png">Try https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png</button></li>
+          <li><button class="btn btn-default" data-url="http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png">Try http://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png</button></li>
+          <li><button class="btn btn-default" data-url="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png">Try&nbsp;http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png</button></li>
+        </ul>
+        <ul style="list-style-type: none; padding-left: 20px; overflow-x: scroll">
+          <li>Just about any tile server out there...</li>
+          <li id="InputURL">
+            <input id="ServerURL" type="text" size="60" value="http://b.tile.openstreetmap.org/{z}/{x}/{y}.png">
+            <button id="GetURL" type="button" name="">Change tile server</button>
+          </li>
+        </ul>
+      </div>
+      <div style="display: inline-block; width: 33%; vertical-align: top;">
+        <ul id="LatLons" style="list-style-type: none; padding-left: 20px">
+          <li>Show a particular location</li>
+          <li><button class="btn btn-default" data-lat="38.889469" data-lon="-77.035258">38.889469, -77.035258 - Washington Monument</button></li>
+          <li><button class="btn btn-default" data-lat="37.819722" data-lon="-122.478611">37.819722, -122.478611 - Golden gate Bridge</button></li>
+          <li><button class="btn btn-default" data-lat="38.62452" data-lon="-90.18471">38.62452, -90.18471 - St. Louis Arch</button></li>
+          <li><button class="btn btn-default" data-lat="36.05417" data-lon="-112.1392">36.05417, -112.1392 - Grand Canyon</button></li>
+        </ul>
+        <ul style="list-style-type: none; padding-left: 20px">
+          <li>Any Lat/Lon on the planet...</li>
+          <li id="LatLonInputURL">
+            Lat: <input id="lat" type="text" size="10" value="38.889469">&nbsp; &nbsp;
+            Lon: <input id="lon" type="text" size="10" value="-77.035258">&nbsp; &nbsp;
+            <button id="GoLatLon" type="button" name="">Go</button>
+          </li>
+        </ul>
+      </div>
+    </div>  
+    <!--H3-->
+
+    <!--HMD1
+    ####[See Tutorial](TileProvidersTutorial.html)
+    HMD1-->
+
+  </body>
+</html>

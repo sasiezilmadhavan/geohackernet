@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Altus Web - Terrain Explorer</title>
+    <link href="altus.css" rel="stylesheet">
+</head>
+<body>
+<!--H1-->
+<style>
+body {padding:0px; margin:0px;}
+td {padding: 10px; vertical-align: text-top;}
+</style>
+<script type="text/javascript" src="es6-promise.js"></script>
+<script type="text/javascript" src="altusloader.js"></script>
+<script type="text/javascript">
+   //Load the code for this sample and start it
+   function onAltusEngineReady() {
+       loadScripts(["RoutePlanning2D.js"]).then(function (){
+            routePlanning2DMain();
+        });
+   };
+</script>
+
+<table width="100%">
+    <tr>
+        <td colspan="2" width="100%" valign="top">
+            <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            This sample demonstrates a route planning scenario with:
+            <ul>
+                <li>A route composed of data from a downloaded JSON file</li>
+                <li>Plotting a 2D dynamic vector line to represent the route</li>
+                <li>Clustered marker labels to represent each way point</li>
+            </ul>
+        </td>
+        <td>
+            When the user clicks on the route or a waypoint:
+            <ul>
+                <li>Panning and zooming are disabled</li>
+                <li>The mouse movement is translated into updating and redrawing the route</li>
+                <li>When the user releases the mouse button, the labels are reclustered</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+    <!--H1-->
+
+    <!--HMD1
+    ####[See Tutorial](RoutePlanning2D.html)
+    HMD1-->
+</body>
+</html>

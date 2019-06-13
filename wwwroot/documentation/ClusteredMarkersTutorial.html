@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Clustered Markers - Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="ClusteredMarkersTutorial.html">Altus Platform - Clustered Markers - Tutorial</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    <h2 id="clustered-markers">Clustered Markers</h2>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/xNkoUe2ydb0" frameborder="0" allowfullscreen></iframe>
+
+<p>This tutorial will show you how to add a clustered marker layer.</p>
+<div class="figure">
+<img src="Images/Documentation/Images/ClusteredMarkers.png" alt="Clustered Markers" /><p class="caption">Clustered Markers</p>
+</div>
+<p>A marker layer represents points of interest with an image or label. A clustered marker layer is designed to handle a very large number of these by automatically clustering them based on an weight assigned to each one. The higher the weight value, the more important that area of interest.</p>
+<p>The data for each marker consists of:</p>
+<ul>
+<li>Geographic position (lat, lon, altidude)</li>
+<li>Image</li>
+<li>Image anchor point (which pixel of the image should fall on the geographic position)</li>
+<li>Weight</li>
+<li>Rotation</li>
+</ul>
+<p>In this tutorial we'll walk you through how to create a clustered marker layer with thousands or randomly dispersed markers with varying weights that are automatically clustered by the mapping engine.</p>
+<strong>Texture Creation</strong>
+
+<pre><code class=language-javascript>//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha){
+    var arr = new AltusUnified.VectorByte();
+    for (i = 0; i &lt; width * height; i += 1) {
+        arr.push_back(red);
+        arr.push_back(green);
+        arr.push_back(blue);
+        arr.push_back(alpha);
+    }
+    var image = new AltusUnified.Image(width, height, arr);
+    arr.delete();
+    return image;
+}
+</code></pre>
+
+<pre><code class=language-javascript>//Converts an image to a texture
+function textureFromImage(image){
+    var tex = new AltusUnified.Texture(image, false);
+    return tex;
+}
+</code></pre>
+
+<pre><code class=language-javascript>//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha){
+    var image = squareImage(width, height, red, green, blue, alpha);
+    var tex = textureFromImage(image);
+    image.delete();
+    return tex;
+}
+</code></pre>
+
+<strong>MarkerData Creation</strong>
+
+<pre><code class=language-javascript>//Returns a populated MarkerData object
+function createMarkerData(uid, lat, lon, alt, weight, minLevel, metaData, texture, anchorX, anchorY){
+    var markerData = new AltusUnified.MarkerData(uid, lat, lon, alt, weight, metaData, texture);
+    markerData.minimumLevel = minLevel;
+    var anchorPoint = new AltusUnified.vec2d(anchorX, anchorY);
+    markerData.anchorPoint_set(anchorPoint);
+    anchorPoint.delete();
+    return markerData;
+}
+</code></pre>
+
+<strong>ClusteredMarkerMap Creation</strong>
+
+<pre><code class=language-javascript>//Returns a clustered marker map object
+function createClusteredMarkerMap(name, markers, clusterDistance, maxLevel, targetImageFormat, hitTestingEnabled){
+    var markerMap = new AltusUnified.ClusteredMarkerMap(name, markers, clusterDistance, maxLevel, targetImageFormat, hitTestingEnabled);
+    return markerMap;
+}
+</code></pre>
+
+<strong>Creating Lots of Markers</strong>
+
+<pre><code class=language-javascript>//Creates markers with random locations and weights. Returns them in an AltusUnified.VectorMarkerData object.
+function createRandomMarkers(markerCount, markerWidth, markerHeight){
+
+    //Extents markers will appear on planet
+    var minX = -180;
+    var maxX = 180;
+    var maxY = 80;
+    var minY = -80;
+
+    //Create some color square textures for markers
+    var redTexture = squareTexture(markerWidth, markerHeight, 255, 0, 0, 255);
+    var greenTexture = squareTexture(markerWidth, markerHeight, 0, 255, 0, 255);
+    var blueTexture = squareTexture(markerWidth, markerHeight, 0, 0, 255, 255);
+
+    //Create a vector of markers we'll be returning
+    var markers = new AltusUnified.VectorMarkerData();
+
+    for(i = 0; i&lt;markerCount; i++){
+        var lon = minX + Math.random() * (maxX-minX);
+        var lat = minY + Math.random() * (maxY-minY);
+        var alt = 0;
+        var weight=Math.random() * 100;
+        var minLevel=0;
+        var metaData=&quot;Marker &quot;+i;
+        var texture = blueTexture;
+        if(weight&gt;33) texture = greenTexture;
+        if(weight&gt;66) texture = redTexture;
+        var marker;
+        if(weight&gt;70){
+            marker = createMarkerData(i, lat, lon, alt, weight, minLevel, metaData, texture, markerWidth/2, markerHeight/2);
+        }
+        else{
+            marker = createMarkerData(i, lat, lon, alt, weight, minLevel, metaData, texture, markerWidth/2, markerHeight/2);
+        }
+        markers.push_back(marker);
+        marker.delete();
+    }
+
+    //Clean up
+    redTexture.delete();
+    greenTexture.delete();
+    blueTexture.delete();
+
+    return markers;
+}
+</code></pre>
+
+<strong>Adding the Layer</strong>
+
+<pre><code class=language-javascript>//Adds a layer of randomly place markers represented by colored squares
+function addRandomClusteredMarkerLayer(layerName, markerCount, zOrder){
+
+    console.log(&quot;Adding &quot; + layerName + &quot; with &quot; + markerCount + &quot; markers.&quot;);
+    //Variables to conveniently change the clustered marker layer
+    var markerWidth = 16;
+    var markerHeight = 16;
+    var maxLevel = 20;
+    var clusterDistance = 30;
+
+    //Prototype for a marker map delegate
+    var StringMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend(&quot;IMarkerMapDelegate&quot;, {
+
+        //Called if user clicks or taps a marker
+        onMarkerTapped: function (marker, screenPoint, markerPoint, mapName) {
+            console.log(&quot;onMarkerTapped: &quot; + marker.metadata);
+        },
+
+        //Called if user clicks or taps a marker
+        onMarkersTapped: function (markerHits) {
+        },
+
+        //Called if a marker image is needed (i.e. one is not supplied with the marker data)
+        getMarkerImage: function (markerInfo, mapName) {
+            if (markerInfo.textureCreatedOnMainThread == null) {
+                var labelText = markerInfo.markerData().metadata;
+                var fontSize = 19;
+                var fontName = &quot;Arial, Helvetica, sans-serif&quot;;
+                var fontBold = false;
+                addTextLabelToMarker(markerInfo, fontSize, fontName, fontBold, labelText)
+            }
+        },
+        phrase : &quot;phrase&quot;
+    });
+
+    //Create a set of markers
+    var markers = createRandomMarkers(markerCount, markerWidth, markerHeight);
+
+    //Create the clustered marker layer
+    var markerMap = createClusteredMarkerMap(layerName, markers, clusterDistance, maxLevel, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+    //Create and assign the delegate
+    var delegate = new StringMarkerMapDelegate();
+    delegate.phrase = &quot;marker&quot;;
+    markerMap.setDelegate(delegate);
+
+    //Enable hit testing
+    markerMap.setHitTestingEnabled(true);
+
+    //Add the clustered marker map layer
+    AltusUnified.scene.addMap(markerMap);
+
+    //Set the z order of the layer above everything else
+    markerMap.setOrder(zOrder);
+
+    //Clean up
+    markers.delete();
+    markerMap.delete();
+    delegate.delete();
+    console.log(&quot;done&quot;);
+}
+</code></pre>
+
+<p><strong>Putting It All Together</strong></p>
+After Altus is initialized you can then create the clustered marker layer like this:
+
+<pre><code class=language-js> //Called by the mapping engine after it has initialized
+        function onAltusEngineReady() {
+
+            //Make the planet always lit from the observer's point of view
+            sunLocationOffset();
+            setSunLocation(0,0);
+
+            //Turn on the stars
+            setStarsEnabled(true);
+
+            //Posiitont he camer over the US.
+            setCameraPosition(39, -98, 7000000);
+
+            //Show place labels
+            addPlacesClusteredMarkerLayer();
+
+            //Add an aerial map layer
+            setMapBoxAerialBaseMap();
+
+            //Enable UI
+            document.getElementById(&quot;clusterMarkersTypeGroup&quot;).disabled = false;
+
+        };
+
+        var squaresLayerName = &quot;RandomSquares&quot;;
+        var placesLayerName = &quot;Places&quot;;
+
+        function removeIfLoaded(layerName){
+             if(mapIsLoaded(layerName)){
+                removeMap(layerName);
+            }
+        }
+
+        function removeSquareLayers(count){
+             for(i=0; i&lt;count; i++){
+                removeIfLoaded(squaresLayerName+i);
+             }
+        }
+
+        function showPlaces(){
+            removeSquareLayers(10);
+            if(!mapIsLoaded(placesLayerName)) addPlacesClusteredMarkerLayer();
+        }
+
+        function showRandomSquares(){
+            if(mapIsLoaded(placesLayerName)) removeMap(placesLayerName);
+            if(!mapIsLoaded(squaresLayerName+0)){
+                addRandomClusteredMarkerLayer(squaresLayerName+0, 10000, 300);
+            }
+        }
+
+        function showBoth(){
+            if(!mapIsLoaded(placesLayerName)) addPlacesClusteredMarkerLayer();
+            if(!mapIsLoaded(squaresLayerName)) addRandomClusteredMarkerLayer();
+        }
+
+        function showTenRandomSquaresLayers(){
+            if(mapIsLoaded(placesLayerName)){
+                removeMap(placesLayerName);
+            }
+
+            for(var i=0; i&lt;10; i++){
+                if(!mapIsLoaded(squaresLayerName+i)){
+                    addRandomClusteredMarkerLayer(squaresLayerName+i, 10000, 300+i);
+                }
+            }
+        }
+
+</code></pre>
+
+<h4 id="see-demo"><a href="ClusteredMarkers.html">See Demo</a></h4>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+
+
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('ClusteredMarkersTutorial').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

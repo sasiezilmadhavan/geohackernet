@@ -1,0 +1,4 @@
+<map id="AltusUnified::VectorGeometryHit" name="AltusUnified::VectorGeometryHit">
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_line_segment_hit.html" title="Represents a &quot;hit&quot; or &quot;tap&quot; or &quot;click&quot; on a vector line." alt="" coords="5,80,201,107"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_vertex_hit.html" title="Represents a &quot;hit&quot; or &quot;click&quot; or &quot;tap&quot; on a 2D line or polygon." alt="" coords="225,80,381,107"/>
+</map>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Altus Web - Raster WMS</title>
+    <link href="altus.css" rel="stylesheet">
+</head>
+<body style="padding:0px; margin:0px;">
+
+<!--H1-->
+    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    <script type="text/javascript">
+    /*C1*/
+    //Called by the mapping engine after it has initialized
+    function onAltusEngineReady() {
+        
+        //Set camera location
+        setCameraPosition(39, -98, 4000000); //see altusutil.js
+        
+        //Load a color bar terrain base map
+        setColorbarTerrainBaseMap1(); //see altusutil.js
+        
+        //Load projection library and wms utility scripts (we do this after the engine is intialized)
+        loadScripts(["proj4.js", "altuswmsutil.js"]).then(function(){
+        
+            //Enable user interface contorls
+            document.getElementById("wmsGroup").disabled = false;
+            
+            //Turn on a WMS layer
+            setNexradWMSLayerEnabled(true, "nexrad-n0r"); //See altuswmsutil.js
+        });
+    };
+    /*C1*/
+
+    </script>
+
+    <table><tr>
+        <!--Controls for WMS map type-->
+        <fieldset id="wmsGroup" disabled="true">
+        <legend>WMS Layers</legend>
+        <td class="controlgroup">
+
+            <input type="checkbox" name="nexrad" id="nexrad" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad').checked, 'nexrad-n0r')" checked/>
+            <label>Iowa State University - Nexrad - Current</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad15" id="nexrad15" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad15').checked, 'nexrad-n0r-m15m')"/>
+            <label>Iowa State University - Nexrad - 15 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad30" id="nexrad30" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad30').checked, 'nexrad-n0r-m30m')"/>
+            <label>Iowa State University - Nexrad - 30 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="nexrad45" id="nexrad45" onchange="setNexradWMSLayerEnabled(document.getElementById('nexrad45').checked, 'nexrad-n0r-m45m')"/>
+            <label>Iowa State University - Nexrad - 45 minutes old</label>
+            <a href="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+        </td>
+        <td class="controlgroup">
+
+            <input type="checkbox" name="states" id="states" onchange="setTigerWebWMSLayerEnabled(document.getElementById('states').checked, 'States')" />
+            <label>TigerWeb - State Boundaries</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="stateslabels" id="stateslabels" onchange="setTigerWebWMSLayerEnabled(document.getElementById('stateslabels').checked, 'States Labels')" />
+            <label>TigerWeb - State Labels</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="counties" id="counties" onchange="setTigerWebWMSLayerEnabled(document.getElementById('counties').checked, 'Counties')" />
+            <label>TigerWeb - County Boundaries</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+            <input type="checkbox" name="countylabels" id="countylabels" onchange="setTigerWebWMSLayerEnabled(document.getElementById('countylabels').checked, 'Counties Labels')" />
+            <label>TigerWeb - County Labels</label>
+            <a href="https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_Current/MapServer/WMSServer?service=WMS&request=GetCapabilities">(Get Capabilities)</a>
+            <br/>
+
+        </td>
+        </fieldset>
+    </tr>
+    </table>
+<!--H1-->
+
+</body>
+
+<!--HMD1
+    #### [See Tutorial](RasterWMSTutorial.html) ####
+HMD1-->
+
+</html>

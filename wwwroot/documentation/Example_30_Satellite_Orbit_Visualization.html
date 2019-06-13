@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #30 - Satellite Orbit Visualization</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_30_Satellite_Orbit_Visualization.html">Altus Platform - Example #30 - Satellite Orbit Visualization</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:80vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Base Map: BA3 political boundaries vectors<span class='spacer'></span></span></h5>
+
+<font face="Arial,Helvetica">
+<center>
+<b>Example #30 - Satellite Orbit Visualization <br>
+The Three Brightest Satellites</b><p>
+<div id="InputArea">
+            <font face="arial,helvetica">
+            <input type="radio" name="startingLocation" value="iss" onclick="showISS()" checked>
+            <label for="iss">International Space Station</label>
+            <input type="radio" name="startingLocation" value="hst" onclick="showHST()">
+            <label for="hst">Hubble Space Telescope</label>
+            <input type="radio" name="startingLocation" value="ss" onclick="showSEASAT()">
+            <label for="ss">SEASAT</label>
+</div>
+<p>
+The International Space Station, the Hubble Space Telescope and the <a href="https://directory.eoportal.org/web/eoportal/satellite-missions/s/seasat">SEASAT</a> satellite are the three brightest satellites in low earth orbit. <p>
+Pick a satellite with the radio buttons. What you will see is a green line that shows where the satellite will be during the next 24 hours.
+Then there is a red marker that shows where the satellite is right now (it may be on the other side of the planet, so spin the globe to find it). 
+If you zoom in a little you can see that the marker updates every second. 
+<p>
+Shift-drag and Cntl-drag are your friends to get nice views.    
+<p>
+<i>Note: You should update the TLEs in the code as they will be stale.</i>
+<p>
+<b>
+Derived from: <a href="http://www.satellite-calculations.com/TLETracker/SatTracker.htm">http://www.satellite-calculations.com/TLETracker/SatTracker.htm</a>
+<br>All credit to Jens T. Satre for creating SatTracker.htm
+<br>Used with permission of author
+</b>
+<br>
+</center>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #30
+// Demonstrates how to view satellite orbits in the BA3 Altus Mapping Engine.
+// All satellite orbital mathematics copied from:
+// http://www.satellite-calculations.com/TLETracker/SatTracker.htm
+// All credit to Jens T. Satre for creating SatTracker.htm.
+// Used with permission.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  initMath();
+  solveJsfiddleProblem();
+  installVectorBaseMap();
+  prevGeoPos = new AltusUnified.GeographicPosition(glb_SatelliteGeocentricLatitude * 1.0, glb_SatelliteLongitude * 1.0, glb_Altitude * 1000.0);
+  createMarkerMap();
+  createAnimatedCircle();
+  window.setInterval("do_autoupdate()", 1000);
+  createSatelliteTrackLayer();
+};
+
+function initMath() {
+  CalculateCoordinate();
+  ReadPosition();
+  getCurrentTime();
+  getTLEfromTextAerea();
+  ClickAutoupdate();
+  onchange_satellite_rev_siderealday();
+  TimeUpdateNow()
+}
+
+function createAnimatedCircle() {
+  var colors = [new AltusUnified.Color(255, 0, 0), new AltusUnified.Color(0, 0, 0)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 4, colors[1], 0);
+  myAnimatedCircle = new AltusUnified.AnimatedCircle("myAnimatedCircle", lineStyle, locationTransform, 10, 100, 5, 0, true, 0, 16, false);
+  deleteElements(colors);
+  var circleMap = new AltusUnified.DynamicVectorMarkerMap("animatedCircles");
+  AltusUnified.scene.addMap(circleMap);
+  circleMap.setOrder(112);
+  circleMap.addVectorMarker(myAnimatedCircle);
+  circleMap.delete();
+}
+
+function createSatelliteTrackLayer() {
+  vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+  vectorMap.setTesselationThreshold(400000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+  generate_24hour_listings();
+}
+
+function createMarkerMap() {
+  var scale = 0.0002;
+  locationTransform = new AltusUnified.Transform(new AltusUnified.GeographicPosition(36, 112, 0), new AltusUnified.Orientation(0, 0, 0), new AltusUnified.vec3d(scale, scale, scale));
+  var markerTex = squareTexture(markerSize, markerSize, 255, 0, 0, 255);
+  var zero = new AltusUnified.vec2d(0, 0);
+  var half = new AltusUnified.vec2d(markerSize / 2, markerSize / 2);
+  var hitTestSize = new AltusUnified.vec2i(markerSize, markerSize);
+
+  marker = new AltusUnified.DynamicMarker("satMarker", 1, locationTransform, markerTex, half, zero, AltusUnified.MarkerRotationType.ROTATION_SCREENEDGE_ALIGNED, hitTestSize);
+
+  var markerMap = new AltusUnified.DynamicMarkerMap("markers");
+  var markers = new AltusUnified.VectorDynamicMarker();
+  markers.push_back(marker);
+  markerMap.addMarkers(markers);
+
+  AltusUnified.scene.addMap(markerMap);
+  markerMap.setOrder(212);
+
+  markers.delete;
+  zero.delete();
+  hitTestSize.delete();
+  markerTex.delete();
+  markerMap.delete();
+};
+
+//This function exists to solve a problem in jsfiddle with keyboard
+//clicks in the canvas. Without this function, shift-drag and
+//ctrl-drag work do not work in jsfiddle. 
+function solveJsfiddleProblem() {
+  AltusUnified.canvas.setAttribute('tabindex', '1');
+  AltusUnified.canvas.addEventListener('click', function(event) {
+    AltusUnified.canvas.blur();
+    AltusUnified.canvas.focus();
+  });
+}
+
+// All of these mathematics are derived from: 
+// http://www.satellite-calculations.com/TLETracker/SatTracker.htm
+// All credit to Jens T. Satre for creating SatTracker.htm
+
+//---------------------------------------------------------------------------------------------------------
+
+var glb_Earth_rev_solar_day,
+  glb_Earth_deg_solar_day,
+  glb_Earth_rev_sidereal_day,
+  glb_Earth_deg_sidereal_day,
+  glb_Satellite_deg_sidereal_day,
+  glb_Satellite_deg_solar_day,
+  glb_Driftrate,
+  glb_Direction,
+  glb_TC,
+  glb_GeoTC,
+  glb_Apogee,
+  glb_Perigee,
+  glb_Semimajoraxis,
+  glb_DateEpoch,
+  glb_GMST,
+  glb_TimeOfCalculation,
+  glb_MeananomalyCalculated,
+  glb_EccentricanomalyBeforeIterations,
+  glb_Trueanomaly,
+  glb_EccentricanomalyErrorAfterIterations,
+  glb_EccentricanomalyAfterIterations,
+  glb_Velocity,
+  glb_X_orbit_plane,
+  glb_Y_orbit_plane,
+  glb_r_orbit_plane,
+  glb_x_geocentric,
+  glb_y_geocentric,
+  glb_z_geocentric,
+  glb_declination,
+  glb_RA,
+  glb_NumberOfOrbitsNow,
+  glb_SatelliteGeodeticLatitude,
+  glb_TimeElepsedSinceEpoch,
+  glb_SatelliteLongitude,
+  glb_SatelliteGeocentricLatitude,
+  glb_Iterations,
+  glb_EccentricanomalyErrorBeforeIterations,
+  glb_TimeEpochFormat,
+  glb_Altitude,
+  glb_GeoAltitude,
+  glb_GeoDeticAltitude,
+  glb_AverageDriftrate,
+  glb_AverageDriftrateDirection,
+  glb_AvrGeoAltitude,
+  glb_EW_oscillation_caused_by_inclination,
+  glb_EW_oscillation_caused_by_eccentricity,
+  glb_LatitudeDegrees,
+  glb_Current_Motion,
+  glb_LongitudeDegrees,
+  glb_DayNow,
+  glb_LongitudeDirection,
+  glb_LatitudeDirection,
+  glb_MonthNow,
+  glb_YearNow,
+  glb_HourNow,
+  glb_MinuteNow,
+  glb_MinuteNow,
+  glb_SecondNow,
+  glb_Satellite_rev_sidereal_day,
+  glb_Position,
+  glb_first_derative_mean_motion,
+  glb_Eccentricity,
+  glb_Epoch,
+  glb_Meananomaly,
+  glb_Argument_of_perigee,
+  glb_RA_AN, glb_Inclination,
+  glb_NumberOfOrbitsAtEpoch;
+
+var today = new Date();
+var Year = today.getUTCFullYear();
+
+//----------------------------------------------------------------------------------------------------------
+
+var siderealday, earth_rev_pr_siderealday, earth_rev_pr_solar_day, satellite_rev_pr_sidereal_day, satellite_rev_pr_solar_day,
+  earth_deg_pr_siderealday, earth_deg_pr_solar_day, satellite_deg_pr_sidereal_day, satellite_deg_pr_solar_day, d, start_of_current_epoch, Epoch_now, Epoch_start
+
+var EpochDay, CurrentTime, toRad, toDeg, JD_now, autoupdate
+
+var Earth_equatorial_radius, GeoSyncRadius
+var getCurrentTimeArray = new Array();
+var setCurrentTimeArray = new Array();
+var CalcDriftRateOutputArray = new Array();
+var CalcDriftRateOutputArray_after_24_hours = new Array();
+var EarthSiteGeoCentricPositionArray = new Array();
+var LookanglesArray = new Array();
+
+var SatNameCurrentIndex, SetLocation, Calibrate_pulsevalue, Calibrate_pulse_per_ha_degree, calibrate_inc_direction, HA_for_calibrated_position
+var EarthSiteLongitude, EarthSiteLatitude
+
+Earth_equatorial_radius = 6378.135; // equatorial radii
+GeoSyncRadius = 42164.57;
+
+toRad = 2 * Math.PI / 360;
+toDeg = 360 / (2 * Math.PI);
+
+autoupdate = "True";
+
+function getLonAsEast(Longinow, dirnow, Longi24, dir24) {
+  var londrift
+    //OutputArray[48]= Longitude direction
+    //OutputArray[49]= Longitude in 0-360 deg east format
+
+  londrift = Longi24 - Longinow; // if positive, drift towards West
+
+  return (londrift);
+
+}
+
+var prevGeoPos;
+var counter = 0;
+
+function do_autoupdate() {
+
+  if (autoupdate == "True") {
+    TimeUpdateNow();
+
+    var newGeoPos = new AltusUnified.GeographicPosition(glb_SatelliteGeocentricLatitude * 1.0, glb_SatelliteLongitude * 1.0, glb_Altitude * 1000.0);
+    var newGeoPos2 = new AltusUnified.GeographicPosition(glb_SatelliteGeocentricLatitude * 1.0, glb_SatelliteLongitude * 1.0, 0);
+    if ((counter++ % 20) == 0) addLineSeg2(newGeoPos, newGeoPos2, 128, 128, 0, 255);
+    //       addLineSeg2(prevGeoPos, newGeoPos, 255, 0, 0, 255);
+
+    var trans = marker.transform;
+    trans.setPositionAndMaintainGeographicOrientation(newGeoPos);
+    newGeoPos2.delete();
+    trans.delete();
+    prevGeoPos.delete();
+    prevGeoPos = newGeoPos;
+    //console.log("lat:"+glb_SatelliteGeocentricLatitude + ", lon:" + glb_SatelliteLongitude + ", alt:" + glb_Altitude +" km");
+  }
+}
+
+function generate_24hour_listings() {
+
+  var listing, Az, El, S_lon, S_lat, Range, getCurrentTimeArray, start_d, Day, Month, Year, Hour, Minute, Second, LST, GMST, ListingPeriod, i, chr, Drift_rate_dir, Drift_rate
+  var AvrGeoAlt, GeoAlt, Time_since_ep, Avr_driftrate_dir, Avr_driftrate, velocity
+  var pGeoPos, nGeoPos;
+  ListingPeriod = 120; // hoursxminutes
+
+  getCurrentTimeArray = setCurrentTime(1 * glb_DayNow, 1 * glb_MonthNow, 1 * glb_YearNow, 1 * glb_HourNow,
+    1 * glb_MinuteNow, 1 * glb_SecondNow);
+
+  glb_YearNow = getCurrentTimeArray[0];
+  glb_MonthNow = getCurrentTimeArray[1];
+  glb_DayNow = getCurrentTimeArray[2];
+  glb_HourNow = getCurrentTimeArray[3];
+  glb_MinuteNow = getCurrentTimeArray[4];
+  glb_SecondNow = getCurrentTimeArray[5];
+  glb_JulianDay = getCurrentTimeArray[6];
+  JD_now = getCurrentTimeArray[6];
+  glb_ModifiedJulianDay = getCurrentTimeArray[7];
+  glb_dJ2000 = getCurrentTimeArray[8];
+  Epoch_now = getCurrentTimeArray[9]; // days since 1.1.2000
+
+  onchange_satellite_rev_siderealday();
+
+  start_d = getCurrentTimeArray[8];
+
+  for (zzz = 0; zzz < ListingPeriod; zzz++) {
+
+    time_format = d_to_date_and_time(start_d + (zzz / (120)));
+
+    Hour = time_format.getUTCHours();
+    Minute = time_format.getUTCMinutes();
+    Second = time_format.getUTCSeconds();
+    Month = time_format.getUTCMonth() + 1;
+    Day = time_format.getUTCDate();
+    Year = time_format.getUTCFullYear();
+
+    CalcDriftRateOutputArray = calculatedriftrate(1 * Day, 1 * Month, 1 * Year, 1 * Hour,
+      1 * Minute, 1 * Second, glb_Satellite_rev_solar_day, glb_Satellite_rev_sidereal_day,
+      glb_first_derative_mean_motion, glb_Eccentricity, glb_Epoch, glb_Meananomaly, glb_Argument_of_perigee, glb_RA_AN, glb_Inclination, glb_NumberOfOrbitsAtEpoch);
+
+    GeoAlt = CalcDriftRateOutputArray[40];
+    S_lat = CalcDriftRateOutputArray[32];
+    S_lon = CalcDriftRateOutputArray[34];
+
+    if (zzz == 0) {
+      pGeoPos = new AltusUnified.GeographicPosition(S_lat * 1.0, S_lon * 1.0, GeoAlt * 1000.0);
+    } else {
+      nGeoPos = new AltusUnified.GeographicPosition(S_lat * 1.0, S_lon * 1.0, GeoAlt * 1000.0);
+      //      addLineSeg2(pGeoPos, nGeoPos, 255, 255, 0, 255);
+      addLineSeg2(pGeoPos, nGeoPos, 100, 170, 90, 255);
+      pGeoPos.delete();
+      pGeoPos = nGeoPos;
+    }
+  }
+}
+
+function calculate_geocentric_ECI_coordinates(SiteLon, SiteLat, Re, altitude, GMST) {
+  var OutputArray = new Array();
+  var z, y, x, omega, R, Earth_flattening_constant, C, S
+
+  Earth_flattening_constant = 1 / 298.26;
+
+  C = 1 / Math.sqrt(1 + Earth_flattening_constant * (Earth_flattening_constant - 2) * Math.sin(SiteLat * toRad) * Math.sin(SiteLat * toRad));
+  S = (1 - Earth_flattening_constant) * (1 - Earth_flattening_constant) * C;
+  z = Re * Math.sin(SiteLat * toRad);
+  //alert(z);
+
+  R = Re * Math.cos(SiteLat * toRad);
+
+  omega = 1 * GMST + 1 * SiteLon; // SiteLon = negative in west, positive = east
+
+  x = R * Math.cos(omega * toRad);
+  y = R * Math.sin(omega * toRad);
+
+  //glb_SatelliteAzimuth="x="+x+" y="+y+" z="+z+" omega="+omega+" GMST="+GMST+" R="+R+" Re="+Re+" SiteLon="+SiteLon+" SiteLat="+SiteLat;
+  // make ECI coordinates correced for earth flattening
+  x = Earth_equatorial_radius * C * Math.cos(SiteLat * toRad) * Math.cos(omega * toRad);
+  y = Earth_equatorial_radius * C * Math.cos(SiteLat * toRad) * Math.sin(omega * toRad);
+  z = Earth_equatorial_radius * S * Math.sin(SiteLat * toRad);
+
+  OutputArray[0] = x;
+  OutputArray[1] = y;
+  OutputArray[2] = z;
+  return (OutputArray);
+}
+
+function calculate_lookangles(Re, xs, ys, zs, xo, yo, zo, LST, SiteLat, SiteLon) {
+  var OutputArray = new Array();
+  var rS, rZ, rE, rx, ry, rz, range, Elevation, Azimuth
+  var fi
+  rx = xs - xo;
+  ry = ys - yo;
+  rz = zs - zo;
+  fi = 1 * LST + 1 * SiteLon;
+  rS = Math.sin(SiteLat * toRad) * Math.cos(fi * toRad) * rx + Math.sin(SiteLat * toRad) * Math.sin(fi * toRad) * ry - Math.cos(SiteLat * toRad) * rz;
+  rE = -Math.sin(fi * toRad) * rx + Math.cos(fi * toRad) * ry;
+  rZ = Math.cos(SiteLat * toRad) * Math.cos(fi * toRad) * rx + Math.cos(SiteLat * toRad) * Math.sin(fi * toRad) * ry + Math.sin(SiteLat * toRad) * rz;
+  range = Math.sqrt(rS * rS + rE * rE + rZ * rZ);
+  Elevation = toDeg * Math.asin(rZ / range);
+  Azimuth = toDeg * Math.atan(-rE / rS);
+  if (rS > 0) Azimuth = Azimuth + 180;
+  if (Azimuth < 0) Azimuth = Azimuth + 360;
+
+  //glb_SatelliteAzimuth="rx="+rx+" ry="+ry+" rz="+rz+" LST="+LST+" range="+range+" Re="+Re+" SiteLat="+SiteLat;
+  OutputArray[0] = rS;
+  OutputArray[1] = rZ;
+  OutputArray[2] = rE;
+  OutputArray[3] = range;
+  OutputArray[4] = Elevation;
+  OutputArray[5] = Azimuth;
+  return (OutputArray);
+}
+
+function CalculateLat() {
+  var degrees, minutes, seconds, decimaldegrees
+  degrees = 1 * glb_LatDegrees;
+  minutes = 1 * glb_LatMinutes;
+  seconds = 1 * glb_LatSeconds;
+  decimaldegrees = degrees + (minutes / 60) + (seconds / (60 * 60));
+  glb_LatitudeDegrees = formatvalue(decimaldegrees, 6);
+}
+
+function CalculateLon() {
+  var degrees, minutes, seconds, decimaldegrees
+  degrees = 1 * glb_LonDegrees;
+  minutes = 1 * glb_LonMinutes;
+  seconds = 1 * glb_LonSeconds;
+  decimaldegrees = degrees + (minutes / 60) + (seconds / (60 * 60));
+  glb_LongitudeDegrees = formatvalue(decimaldegrees, 6);
+}
+
+function CalculateCoordinate() {
+  var degrees, minute, seconds, SiteLon, SiteLat
+
+  SiteLat = 1 * glb_LatitudeDegrees;
+  SiteLon = 1 * glb_LongitudeDegrees;
+
+  degrees = Math.floor(SiteLat);
+  minutes = Math.floor((SiteLat - degrees) * 60);
+
+  seconds = Math.floor(((SiteLat - degrees) * 60 - minutes) * 60);
+
+  glb_LatDegrees = degrees;
+  glb_LatMinutes = minutes;
+  glb_LatSeconds = seconds;
+
+  degrees = Math.floor(SiteLon);
+  minutes = Math.floor((SiteLon - degrees) * 60);
+
+  seconds = Math.floor(((SiteLon - degrees) * 60 - minutes) * 60);
+
+  glb_LonDegrees = degrees;
+  glb_LonMinutes = minutes;
+  glb_LonSeconds = seconds;
+  if (glb_LongitudeDirection == "West") EarthSiteLongitude = -SiteLon
+  else EarthSiteLongitude = SiteLon;
+
+  if (glb_LatitudeDirection == "South") EarthSiteLatitude = -SiteLat
+  else EarthSiteLatitude = SiteLat;
+}
+
+function ReadPosition() //   Store the selected position in the cookie
+{
+  EarthSiteLongitude = -122;
+  EarthSiteLatitude = 36;
+}
+
+function ClickAutoupdate() {
+  autoupdate = "True";
+}
+
+function TimeUpdateNow() {
+  getCurrentTimeArray = getCurrentTime();
+  glb_YearNow = getCurrentTimeArray[0];
+  glb_MonthNow = getCurrentTimeArray[1];
+  glb_DayNow = getCurrentTimeArray[2];
+  glb_HourNow = getCurrentTimeArray[3];
+  glb_MinuteNow = getCurrentTimeArray[4];
+  glb_SecondNow = getCurrentTimeArray[5];
+  glb_JulianDay = getCurrentTimeArray[6];
+  JD_now = setCurrentTimeArray[6];
+  glb_ModifiedJulianDay = getCurrentTimeArray[7];
+  glb_dJ2000 = getCurrentTimeArray[8];
+  Epoch_now = getCurrentTimeArray[9];
+
+  // funker
+  onchange_satellite_rev_siderealday();
+  CalcDriftRateOutputArray_after_24_hours = calculatedriftrate((1 * glb_DayNow + 1) * 1, 1 * glb_MonthNow, 1 * glb_YearNow, 1 * glb_HourNow,
+    1 * glb_MinuteNow, 1 * glb_SecondNow, glb_Satellite_rev_solar_day, glb_Satellite_rev_sidereal_day,
+    glb_first_derative_mean_motion, glb_Eccentricity, glb_Epoch, glb_Meananomaly, glb_Argument_of_perigee, glb_RA_AN, glb_Inclination, glb_NumberOfOrbitsAtEpoch);
+
+  CalcDriftRateOutputArray = calculatedriftrate(1 * glb_DayNow, 1 * glb_MonthNow, 1 * glb_YearNow, 1 * glb_HourNow,
+    1 * glb_MinuteNow, 1 * glb_SecondNow, glb_Satellite_rev_solar_day, glb_Satellite_rev_sidereal_day,
+    glb_first_derative_mean_motion, glb_Eccentricity, glb_Epoch, glb_Meananomaly, glb_Argument_of_perigee, glb_RA_AN, glb_Inclination, glb_NumberOfOrbitsAtEpoch);
+  // update forms
+  glb_Earth_rev_solar_day = CalcDriftRateOutputArray[0];
+  glb_Earth_deg_solar_day = CalcDriftRateOutputArray[1];
+  glb_Earth_rev_sidereal_day = CalcDriftRateOutputArray[2];
+  glb_Earth_deg_sidereal_day = CalcDriftRateOutputArray[3];
+  glb_Satellite_deg_sidereal_day = CalcDriftRateOutputArray[5]; // was swapped
+  glb_Satellite_deg_solar_day = CalcDriftRateOutputArray[4]; // was swapped
+  glb_Driftrate = CalcDriftRateOutputArray[6];
+  glb_Direction = CalcDriftRateOutputArray[36];
+  glb_TC = CalcDriftRateOutputArray[7];
+  glb_GeoTC = CalcDriftRateOutputArray[8];
+  glb_Apogee = CalcDriftRateOutputArray[12];
+  glb_Perigee = CalcDriftRateOutputArray[13];
+  glb_Semimajoraxis = CalcDriftRateOutputArray[11];
+  glb_DateEpoch = CalcDriftRateOutputArray[14];
+  glb_GMST = CalcDriftRateOutputArray[15];
+  glb_TimeOfCalculation = CalcDriftRateOutputArray[16];
+  glb_MeananomalyCalculated = CalcDriftRateOutputArray[17];
+  glb_EccentricanomalyBeforeIterations = CalcDriftRateOutputArray[18];
+  glb_Trueanomaly = CalcDriftRateOutputArray[19];
+  glb_EccentricanomalyErrorAfterIterations = CalcDriftRateOutputArray[20];
+  glb_EccentricanomalyAfterIterations = CalcDriftRateOutputArray[21];
+  glb_Velocity = CalcDriftRateOutputArray[22];
+  glb_X_orbit_plane = CalcDriftRateOutputArray[23];
+  glb_Y_orbit_plane = CalcDriftRateOutputArray[24];
+  glb_r_orbit_plane = CalcDriftRateOutputArray[25];
+  glb_x_geocentric = CalcDriftRateOutputArray[26];
+  glb_y_geocentric = CalcDriftRateOutputArray[27];
+  glb_z_geocentric = CalcDriftRateOutputArray[28];
+  glb_declination = CalcDriftRateOutputArray[29]; //" ToRad"+toRad;
+  glb_RA = CalcDriftRateOutputArray[30];
+  glb_NumberOfOrbitsNow = CalcDriftRateOutputArray[31];
+  glb_SatelliteGeodeticLatitude = CalcDriftRateOutputArray[32];
+  glb_TimeElepsedSinceEpoch = CalcDriftRateOutputArray[33];
+  glb_SatelliteLongitude = CalcDriftRateOutputArray[34];
+  glb_SatelliteGeocentricLatitude = CalcDriftRateOutputArray[35];
+  glb_Iterations = CalcDriftRateOutputArray[37];
+  glb_EccentricanomalyErrorBeforeIterations = CalcDriftRateOutputArray[38];
+  glb_TimeEpochFormat = CalcDriftRateOutputArray[39];
+  glb_Altitude = CalcDriftRateOutputArray[40];
+  glb_GeoAltitude = CalcDriftRateOutputArray[41];
+  glb_GeoDeticAltitude = CalcDriftRateOutputArray[42];
+  glb_AverageDriftrate = CalcDriftRateOutputArray[43];
+  glb_AverageDriftrateDirection = CalcDriftRateOutputArray[44];
+  glb_AvrGeoAltitude = CalcDriftRateOutputArray[45];
+  glb_EW_oscillation_caused_by_inclination = CalcDriftRateOutputArray[46];
+  glb_EW_oscillation_caused_by_eccentricity = CalcDriftRateOutputArray[47];
+  //calculate_geocentric_ECI_coordinates(SiteLon,SiteLat,Re,altitude,GMST)
+  glb_EarthSiteGeoCentricPositionArray = calculate_geocentric_ECI_coordinates(EarthSiteLongitude, EarthSiteLatitude, Earth_equatorial_radius, 0, CalcDriftRateOutputArray[15]);
+
+  //calculate_lookangles(Re,xs,ys,zs,xo,yo,zo,LST,SiteLat,SiteLon)
+  LookanglesArray = calculate_lookangles(Earth_equatorial_radius, CalcDriftRateOutputArray[26], CalcDriftRateOutputArray[27], CalcDriftRateOutputArray[28], EarthSiteGeoCentricPositionArray[0], EarthSiteGeoCentricPositionArray[1], EarthSiteGeoCentricPositionArray[2], CalcDriftRateOutputArray[15], EarthSiteLatitude, EarthSiteLongitude);
+  glb_SatelliteElevation = formatvalue(LookanglesArray[4], 8);
+  glb_SatelliteAzimuth = formatvalue(LookanglesArray[5], 8);
+  glb_SatelliteRange = formatvalue(LookanglesArray[3], 8);
+  glb_LongitudeDriftrate = getLonAsEast(CalcDriftRateOutputArray[49], CalcDriftRateOutputArray[48], CalcDriftRateOutputArray_after_24_hours[49], CalcDriftRateOutputArray_after_24_hours[48]);
+  if (glb_LongitudeDriftrate * 1 > 0) glb_LongitudeDriftrateDirection = "East"
+  else glb_LongitudeDriftrateDirection = "West";
+  glb_LongitudeDriftrate = Math.abs(glb_LongitudeDriftrate * 1);
+  glb_LongitudeAfter24Hours = formatvalue(CalcDriftRateOutputArray_after_24_hours[49], 8) + " East (" + formatvalue((360 - CalcDriftRateOutputArray_after_24_hours[49]), 8) * 1 + " West )";
+  GMST_2();
+}
+
+function getCurrentTime() {
+  var Hour, Minute, Second, Month, Day, Year, ReturnValue
+  ReturnValue = new Array();
+  today = new Date();
+  Hour = today.getUTCHours();
+  Minute = today.getUTCMinutes();
+  Second = today.getUTCSeconds();
+  Month = today.getUTCMonth() + 1;
+  Day = today.getUTCDate();
+  Year = 1 * today.getUTCFullYear();
+  ReturnValue[0] = Year;
+  if (Month < 10) ReturnValue[1] = "0" + Month
+  else ReturnValue[1] = Month;
+  if (Day < 10) ReturnValue[2] = ("0" + Day)
+  else ReturnValue[2] = Day;
+  if (Hour < 10) ReturnValue[3] = ("0" + Hour)
+  else ReturnValue[3] = Hour;
+  if (Minute < 10) ReturnValue[4] = ("0" + Minute)
+  else ReturnValue[4] = Minute;
+  if (Second < 10) ReturnValue[5] = ("0" + Second)
+  else ReturnValue[5] = Second;
+  ReturnValue[6] = JD_daynumber(Day * 1, Month * 1, Year * 1, Hour * 1, Minute * 1, Second * 1);
+  ReturnValue[7] = 1.00000000000000000000 * ReturnValue[6] - 1.000000000000000000000 * 2400000.5;
+  ReturnValue[8] = daynumber(1 * Day, 1 * Month, 1 * Year, 1 * Hour, 1 * Minute, 1 * Second);
+  ReturnValue[9] = today;
+  //alert(ReturnValue[8]);
+  return (ReturnValue);
+}
+
+function setCurrentTime(Day, Month, Year, Hour, Minute, Second) {
+  var ReturnValue = new Array();
+  today = new Date();
+
+  //Year= YearNow;
+  today.setUTCFullYear(Year, (1 * Month - 1), Day);
+  today.setUTCHours(Hour);
+  today.setUTCMinutes(Minute);
+  today.setUTCSeconds(Second);
+  //today.setTimezoneOffset(0);
+  ReturnValue[0] = Year;
+  ReturnValue[1] = Month;
+  ReturnValue[2] = Day;
+  ReturnValue[3] = Hour;
+  ReturnValue[4] = Minute;
+  ReturnValue[5] = Second;
+  ReturnValue[6] = 1.00000000000000000000 * JD_daynumber(Day * 1, Month * 1, Year * 1, Hour * 1, Minute * 1, Second * 1);
+  ReturnValue[7] = 1.00000000000000000000 * ReturnValue[6] - 1.000000000000000000000 * 2400000.5;
+  ReturnValue[8] = daynumber(Day * 1, Month * 1, Year * 1, Hour * 1, Minute * 1, Second * 1);
+  ReturnValue[9] = today;
+  return (ReturnValue);
+}
+
+function Rev(number) {
+  var x
+    //x= number -Math.floor(number/360.0)*360 ;  // old 24 feb
+  x = number;
+  if (x > 0.0) {
+    while (x > 360.0)
+      x = x - 360.0;
+  } else {
+    while (x < 0.0)
+      x = x + 360.0;
+  }
+  return (x)
+}
+
+
+function get_epoch_date_and_time() {
+  var TMP, Day, Year, Start
+
+  TMP = glb_Epoch;
+  Day = glb_Epoch.substring(2, 8) * 1;
+  Year = 1 * glb_Epoch.substring(0, 2);
+  Start = daynumber_tle(Year, Day); //
+  //alert(d_to_date_and_time(Start));
+  return (d_to_date_and_time(Start));
+}
+
+function d_to_date_and_time(d) {
+  var today, t
+  var MinMilli = 1000 * 60;
+  var HrMilli = MinMilli * 60;
+  var DyMilli = HrMilli * 24;
+
+  today = new Date();
+
+  d = d + 10956;
+  d * DyMilli;
+  today.setTime(d * DyMilli);
+  //t=((today.getTime()/DyMilli)-10956);
+  //window.alert('t= '+t );
+
+  time_offset = today.getTimezoneOffset();
+  Hour = today.getUTCHours();
+  Minute = today.getUTCMinutes();
+  Second = today.getUTCSeconds();
+  Month = today.getUTCMonth() + 1;
+  Day = today.getUTCDate();
+  Year = today.getUTCFullYear();
+  //alert("UTCYear="+Year);
+  return (today)
+}
+
+//104
+function daynumber(dd, mm, yyyy, hh, min, sec) // 2000.1.1 00:00 som referanse
+{
+  d = 0;
+  d = 367 * yyyy - Div((7 * (yyyy + (Div((mm + 9), 12)))), 4) + Div((275 * mm), 9) + dd - 730530;
+  d = d + hh / 24 + min / (60 * 24) + sec / (24 * 60 * 60); // OK
+  return (d);
+}
+
+function JD_daynumber(dd, mm, yyyy, hh, min, sec) {
+  d = 0;
+  d = 367 * yyyy - Div((7 * (yyyy + (Div((mm + 9), 12)))), 4) + Div((275 * mm), 9) + dd - 730530 + 2451543.5;
+  d = d + hh / 24 + min / (60 * 24) + sec / (24 * 60 * 60); // OK
+  //alert(d);
+  return (d);
+}
+
+function daynumber_tle(Year, Day) {
+  var d;
+  d = 0;
+  d = daynumber(1, 1, Year, 0, 0, 0) + Day - 1; //  OK  works, 30 march 2010
+  return (d);
+}
+
+var tmpString = "0 ISS (ZARYA)\n1 25544U 98067A   16044.62154462  .00017385  00000-0  26363-3 0  9992\n2 25544  51.6440 319.2211 0006820 112.9155 319.9317 15.54696058985601\n"; //ISS
+
+function getTLEfromTextAerea()
+
+{
+  var EpochYear, EpochDay;
+  var rows = new Array();
+
+  rows = tmpString.split("\n");
+
+  glb_CommonName = rows[0];
+
+  // check if the two lines start with 1 and 2
+
+  if ((rows[1].substring(0, 1) != "1") || (rows[2].substring(0, 1) != "2")) alert("error in parameter")
+  else {
+    //alert("parameter ok") ;
+    // get the values from line 1
+    glb_ObjectID = rows[1].substring((3 - 1) * 1, (7) * 1);
+    //alert(ObjectID);
+    glb_ElsetClassification = rows[1].substring(8 - 1, 8);
+    glb_InternationalDesignator = rows[1].substring(10 - 1, 17);
+    glb_Epoch = rows[1].substring(19 - 1, 32);
+    EpochYear = "20" + rows[1].substring(19 - 1, 20); // 18 og 19
+
+    EpochDay = 1 * rows[1].substring(21 - 1, 32);
+    glb_first_derative_mean_motion = 1 * rows[1].substring(34 - 1, 43);
+    glb_Inclination = 1 * rows[2].substring(9 - 1, 16);
+    glb_RA_AN = 1 * rows[2].substring(18 - 1, 25);
+    glb_Eccentricity = "0." + rows[2].substring(27 - 1, 33); // make decimal point
+
+    glb_Argument_of_perigee = 1 * rows[2].substring(35 - 1, 42);
+    glb_Meananomaly = 1 * rows[2].substring(44 - 1, 51);
+    glb_Satellite_rev_sidereal_day = 1 * rows[2].substring(53 - 1, 63);
+    glb_NumberOfOrbitsAtEpoch = 1 * rows[2].substring(64 - 1, 68);
+    //alert(EpochYear+"\n"+EpochDay);
+    // Epoch_start=366+daynumber_tle((1*EpochYear),EpochDay*1);// changed 30 Mars due to an error of one year
+
+    Epoch_start = daynumber_tle((1 * EpochYear), EpochDay * 1)
+      //alert("Epoch start="+daynumber_tle((1*EpochYear),EpochDay*1));
+
+    glb_DateEpoch = d_to_date_and_time(Epoch_start); // 
+    //alert("epoch start"+Epoch_start);  // regner feil 30 Mars 2010,  1 r for mye
+  }
+}
+
+function Div(a, b) {
+  return ((a - a % b) / b) //OK
+}
+
+function getMST(now, lon) {
+  // from http://home.att.net/~srschmitt/script_clock.html
+  var year = now.getUTCFullYear();
+  var month = now.getUTCMonth() + 1;
+  var day = now.getUTCDate();
+  var hour = now.getUTCHours();
+  var minute = now.getUTCMinutes();
+  var second = now.getUTCSeconds();
+
+  if (month == 1 || month == 2) {
+    year = year - 1;
+    month = month + 12;
+  }
+
+  var a = Math.floor(year / 100);
+  var b = 2 - a + Math.floor(a / 4);
+
+  var c = Math.floor(365.25 * year);
+  var d = Math.floor(30.6001 * (month + 1));
+
+  // days since J2000.0   
+  var jd = b + c + d - 730550.5 + day + (hour + minute / 60.0 + second / 3600.0) / 24.0;
+
+  var jt = (jd) / 36525.0; // julian centuries since J2000.0         
+  var GMST = 280.46061837 + 360.98564736629 * jd + 0.000387933 * jt * jt - jt * jt * jt / 38710000 + lon;
+  if (GMST > 0.0) {
+    while (GMST > 360.0)
+      GMST -= 360.0;
+  } else {
+    while (GMST < 0.0)
+      GMST += 360.0;
+  }
+
+  return GMST;
+}
+
+function get_time_in_epoch_format(selected_time, timefromepoch) {
+  // must find the daynumber of the year , 0 = 1 januar, 366 days every 4 year
+  var today = new Date();
+  var first = new Date(today.getFullYear(), 0, 1);
+  var theDay = Math.round(((selected_time - first) / 1000 / 60 / 60 / 24) + .5, 0);
+  var time, timestring, Year, YearStr, timenow, timestring2
+
+  timenow = 1.0 * (timefromepoch);
+  timestring = formatvalue((timenow - Math.floor(timenow)), 12);
+
+  timestring2 = timestring.substring(1, 10);
+
+  Year = selected_time.getUTCFullYear();
+  YearStr = formatvalue(Year, 4);
+
+  if ((theDay < 10) && (theDay < 100)) DayStr = "00" + formatvalue(theDay, 4)
+  else if ((theDay > 10) && (theDay < 100)) DayStr = DayStr = "0" + formatvalue(theDay, 4)
+  elseDayStr = DayStr = "0" + formatvalue(theDay, 4);
+
+  return (YearStr.substring(2, 5) + DayStr + timestring2);
+
+}
+
+function GMST_2() {
+  var Tu, du, gm_st, w, h, m, s
+
+  du = JD_now - 2451545; //  2451545 = 1.1.2000 12 UTC  ,  du bekrefter riktig 25 feb
+  if (du < 0) {
+    Tu = (Math.floor(du) + 0.5) / 36525;
+  } else Tu = (Math.floor(du) - 0.5) / 36525;
+
+  //Tu=Math.floor(du)/36525;  // m vre tidspunkt ved midnatt utc ?, hva nr du er negativ ?
+  //alert((du+1)+" / "+Epoch_now);
+  w = ((360 / (2 * Math.PI)) * (7.29211510 * ((60 * 60 * 24) / 100000)) * (Epoch_now - Math.floor(Epoch_now))); // w regnes ut riktig,bekreftet 25 feb
+  //w=0;
+  // dette er antall radianer. Det er 2pi radianer i 360 grader. 360/2pi grader/radian
+
+  glb_GMST2 = Rev((w + 15 * ((24110.54841 + 8640184.812866 * Tu + 0.093104 * Tu * Tu - ((6.2 / (1000000)) * Tu * Tu * Tu)) / (60 * 60))));
+
+  // nkkelen ligger her et sted... GMST er sannsynligvis eneste feilkilde.
+
+  gm_st = Rev((w + 15 * ((24110.54841 + 8640184.812866 * Tu + 0.093104 * Tu * Tu - ((6.2 / (1000000)) * Tu * Tu * Tu)) / (60 * 60))));
+
+  h = Math.floor((Epoch_now - Math.floor(Epoch_now)) * 24);
+  m = Math.floor(((Epoch_now - Math.floor(Epoch_now)) * 24 - h) * 60); // rest
+  s = ((((Epoch_now - Math.floor(Epoch_now)) * 24 - h) * 60) - m) * 60;
+  //TimeTest=h+":"+m+":"+s+" "+w+" floor du "+(Math.floor(du)+0.5)+ " ceil du "+(Math.ceil(du)-0.5)+" du "+du+" "+w;  // Epoch now er minst 
+  return (gm_st);
+}
+
+function calculatedriftrate(Day, Month, Year, Hour, Minute, Second, Satellite_rev_solar_day, Satellite_rev_sidereal_day, first_derative_mean_motion, Eccentricity, Epoch, Meananomaly, Argument_of_perigee, RA_AN, Inclination, NumberOfOrbitsAtEpoch) {
+
+  var TCdecimal, hour, minute, seconds, RangeA, e, M, M0, E, X0, Y0, r, Px, Py, Pz, Qx, Qy, Qz,
+    x, y, z, arg_per, RAAN, i, Year, Daynumber, Hour, Minute, Second, TMP, LonString, LatString, alpha_E,
+    meanmotion_now, meanmotion_after_24_hours, average_motion, average_distance_from_geo_sync_radius, average_drift_rate
+  var now = new Date();
+  var cur_t
+  var OutputArray = new Array();
+
+  setCurrentTimeArray = setCurrentTime(Day, Month, Year, Hour, Minute, Second);
+  now = setCurrentTimeArray[9];
+  Epoch_now = setCurrentTimeArray[8];
+  // forhold mellom sidereal og solar day 365.242190402/366.242190402
+  //kilde wikipedia
+
+  // TLE oppgitt i mean solar time ?
+  earth_deg_pr_solar_day = 360 + (360 / 365.24199); // solar eller sidereal?
+  earth_deg_pr_solar_day = 360 + (360 / 365.2422); // alt.2 
+  earth_rev_pr_solar_day = earth_deg_pr_solar_day / 360;
+  earth_rev_pr_siderealday = 1 / earth_rev_pr_solar_day;
+  earth_rev_pr_siderealday = 365.242190402 / 366.242190402;
+  earth_deg_pr_siderealday = earth_rev_pr_siderealday * 360;
+  OutputArray[0] = earth_rev_pr_solar_day;
+  OutputArray[1] = earth_deg_pr_solar_day;
+  OutputArray[2] = earth_rev_pr_siderealday;
+  OutputArray[3] = earth_deg_pr_siderealday;
+  satellite_deg_pr_sidereal_day = 360 * Satellite_rev_sidereal_day;
+  satellite_deg_pr_solar_day = 360 * Satellite_rev_solar_day;
+
+  //alert(Satellite_rev_sidereal_day+" "+Satellite_rev_solar_day+" "+first_derative_mean_motion);
+  // Sier at Satellite_rev_solar_day er et object
+  OutputArray[4] = satellite_deg_pr_sidereal_day;
+  OutputArray[5] = satellite_deg_pr_solar_day;
+
+  //  AverageMotion = epochMeanMotion   + (CurrentTime-EpochDay)*OrbitalDecay/2;
+  //  CurrentMotion = 360*(epochMeanMotion   + (CurrentTime-EpochDay)*OrbitalDecay);
+  meanmotion_now = 1 * Satellite_rev_sidereal_day + (first_derative_mean_motion * (Epoch_now - Epoch_start)); // rev/day
+  meanmotion_after_24_hours = 1 * Satellite_rev_sidereal_day + (first_derative_mean_motion * (Epoch_now - Epoch_start + 1)); // rev/day
+  OutputArray[50] = meanmotion_now;
+  average_motion = (meanmotion_now + meanmotion_after_24_hours) / 2;
+  // calculate driftrate
+  OutputArray[6] = Rev(((1 / (1 * Satellite_rev_sidereal_day + first_derative_mean_motion * (Epoch_now - Epoch_start))) + earth_rev_pr_solar_day) * 360); // -3 hundredelsgrad
+  TCdecimal = (1440 / ((1 * Satellite_rev_sidereal_day) + (first_derative_mean_motion * (Epoch_now - Epoch_start)))) / 60; // Period in hours
+  // bug here ?
+  RangeA = Math.pow((6028.9 * (TCdecimal * 60)), (2 / 3)); // semi major axis
+  //RangeA=Math.pow(    (6028.9* (1440/(1*Satellite_rev_sidereal_day+(first_derative_mean_motion*(Epoch_now-Epoch_start )*360)))), (2/3)   );
+  //RangeA=Math.pow(    (6028.9* (1440/(1*Satellite_rev_sidereal_day+(first_derative_mean_motion*(Epoch_now-Epoch_start ))))), (2/3)   );
+  OutputArray[7] = Convert_to_deg_min_sec(TCdecimal);
+  //OutputArray[7]=Convert_to_deg_min_sec( ((1440/1.00273354)/60));
+  OutputArray[8] = Convert_to_deg_min_sec(((1440 / 1.0027379092558308) / 60));
+  OutputArray[9] = RangeA * (1 + Eccentricity * 1); // apogee
+  OutputArray[10] = RangeA * (1 - Eccentricity * 1); //perigee
+  OutputArray[11] = (1 * OutputArray[9] + 1 * OutputArray[10]) / 2; // semimajoraxsis
+
+  //OutputArray[11]=RangeA;  // semi major axis
+  e = Eccentricity;
+  OutputArray[12] = RangeA * (1 + e * 1) - Earth_equatorial_radius; // apogee altitude
+  OutputArray[13] = RangeA * (1 - e * 1) - Earth_equatorial_radius; // perigee altitude
+  OutputArray[39] = get_time_in_epoch_format(now, Epoch_now);
+  OutputArray[14] = d_to_date_and_time(Epoch_start) + "  d=" + formatvalue(Epoch_start, 14) + "  ep=" + Epoch;
+  OutputArray[15] = getMST(now, 0.0);
+  OutputArray[16] = now + " (verifies the time&date used)";
+  M = Meananomaly * 1 + (360 * (Satellite_rev_sidereal_day * (Epoch_now - Epoch_start) + 0.5 * first_derative_mean_motion * (Epoch_now - Epoch_start) * (Epoch_now - Epoch_start)));
+  OutputArray[17] = Rev(M);
+  Initial_M = M;
+  E = toDeg * (M * toRad + e * Math.sin(M * toRad) + 0.5 * e * e * Math.sin(2 * M * toRad)); // <-- initlial estimate
+  OutputArray[18] = Rev(E);
+  initial_E = Rev(E);
+  var E0, E1, alpha_E, iterations, NewM, M_offset, NyM, initial_E, New_E, Initial_M, E_Error
+
+  NewM = Rev(E - e * toDeg * Math.sin(toRad * E));
+  if (M > NewM) M_old_offset = M - NewM;
+  else M_old_offset = NewM - M;
+
+  if ((M_old_offset = 360.00) || (M_old_offset = -360.00)) {
+    M_old_offset = 0;
+    //alert(M_old_offset);
+  }
+
+  M_old_offset = Rev(M_old_offset);
+
+  alpha_E = 9; // just set to any large value before iterating
+  M_offset = 9; // just set to any large value before iterating
+  iterations = 0;
+  E0 = initial_E;
+  M0 = Rev(M);
+  E0 = Rev(E);
+  E_Error = 9;
+  while (((Math.abs(E_Error)) > 0.00000001) && (iterations < 40)) // itererer korrekt 25 feb 2008, avslutt etter 40 iterations
+  {
+    iterations = 1 + iterations;
+    E_Error = (E - toRad * e * Math.sin(toRad * E) - M);
+    E = E - E_Error;
+  }
+  // sjekk ny M=E-esinE og gammel M
+  //E=New_E;
+
+  M = Initial_M;
+  E = Rev(E);
+  var true_anomaly, eccentric_anomaly
+
+  true_anomaly = toDeg * Math.acos((Math.cos(toRad * E) - e) / (1 - e * Math.cos(toRad * E)));
+  eccentric_anomaly = toDeg * Math.acos(((Math.cos(toRad * true_anomaly) + e) / (1 + e * Math.cos(toRad * true_anomaly)))); // funker ikke bra
+
+  OutputArray[19] = true_anomaly;
+  //alert(eccentric_anomaly);
+
+  M_offset = E_Error;
+  //alert(E_Error);
+
+  OutputArray[37] = iterations;
+  // get the eccentric OutputArray[38] anomaly error before iterations
+  if (Rev(E) > 1 * OutputArray[18])
+    OutputArray[38] = Rev(Rev(E) - 1 * OutputArray[18])
+  else OutputArray[38] = Rev(1 * OutputArray[18] - Rev(E))
+  OutputArray[20] = E_Error;
+  OutputArray[21] = Rev(E); // eccentric anomaly after iteratons
+  // **************Calculate X0,Y0 and r for the perifocal coordinate system*****************
+  //
+  //OutputArray[11]= semimajoraxis
+  X0 = 1.0 * OutputArray[11] * (Math.cos(toRad * E) - e); //  = r*Cos(trueanomaly)
+  Y0 = 1.0 * OutputArray[11] * Math.sqrt(1 - e * e) * Math.sin(toRad * E); // = r*sin (trueanomaly)
+  r = Math.sqrt(X0 * X0 + Y0 * Y0); // distance
+  // ****************************************************************************************
+  //alert(Argument_of_perigee+" "+RA_AN+" "+Inclination);
+  arg_per = 1 * Argument_of_perigee;
+  RAAN = 1.0 * RA_AN;
+  i = 1.0 * Inclination;
+  perigee_perturbation = (Epoch_now - Epoch_start) * 4.97 * Math.pow((Earth_equatorial_radius / (1 * OutputArray[11])), 3.5) * (5 * Math.cos(toRad * i) * Math.cos(toRad * i) - 1) / ((1 - e * e) * (1 - e * e));
+
+  // perturbation of ascending node
+  ascending_node_perturbation = (Epoch_now - Epoch_start) * 9.95 * Math.pow((Earth_equatorial_radius / (1 * OutputArray[11])), 3.5) * Math.cos(toRad * i) / ((1 - e * e) * (1 - e * e));
+
+  // perbutation of perigee
+  arg_per = arg_per + perigee_perturbation; // removed 09 oct 2011
+  RAAN = RAAN - ascending_node_perturbation; //removed 09 oct 2011
+  true_anomaly = Math.atan2(Y0, X0);
+  //  RAAN og long. of ascending node det samme ???
+  //Long asc.node = RAAN - GMST
+  L_asc_node = RAAN - getMST(now, 0.0);
+  xeclip = r * (Math.cos(toRad * L_asc_node) * Math.cos(true_anomaly + toRad * arg_per) - Math.sin(toRad * L_asc_node) * Math.sin(true_anomaly + arg_per) * Math.cos(toRad * i));
+  yeclip = r * (Math.sin(toRad * L_asc_node) * Math.cos(true_anomaly + toRad * arg_per) + Math.cos(toRad * L_asc_node) * Math.sin(true_anomaly + arg_per) * Math.cos(toRad * i));
+  zeclip = r * Math.sin(true_anomaly + arg_per) * Math.sin(toRad * i)
+
+  //Velocity=Math.sqrt(    398600.5*(     (2/r)-(1/(1*Semimajoraxis))  ));
+  OutputArray[22] = Math.sqrt(398600.5 / r);
+  OutputArray[23] = X0;
+  OutputArray[24] = Y0;
+  OutputArray[25] = r;
+  OutputArray[40] = formatvalue((r - Earth_equatorial_radius), 10);
+  OutputArray[41] = formatvalue((r - GeoSyncRadius), 8); // current distance from teoretical GEO orbit hight 
+
+  // get driftrate
+  // use semimajoraxis/2 offset from Geo to get an more average like drift
+  average_distance_from_geo_sync_radius, average_drift_rate
+  average_distance_from_geo_sync_radius = (OutputArray[11]) - GeoSyncRadius; // semimajoraxis-Geosyncradius
+  average_drift_rate = (((-3 / 2) * (average_distance_from_geo_sync_radius) * earth_rev_pr_solar_day / GeoSyncRadius) * 360); // her gr det galt...
+  OutputArray[43] = average_drift_rate;
+  OutputArray[45] = average_distance_from_geo_sync_radius;
+  if ((1 * OutputArray[43]) > 0) {
+    OutputArray[44] = "East";
+    OutputArray[43] = 1 * OutputArray[43];
+  } else {
+    OutputArray[43] = -1 * OutputArray[43];
+    OutputArray[44] = "West";
+  }
+
+  // calculate driftrate as specified in Richharia book
+  OutputArray[6] = (((-3 / 2) * OutputArray[41] * earth_rev_pr_solar_day / GeoSyncRadius) * 360); // 41 = geo altitude value,  drift rate trolig ok...
+  // better to calculate LON drift, LON  now compared to LON after T=T+1
+  if ((1 * OutputArray[6]) > 0) {
+    OutputArray[36] = "East";
+    OutputArray[6] = 1 * OutputArray[6];
+  } else {
+    OutputArray[6] = -1 * OutputArray[6];
+    OutputArray[36] = "West";
+  }
+  //Px,Py,Pz,Qx,Qy,Qz,    x,y,z,tod
+  //calculate E/W oscillation based on inclination
+  OutputArray[46] = toDeg * Math.asin(Math.tan(i / 2) * Math.tan(i / 2));
+  //calculate E/W oscillation based on eccentricity
+  OutputArray[47] = toDeg * (2 * e);
+  //alert(perigee_perturbation);
+  //alert(ascending_node_perturbation);
+
+  // *********Convert to Earth centered********************* 
+  //**********inertial coordinate system******************** 
+  //**********(geocentric coordinates)**********************
+
+  Px = Math.cos(toRad * arg_per) * Math.cos(RAAN * toRad) - Math.sin(toRad * arg_per) * Math.sin(toRad * RAAN) * Math.cos(toRad * i);
+  Py = Math.cos(toRad * arg_per) * Math.sin(RAAN * toRad) + Math.sin(toRad * arg_per) * Math.cos(toRad * RAAN) * Math.cos(toRad * i);
+  Pz = Math.sin(toRad * arg_per) * Math.sin(toRad * i);
+
+  //alert(toDeg*Math.atan2(Py,Math.sqrt(Px*Px+Py*Py)));
+
+  Qx = -Math.sin(toRad * arg_per) * Math.cos(RAAN * toRad) - Math.cos(toRad * arg_per) * Math.sin(toRad * RAAN) * Math.cos(toRad * i);
+  Qy = -Math.sin(toRad * arg_per) * Math.sin(RAAN * toRad) + Math.cos(toRad * arg_per) * Math.cos(toRad * RAAN) * Math.cos(toRad * i);
+  Qz = Math.cos(toRad * arg_per) * Math.sin(toRad * i);
+  x = Px * X0 + Qx * Y0;
+  y = Py * X0 + Qy * Y0;
+  z = Pz * X0 + Qz * Y0;
+
+  //*******************************************************
+
+  OutputArray[26] = x;
+  OutputArray[27] = y;
+  OutputArray[28] = z;
+  //GetSubSatPoint(x,y,z);
+  // RA & Decl , Latitude og longitude er litt feil....
+  Declination = toDeg * Math.atan2(z, Math.sqrt(x * x + y * y)); //+" time "+(toDeg*Math.atan2(  z,Math.sqrt(x*x+y*y)  )/15)+":"+    ((toDeg*Math.atan2(  z,Math.sqrt(x*x+y*y)  )/15)-Math.floor((toDeg*Math.atan2(  z,Math.sqrt(x*x+y*y)  )/15)))*60;
+
+  OutputArray[29] = Declination; //" ToRad"+toRad;
+
+  OutputArray[30] = (Rev(toDeg * Math.atan2(y, x))); //+" time "+Math.floor(Rev(toDeg*Math.atan2(  y,x ))/15)+":"+((Rev(toDeg*Math.atan2(  y,x ))/15)-Math.floor(Rev(toDeg*Math.atan2(  y,x ))/15))*60;
+
+  OutputArray[31] = formatvalue((NumberOfOrbitsAtEpoch * 1 + (Epoch_now - Epoch_start) * Satellite_rev_sidereal_day), 5);
+  // gj?r samme beregninger med jordbanen og x,y,z punkter p? jorden
+
+  // finn lengdegrad for Greenwich akkurat n?
+  // forskjellen mellom lengdegrad GreenWich og satelliten er sat posisjon i forhold til 0.
+  //var now = new Date(); 
+
+  //getMST( now, lon );
+  //alert(Epoch_now+"\n"+Epoch_start);  // Epoch_start = undefined
+
+  Longitude = Rev(toDeg * Math.atan2(y, x) - getMST(now, 0.0)); // ?rlite feil i RA osv.  Feil i timeoffet ?  feilen er ca. 0.0368 grader
+
+  //Longitude=Rev(    toDeg*Math.atan2( y,x )-GMST_2()   );  // ?rl
+  //alert(GMST_2() );
+  Latitude = toDeg * Math.atan2(z, Math.sqrt(x * x + y * y));
+
+  // calculate Geodedic latitude
+  var f, geocentricLat, geodeticLat, recalculated_geodetic_lat, C, Lat_error, loops, R;
+  geocentricLat = Math.atan(z / Math.sqrt(x * x + y * y));
+  geodeticLat = geocentricLat;
+  loops = 0;
+  Lat_error = 9; // just set to any value before looping
+
+  // kalkulerer klart feil i noen situasjoner
+  R = Math.sqrt(x * x + y * y);
+  // can not calculate correct value... Geodetic should be slightly larger all the time...
+  while (Math.abs(Lat_error) > 0.0000001) {
+    loops += 1;
+
+    C = 1 * 1 / (Math.sqrt(1 - (e * e * Math.sin(geodeticLat) * Math.sin(geodeticLat))));
+
+    //C=1;
+
+    //Earth_equatorial_radius=6378.14; // equatorial radii
+    //GeoSyncRadius
+
+    recalculated_geodetic_lat = Math.atan2((z + 1 * (Earth_equatorial_radius * C * e * e * Math.sin(geodeticLat))), R);
+    //alert(toDeg*geodeticLat  );
+    //if (Lat_error<0) alert(Lat_error);
+
+    //if (geodeticLat<recalculated_geodetic_lat) Lat_error=recalculated_geodetic_lat-geodeticLat
+    //	else Lat_error=geodeticLat-recalculated_geodetic_lat;
+    Lat_error = recalculated_geodetic_lat - geodeticLat;
+
+    //alert("recalculated_geodetic_lat="+recalculated_geodetic_lat+" geodeticLat="+geodeticLat+" loops="+loops+" Lat_error="+Lat_error);
+    geodeticLat = recalculated_geodetic_lat;
+  }
+  C = 1 / (Math.sqrt(1 - (e * e * Math.sin(geodeticLat) * Math.sin(geodeticLat))));
+  f = 1 / 298.26;
+  geodeticLat = Math.atan(Math.tan(geocentricLat) / ((1 - f) * (1 - f)));
+  OutputArray[42] = (R / Math.cos(geodeticLat)) - 1 * Earth_equatorial_radius * C;
+  geodeticLat = toDeg * geodeticLat;
+
+  //if (Longitude>180) LonString=formatvalue(360-Longitude,10)+" West" 
+  //	else LonString=formatvalue(Longitude,10)+" East";
+  // mine
+  if (Longitude > 180) LonString = formatvalue(-(360 - Longitude), 10)
+  else LonString = formatvalue(Longitude, 10);
+
+  if (Longitude > 180) OutputArray[48] = "West"
+  else OutputArray[48] = "East";
+
+  //OutputArray[48]= Longitude direction
+  OutputArray[49] = Longitude;
+
+  //if (Latitude<0) LatString=formatvalue(-Latitude,10)+" South" 
+  //	else LatString=formatvalue(Latitude,10)+" North";
+  //mine
+  LatString = formatvalue(Latitude, 10);
+
+  //if (geodeticLat>0) OutputArray[32]=formatvalue(Math.abs(geodeticLat),10)+" North"
+  //   else OutputArray[32]=formatvalue(Math.abs(geodeticLat),10)+" South";
+  OutputArray[32] = geodeticLat
+
+  var Number, Number2;
+  Number = M_offset;
+  Number2 = E - initial_E;
+
+  //Misc="Longitude = "+LonString+" Latitude="+LatString+ " Time elapsed since epoch="+Convert_to_deg_min_sec((Epoch_now-Epoch_start)*24);
+  window.status = "Longitude = " + LonString + " Latitude=" + OutputArray[32] + " Time elapsed=" + Convert_to_deg_min_sec((Epoch_now - Epoch_start) * 24) + " Iter.=" + OutputArray[37] + "-" + loops + " E error=" + (M_offset) + " deg. Initial E error= " + (initial_E - E);
+  OutputArray[33] = Convert_to_deg_min_sec((Epoch_now - Epoch_start) * 24) + "   T=" + formatvalue((Epoch_now - Epoch_start), 16);
+  OutputArray[34] = LonString;
+  OutputArray[35] = LatString;
+  return (OutputArray);
+}
+
+function Convert_to_deg_min_sec(Number) {
+  var Hour, Min, Sec, hhmmss
+
+  Hour = formatvalue(Math.floor(Number), 3);
+  Min = Math.floor((Number - Math.floor(Hour)) * 60);
+
+  Sec = Math.floor(((Number - Math.floor(Hour)) * 60 - Min) * 60);
+  Sec = ((Number - Math.floor(Hour)) * 60 - Min) * 60
+  Min = formatvalue(Min, 2);
+  Sec = formatvalue(Sec, 5);
+
+  //if (Hour>100) Hour="0"+Hour;
+  if (Hour < 10) Hour = "0" + Hour;
+  if (Min < 10) Min = "0" + Min;
+  if (Sec < 10) Sec = "0" + Sec;
+
+  hhmmss = Hour + ":" + Min + ":" + Sec;
+
+  return (hhmmss);
+}
+
+
+function formatvalue(input, rsize) // Desimal avrunding
+{
+  var invalid = "**************************";
+  var nines = "999999999999999999999999";
+  var strin = "" + input;
+  var fltin = parseFloat(strin);
+  if (strin.length <= rsize) return strin;
+  if (strin.indexOf("e") != -1 ||
+    fltin > parseFloat(nines.substring(0, rsize) + ".4"))
+    return invalid.substring(0, rsize);
+  var rounded = "" + (fltin + (fltin - parseFloat(strin.substring(0, rsize))));
+  return rounded.substring(0, rsize);
+}
+
+function onchange_satellite_rev_solarday() {
+  satellite_rev_pr_solar_day = glb_Satellite_rev_solar_day * 1;
+  satellite_rev_pr_sidereal_day = 1 / satellite_rev_pr_solar_day;
+  //glb_Satellite_rev_sidereal_day=satellite_rev_pr_sidereal_day;
+
+  glb_Altitude = Math.pow((6028.9 * (1440 / satellite_rev_pr_sidereal_day)), (2 / 3)) - Earth_equatorial_radius;
+
+  glb_GeoAltitude = Math.pow((6028.9 * (1440 / satellite_rev_pr_sidereal_day)), (2 / 3)) - GeoSyncRadius;
+}
+
+function onchange_satellite_rev_siderealday() {
+  //Satellite_rev_sidereal_day=Current_Motion;  // is the same as mean motion given as solar day...
+  //satellite_rev_pr_sidereal_day=Current_Motion;
+  satellite_rev_pr_solar_day = 1 / (1 * glb_Current_Motion);
+  glb_Satellite_rev_solar_day = satellite_rev_pr_solar_day;
+  glb_Altitude = Math.pow((6028.9 * (1440 / satellite_rev_pr_sidereal_day)), (2 / 3)) - Earth_equatorial_radius;
+  glb_GeoAltitude = Math.pow((6028.9 * (1440 / satellite_rev_pr_sidereal_day)), (2 / 3)) - GeoSyncRadius;
+}
+
+function getdriftrate() {
+
+  glb_Driftrate = Rev((glb_Satellite_rev_solar_day * 1 + glb_Earth_rev_solar_day * 1) * 360);
+
+  if ((1 * glb_Driftrate) < 0)
+    glb_Direction = "East"
+  else
+    glb_Direction = "West";
+
+  // sannsynligvis er korrekt driftrate 1/solarday + sat_siderealday
+  satellite_deg_pr_sidereal_day = 360 * satellite_rev_pr_sidereal_day;
+  satellite_deg_pr_solar_day = 360 * satellite_rev_pr_solar_day;
+
+  glb_Satellite_deg_sidereal_day = satellite_deg_pr_sidereal_day;
+  glb_Satellite_deg_solar_day = satellite_deg_pr_solar_day;
+
+}
+
+//----------------------------------------------------------------------
+
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha) {
+  var image = squareImage(width, height, red, green, blue, alpha);
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha) {
+  var arr = new AltusUnified.VectorByte();
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(red);
+    arr.push_back(green);
+    arr.push_back(blue);
+    arr.push_back(alpha);
+  }
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+  return image;
+}
+
+function addLineSeg(lat1, lon1, alt1, lat2, lon2, alt2, r1, g1, b1, a1) {
+  // Add 3D lines to map
+  var dynamicLine3D = new AltusUnified.DynamicLine3D("line3D1");
+  var dynamicLine3DPoints = [
+    new AltusUnified.GeographicPosition(lat1, lon1, alt1),
+    new AltusUnified.GeographicPosition(lat2, lon2, alt2)
+  ];
+  pushToVector(dynamicLine3D.points(), dynamicLine3DPoints);
+  deleteElements(dynamicLine3DPoints);
+  var colors = [new AltusUnified.Color(r1, g1, b1, a1), new AltusUnified.Color(0, 0, 255)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 2, colors[1], 0);
+  deleteElements(colors);
+  vectorMap.addDynamicLine3D(dynamicLine3D, lineStyle);
+}
+
+function addLineSeg2(geoPos1, geoPos2, r1, g1, b1, a1) {
+  // Add 3D lines to the dynamic vector layer
+  var dynamicLine3D = new AltusUnified.DynamicLine3D("line3D1");
+  var dynamicLine3DPoints = [
+    geoPos1,
+    geoPos2
+  ];
+  pushToVector(dynamicLine3D.points(), dynamicLine3DPoints);
+  var colors = [new AltusUnified.Color(r1, g1, b1, a1), new AltusUnified.Color(0, 0, 255)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 2, colors[1], 0);
+  deleteElements(colors);
+  vectorMap.addDynamicLine3D(dynamicLine3D, lineStyle);
+}
+
+var timerPtr;
+var marker;
+var markerSize = 10;
+var vectorMap;
+var myAnimatedCircle;
+var locationTransform;
+
+function showISS() {
+  tmpString = "0 ISS (ZARYA)\n1 25544U 98067A   16044.62154462  .00017385  00000-0  26363-3 0  9992\n2 25544  51.6440 319.2211 0006820 112.9155 319.9317 15.54696058985601\n"; //ISS
+  getTLEfromTextAerea();
+  //  vectorMap.clearCache();
+  //  vectorMap.rebuildMapUsingCachedShapes();
+  AltusUnified.scene.removeMap(vectorMap, true);
+  vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+  vectorMap.setTesselationThreshold(400000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+  counter = 0;
+  generate_24hour_listings();
+}
+
+function showHST() {
+  tmpString = "0 HST\n1 20580U 90037B   16044.32169449  .00002117  00000-0  12241-3 0  9991\n2 20580  28.4714   3.1865 0002589 308.7091 206.8655 15.08148595216241\n"; //hubble
+  getTLEfromTextAerea();
+  //vectorMap.clearCache();  // Why doesn't this work??? 
+  //vectorMap.rebuildMapUsingCachedShapes();
+  AltusUnified.scene.removeMap(vectorMap, true);
+  vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+  vectorMap.setTesselationThreshold(400000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+  counter = 0;
+  generate_24hour_listings();
+}
+
+function showSEASAT() {
+  tmpString = "0 SEASAT 1\n1 10967U 78064A   16044.55137773  .00000180  00000-0  93392-4 0  9990\n2 10967 107.9993 356.5718 0002326 300.6027  59.4887 14.43510304975949\n"; //brighest after HST
+  getTLEfromTextAerea();
+  //vectorMap.clearCache();
+  //vectorMap.rebuildMapUsingCachedShapes();
+  AltusUnified.scene.removeMap(vectorMap, true);
+  vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+  vectorMap.setTesselationThreshold(400000);
+
+  // Add map to scene
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+  counter = 0;
+  generate_24hour_listings();
+}
+
+function installVectorBaseMap() {
+  var internetTileProvider = AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("baseMap", "https://maps.ba3.us/political-boundaries/{z}/{x}/{y}.dat", "", true, AltusUnified.MapFormat.VIRTUAL_VECTOR);
+  var baseDesc = AltusUnified.VirtualMap.defaultVectorMapDesc();
+  baseDesc.maxLevel = 5;
+  var loadingInstructions = internetTileProvider.loadingInstructions();
+  loadingInstructions.maxParentOffset = 20;
+  var baseMap = new AltusUnified.VirtualMap("baseMap", baseDesc, internetTileProvider);
+
+  AltusUnified.scene.addMap(baseMap);
+
+  //clean up
+  baseDesc.delete();
+  internetTileProvider.delete();
+
+  // Set colors on vector map
+  var createPolygonStyle = function(fr, fg, fb, fa, sr, sg, sb, sa, sw, or, og, ob, oa, ow) {
+    var fillColor = new AltusUnified.Color(fr, fg, fb, fa);
+    var strokeColor = new AltusUnified.Color(sr, sg, sb, sa);
+    var outlineColor = new AltusUnified.Color(or, og, ob, oa);
+    var polygonStyle = new AltusUnified.PolygonStyle(fillColor, strokeColor, sw, outlineColor, ow);
+    fillColor.delete();
+    strokeColor.delete();
+    outlineColor.delete();
+    return polygonStyle;
+  }
+
+  var oceanStyle = createPolygonStyle(160, 214, 243, 255, 160, 214, 243, 255, 0, 160, 214, 243, 255, 0);
+  var landStyle = createPolygonStyle(248, 242, 223, 255, 248, 242, 223, 255, 0, 248, 242, 223, 255, 0);
+  var lakeStyle = createPolygonStyle(160, 214, 243, 255, 160, 214, 243, 255, 0, 160, 214, 243, 255, 0);
+  var countryStyle = createPolygonStyle(255, 0, 0, 34, 255, 0, 0, 34, 2, 255, 0, 0, 34, 0);
+  var stateStyle = createPolygonStyle(255, 0, 0, 28, 255, 0, 0, 28, 1, 255, 0, 0, 20, 0);
+  var riverStyle = createPolygonStyle(0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+
+  baseMap.applyVectorMapPolygonStyle(0xd4705991, 1, oceanStyle, 0); // ocean
+  baseMap.applyVectorMapPolygonStyle(0xe1f756c1, 2, landStyle, 0); //land
+  baseMap.applyVectorMapPolygonStyle(0x60b4da44, 4, lakeStyle, 0); // lakes
+  baseMap.applyVectorMapPolygonStyle(0x3ac0a124, 0, countryStyle, 0); // country land borders?
+  baseMap.applyVectorMapPolygonStyle(0x8532798b, 5, stateStyle, 0); // state boundaries?
+  baseMap.applyVectorMapPolygonStyle(0x88d5222f, 6, riverStyle, 0); // rivers
+
+  //clean up
+  oceanStyle.delete();
+  landStyle.delete();
+  lakeStyle.delete();
+  countryStyle.delete();
+  stateStyle.delete();
+  riverStyle.delete();
+  baseMap.delete();
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_30_Satellite_Orbit_Visualization').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

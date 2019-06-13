@@ -1,0 +1,4 @@
+<map id="AltusUnified::DynamicVectorMap" name="AltusUnified::DynamicVectorMap">
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_vector_map_base.html" title="Represents a map of vector data." alt="" coords="16,80,212,107"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_map.html" title="A base class for all Maps. You cannot create this map directly." alt="" coords="51,5,177,32"/>
+</map>

@@ -1,0 +1,35 @@
+/*Altus canvus style*/
+canvas.Altus{
+    border: 0px none;
+    background: #CCC;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+    top: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/*Fiddle support*/
+h5 { 
+   position: absolute; 
+   top: 85%; 
+   left: 1%; 
+   width: 100%; 
+}
+
+h5 span { 
+   color: white; 
+   font: bold 14px/28px Helvetica, Sans-Serif; 
+   letter-spacing: 0;  
+   background: rgb(90, 90, 90); /* fallback color */
+   background: rgba(90, 90, 90, 1.0);
+   padding: 5px; 
+}
+
+h5 span.spacer {
+   padding:0 1px;
+}

@@ -1,0 +1,13 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_altus_unified_1_1_map.html" title="A base class for all Maps. You cannot create this map directly." alt="" coords="5,140,132,167"/>
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_marker_map.html" title="Base class for marker maps. You cannot create one of these." alt="" coords="194,56,362,83"/>
+<area shape="rect" id="node5" href="$class_altus_unified_1_1_model_map.html" title="A map of 3D models. Every model is drawn every frame. This map is not tiled." alt="" coords="197,115,359,141"/>
+<area shape="rect" id="node6" href="$class_altus_unified_1_1_vector_map_base.html" title="Represents a map of vector data." alt="" coords="180,165,376,192"/>
+<area shape="rect" id="node10" href="$class_altus_unified_1_1_virtual_map.html" title="A map where the tiles are specified by a tile provider. This map allows you to generate the data howe..." alt="" coords="196,245,360,272"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_clustered_marker_map.html" title="A map of markers, where some of the markers are hidden when the camera is zoomed far away..." alt="" coords="424,5,649,32"/>
+<area shape="rect" id="node4" href="$class_altus_unified_1_1_dynamic_marker_map.html" title="A dynamic marker map. Use this map to show markers that can move. Every marker is drawn every frame (..." alt="" coords="427,56,647,83"/>
+<area shape="rect" id="node7" href="$class_altus_unified_1_1_dynamic_vector_map.html" title="Represents a map of dynamic vector data." alt="" coords="428,107,645,133"/>
+<area shape="rect" id="node8" href="$class_altus_unified_1_1_dynamic_vector_marker_map.html" title="Represents a map of vector markers (currently only AnimatedVectorCircles)" alt="" coords="441,158,632,199"/>
+<area shape="rect" id="node9" href="$class_altus_unified_1_1_vector_map.html" title="Represents a map of vector data that is rarely updated. Tiles are generated using this map and lines ..." alt="" coords="454,224,619,251"/>
+<area shape="rect" id="node11" href="$class_altus_unified_1_1_weather_grid_map.html" title="A WeatherGridMap is a special kind of map where each tile is raster data, either 1 channel or 3 chann..." alt="" coords="435,275,638,301"/>
+</map>

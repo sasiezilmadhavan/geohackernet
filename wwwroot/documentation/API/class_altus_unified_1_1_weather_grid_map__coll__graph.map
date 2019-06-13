@@ -1,0 +1,4 @@
+<map id="AltusUnified::WeatherGridMap" name="AltusUnified::WeatherGridMap">
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_virtual_map.html" title="A map where the tiles are specified by a tile provider. This map allows you to generate the data howe..." alt="" coords="25,80,189,107"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_map.html" title="A base class for all Maps. You cannot create this map directly." alt="" coords="43,5,170,32"/>
+</map>

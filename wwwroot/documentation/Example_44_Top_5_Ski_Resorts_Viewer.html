@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #44 - Top 5 Ski Resorts Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_44_Top_5_Ski_Resorts_Viewer.html">Altus Platform - Example #44 - Top 5 Ski Resorts Viewer</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:80vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5><span>Tiles: Mapbox.com Aerial<span class='spacer'></span></span></h5>
+
+<table>
+  <tr>
+
+    <td valign=top>
+      <font face="arial,helvetica" size=10>
+            <b>Top Five<BR>
+            Ski Resorts<BR>
+            in America</b>
+            </font>
+    </td>
+
+    <!--Controls for location type-->
+    <td class="controlgroup" valign=top>
+      <fieldset id="locationTypeGroup" disabled="true">
+        <font face="arial,helvetica">
+            <legend>Pick a Resort</legend>
+            <input type="radio" name="startingLocation" value="jh" onclick="startingLocationJacksonHole()" checked>
+            <label for="absolute">Jackson Hole</label>
+            <br/>
+            <input type="radio" name="startingLocation" value="alta" onclick="startingLocationAlta()">
+            <label for="accurate">Alta</label>
+            <br/>
+            <input type="radio" name="startingLocation" value="sv" onclick="startingLocationSquawValley()">
+            <label for="accurate">SquawValley</label>
+            <br/>
+            <input type="radio" name="startingLocation" value="vail" onclick="startingLocationVail()">
+            <label for="offset">Vail</label>
+            <br/>
+            <input type="radio" name="startingLocation" value="telluride" onclick="startingLocationTelluride()">
+            <label for="offset">Telluride</label>
+        </fieldset>
+        </td>
+
+
+        <!--Display stats-->
+        <td class="controlgroup" valign=top>
+        <fieldset id="statsGroup" disabled="true">
+            <font face="arial,helvetica">
+            <legend>Camera Stats</legend>
+            <label for="statslat">Lat:</label>
+             <input type="text" id="statslat" readonly style="width:150px; border:0; font-weight:bold;"/>
+             <br/>
+             <label for="statslon">Lon:</label>
+             <input type="text" id="statslon" readonly style="width:150px; border:0; font-weight:bold;"/>
+             <br/>
+             <label for="statsyaw">Yaw:</label>
+             <input type="text" id="statsyaw" readonly style="width:150px; border:0; font-weight:bold;"/>
+             <br/>
+             <label for="statspitch">Pitch:</label>
+             <input type="text" id="statspitch" readonly style="width:150px; border:0; font-weight:bold;"/>
+             <br/>
+             <label for="statsalt">Alt:</label>
+             <input type="text" id="statsalt" readonly style="width:150px; border:0; font-weight:bold;"/>
+            <br/>
+        </fieldset>
+        </td>
+
+        <td class="controlgroup" valign=top>
+        <fieldset id="instrGroup" disabled="true">
+            <font face="arial,helvetica">
+            <legend>Controls</legend>
+            <label for="">f = move camera forward</label>
+             <br/>
+            <label for="">b = move camera backward</label>
+             <br/>
+             <label for="statslon">c = rotate clockwise</label>
+             <br/>
+             <label for="statsalt">o = rotate counterclockwise</label>
+            <br/>
+             <label for="statsroll">u = move camera up</label>
+             <br/>
+             <label for="statspitch">d = move camera down</label>
+             <br/>
+             <label for="statsyaw">r = raise camera pitch</label>
+             <br/>
+             <label for="statsyaw">l = lower camera pitch</label>
+             <br/>
+             <label for="statsyaw">also: n, s, e, w</label>
+             <br/>
+             <label for="statsyaw">also: 2, 3, 4 (fwrd 10x, 100x)</label>
+             <br/>
+        </fieldset>
+        </td>
+    
+
+    </tr></table>
+    
+    <p>
+Maps: © <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #44
+// This example lets you view the top 5 ski resorts 
+// in North America. The red lines are the lifts.
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+// Almost any tile server is possible in your own apps. 
+// See http://tinyurl.com/h8wahej for details. 
+
+//Instantiate engine
+var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+
+//Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  solveJsfiddleProblem();
+  installBaseMap();
+  add3DTerrain();
+  addMarkers();
+  addLines();
+  lookOut();
+  initStats();
+  addEventListener("keydown", dealWithKeyboard, false);
+
+  //Enable UI
+  document.getElementById("locationTypeGroup").disabled = false;
+  document.getElementById("statsGroup").disabled = false;
+  document.getElementById("instrGroup").disabled = false;
+};
+
+var lifts = [
+  // Jackson hole
+  ["Teewinot", 43.5891, -110.8278, 1930, 43.5957, -110.8306, 2055],
+  ["Eagle's Rest", 43.5891, -110.8278, 1930, 43.5923, -110.8331, 2030],
+  ["Bridger gondola", 43.5886, -110.8282, 1930, 43.6016, -110.8538, 2770],
+  ["Aerial tram", 43.5875, -110.8278, 1930, 43.5971, -110.8704, 3160],
+  ["Apres vous high-speed quad", 43.5959, -110.8278, 2040, 43.6087, -110.8314, 2560],
+  ["Sweetwater", 43.59237572, -110.83300066, 2006, 43.59762058, -110.83914828, 2328],
+  ["Casper Bowl high speed quad", 43.59598113, -110.83871913, 2285, 43.60336998, -110.84548903, 2598],
+  ["Marmot", 43.5942142, -110.84770346, 2404, 43.60149916, -110.85362577, 2766],
+  ["Marmot", 43.5942142, -110.84770346, 2404, 43.60149916, -110.85362577, 2766],
+  ["Thunder", 43.59356149, -110.84811115, 2413, 43.59508446, -110.86068535, 2851],
+  ["Sublette quad chair", 43.58920994, -110.85454845, 2527, 43.59468041, -110.86658621, 3018],
+  ["Moose creek quad chair", 43.5823214, -110.83764625, 1936, 43.58352602, -110.84209871, 1994],
+  ["Union Pass quad chair", 43.58410889, -110.84039283, 1980, 43.58924568, -110.84016752, 2056],
+
+  // Alta
+  ["Wildcat", 40.58744043, -111.63844657, 2607, 40.57748329, -111.64186907, 2975],
+  ["Collins", 40.57243896, -111.63164449, 3168, 40.58084053, -111.63788867, 2832],
+  ["Collins2", 40.58084053, -111.63788867, 2832, 40.58796188, -111.63798523, 2603],
+  ["Tansfer tow", 40.58846865, -111.63755822, 2601, 40.59026108, -111.62885982, 2635],
+  ["Litle Grizzly", 40.59049939, -111.63040209, 2628, 40.5908986, -111.62927556, 2638],
+  ["Grizzly tow", 40.58982112, -111.63163322, 2618, 40.59126726, -111.63196582, 2643],
+  ["Rustler Lift", 40.59055438, -111.63389164, 2632, 40.58942394, -111.63358855, 2610],
+  ["Sunnyside", 40.58176455, -111.61597395, 2879, 40.59017309, -111.62863398, 2634],
+  ["Albion", 40.59027086, -111.62846231, 2635, 40.58269345, -111.61367798, 2898],
+  ["Supreme", 40.57330606, -111.6029706, 3191, 40.57708725, -111.61445046, 2862],
+  ["Cecret", 40.57408839, -111.61337757, 2919, 40.57982522, -111.61902094, 2819],
+  ["Sugarloaf", 40.57959706, -111.62065172, 2805, 40.56725897, -111.62839794, 3213],
+  ["Baldy Express", 40.56704707, -111.63245344, 3215, 40.5577553, -111.63607979, 2920],
+  ["Mineral Basin Express", 40.55707059, -111.63457775, 2904, 40.56036364, -111.64524221, 3319],
+  ["Little Cloud", 40.55889646, -111.6459074, 3300, 40.56223833, -111.65678644, 2905],
+  ["Gad 2 lift", 40.56047776, -111.66290188, 3041, 40.57082861, -111.66459703, 2664],
+  ["Gadzoom", 40.5631023, -111.65444756, 2959, 40.57778805, -111.66753673, 2404],
+  ["Mid-gad lift", 40.57786954, -111.66685009, 2406, 40.56887267, -111.65773058, 2806],
+  ["Baby thunder lift", 40.57258891, -111.67071247, 2558, 40.57698947, -111.67395258, 2364],
+  ["Mineral Basin express", 40.55710319, -111.63457775, 2904, 40.56041255, -111.64532805, 3322],
+  ["Baby express", 40.55772269, -111.63607979, 2920, 40.56701447, -111.63238907, 3213],
+  ["Aerial tram", 40.56112983, -111.64522076, 3339, 40.58108009, -111.65642166, 2468],
+  ["Peruvian express", 40.58114528, -111.65556336, 2473, 40.56292788, -111.64253426, 3215],
+  ["Wilbere lift", 40.57502392, -111.65854597, 2639, 40.57961336, -111.66260147, 2433],
+  ["Unnamed", 40.56199829, -111.64252567, 3272, 40.56128306, -111.64207774, 3217],
+
+  //Squaw Valley
+  ["Tram", 39.1967898, -120.23599304, 1896, 39.19537837, -120.26100598, 2478],
+  ["Gold Coast Funitel", 39.1958731, -120.23526415, 1902, 39.18895906, -120.2654323, 2429],
+  ["Broken Arrowl", 39.19223011, -120.25582127, 2445, 39.18874389, -120.25922365, 2356],
+  ["The Pulleyl", 39.19194324, -120.2653686, 2484, 39.19209915, -120.2672904, 2488],
+  //["Big Blue Expressl", 39.19321961, , 2527 , 39.18859005, -120.2595254, 2356],
+  ["Emigrantl", 39.1923881, -120.27595125, 2663, 39.18913888, -120.26745804, 2437],
+  ["Mountain Meadow", 39.19334849, -120.26258446, 2451, 39.19369669, -120.26745804, 2515],
+  ["Silverado", 39.20352952, -120.2566541, 2081, 39.19566835, -120.26685856, 2498],
+  ["Solitude", 39.20154872, -120.26969768, 2301, 39.19558105, -120.26740439, 2500],
+  ["Siberia Express", 39.18266286, -120.27185149, 2641, 39.1874217, -120.26054598, 2369],
+  ///Not all of them
+
+  //vail
+  ["cascade village lift", 39.63128334, -106.39419258, 2842, 39.63799256, -106.40161693, 2454],
+  ["bom free express lift 8", 39.6427101, -106.38792157, 2477, 39.62623448, -106.38663411, 2962],
+  ["eagle bahm gondola 19", 39.6425366, -106.38814151, 2475, 39.61834232, -106.38640344, 3146],
+  ["pride express lift 26", 39.63239057, -106.39058769, 2783, 39.61823488, -106.38740122, 3148],
+  ["gondola one", 39.63903358, -106.37345374, 2498, 39.61468104, -106.36853993, 3106],
+  ["25", 39.63788515, -106.37029678, 2514, 39.63678627, -106.37075007, 2529],
+  ["gopher hill lift 12", 39.63843045, -106.37018412, 2509, 39.63604265, -106.36921585, 2552],
+  ///not all of them
+
+  // Telluride
+  ["Sunshine Express", 37.93891773, -107.85647392, 2794, 37.91073562, -107.84843802, 3321],
+  ["Ute Park", 37.91019387, -107.84750462, 3314, 37.90398893, -107.84412503, 3393],
+  ["Lynx", 37.90381115, -107.84446836, 3394, 37.90198258, -107.84280539, 3391],
+  ["Prospect Express", 37.90535186, -107.83613205, 3285, 37.89178914, -107.83883572, 3596],
+  ["Gold Hill Express", 37.90479314, -107.83501625, 3295, 37.90255824, -107.82381535, 3735],
+  ["Revelation Lift", 37.8992227, -107.82261372, 3806, 37.90281221, -107.81935215, 3577],
+  ["Apex Lift", 37.91490014, -107.82990932, 3310, 37.91054939, -107.82233477, 3652],
+  ["Plunge Lift", 37.91440921, -107.82194853, 3624, 37.93013419, -107.81817198, 2987],
+  ["Oak Street Lift", 37.93030344, -107.81881571, 2986, 37.93558383, -107.81366587, 2666],
+  ["Free Gondola", 37.93602808, -107.8139931, 2667, 37.93137817, -107.8327632, 3215],
+  ["Free Gondola 2", 37.93139086, -107.83323526, 3214, 37.93667117, -107.84503698, 2908],
+  ["Village Express", 37.93618039, -107.84548223, 2902, 37.92393516, -107.83069253, 3286],
+  ["Free Intercept Gondola", 37.93263905, -107.85357714, 2905, 37.9366331, -107.84538031, 2903],
+  ["Park 2 Lift", 37.93389144, -107.84538031, 2930, 37.93121738, -107.84211874, 3033],
+  ["Chondola", 37.93619308, -107.84722567, 2908, 37.93935773, -107.85619497, 2798],
+  ["Plunge Lift", 37.91447693, -107.82196999, 3625, 37.93015112, -107.81815052, 2986],
+  ["Coonskin Lift", 37.92969414, -107.83225894, 3220, 37.9372508, -107.82069325, 2665]
+];
+
+function addMarkers() {
+
+  //Create the delegate to handle the clicks on the markers
+  var clusteredMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+    onMarkerTapped: function(marker, screenPoint, markerPoint, mapName) {
+      console.log("onMarkerTapped: " + marker.metadata);
+      window.alert(marker.metadata + " clicked");
+    },
+    getMarkerImage: function(markerInfo, mapName) {
+      console.log("getMarkerImage");
+    },
+    phrase: "phrase"
+  });
+
+  var squareSize = 10;
+  var texture = squareTexture(squareSize, squareSize, 255, 0, 0, 128);
+  var anchor = new AltusUnified.vec2d(squareSize / 2, squareSize / 2) //anchor to bottom center
+  var markers = [];
+  var vectorMarkerData = new AltusUnified.VectorMarkerData();
+
+  for (var i = 0; i < lifts.length; i++) {
+    markers.push(new AltusUnified.MarkerData(i * 2, lifts[i][1], lifts[i][2], lifts[i][3], i * 2, lifts[i][0], texture));
+    markers.push(new AltusUnified.MarkerData(i * 2 + 1, lifts[i][4], lifts[i][5], lifts[i][6], i * 2 + 1, lifts[i][0], texture));
+  }
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].anchorPoint_set(anchor);
+  }
+
+  addElementsToVectorAndDelete(vectorMarkerData, markers);
+
+  var markerMap = new AltusUnified.ClusteredMarkerMap("clusteredMarkerMap", vectorMarkerData, 0, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+  //Add the delegate
+  var del = new clusteredMarkerMapDelegate();
+  del.phrase = "marker";
+  markerMap.setDelegate(del);
+  markerMap.setHitTestingEnabled(true);
+
+  AltusUnified.scene.addMap(markerMap);
+  markerMap.setOrder(300);
+
+  // clean up
+  vectorMarkerData.delete();
+  markerMap.delete();
+  texture.delete();
+  anchor.delete();
+}
+
+function addLines() {
+  var vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+  vectorMap.setTesselationThreshold(4000);
+
+  // Add map to scene
+  // (You could also do this after lines are added to the map - if there are many lines, this 
+  // would avoid the user watching them draw.)
+  AltusUnified.scene.addMap(vectorMap);
+  vectorMap.setOrder(200);
+  vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+
+  // Add 3D line to map
+  var colors = [new AltusUnified.Color(255, 0, 0), new AltusUnified.Color(0, 0, 255)];
+  var lineStyle = new AltusUnified.LineStyle(colors[0], 2, colors[1], 0);
+  deleteElements(colors);
+
+  for (var i = 0; i < lifts.length; i++) {
+    var dynamicLine3D = new AltusUnified.DynamicLine3D(lifts[i][0]);
+    var dynamicLine3DPoints = [
+      new AltusUnified.GeographicPosition(lifts[i][1], lifts[i][2], lifts[i][3]), // base 
+      new AltusUnified.GeographicPosition(lifts[i][4], lifts[i][5], lifts[i][6]), // top
+    ];
+    pushToVector(dynamicLine3D.points(), dynamicLine3DPoints);
+    deleteElements(dynamicLine3DPoints);
+    vectorMap.addDynamicLine3D(dynamicLine3D, lineStyle);
+  }
+}
+
+//To a vector, 'pushes' an array of elements
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function addElementsToVectorAndDelete(vector, array) {
+  pushToVector(vector, array);
+  deleteElements(array);
+}
+
+//From a vector, 'deletes' an array of elements
+function deleteElements(array) {
+  var size = array.length;
+  for (var i = 0; i < size; i++) {
+    array[i].delete();
+  }
+  array.length = 0;
+}
+/*C11*/
+
+// Jackson Hole coords
+var lookLat = 43.56646;
+var lookLon = -110.80000;
+var lookAltitude = 2400;
+var lookPitch = 3;
+var lookYaw = -48;
+var flightSpeed = 0.001;
+
+function lookOut() {
+  //Create a new position
+  var pos = new AltusUnified.GeographicPosition(lookLat, lookLon, lookAltitude);
+
+  //Create a new orientation
+  var orientation = new AltusUnified.Orientation(0, lookPitch, lookYaw);
+
+  //Scale is needed to construct a transform, but not used by the camera
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  //Create a new transform
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+
+  //Set the camera's transform
+  AltusUnified.scene.camera().transform.set(trans);
+
+  //Clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+// lets user fly up, down, left, right, plus halting and going 
+function dealWithKeyboard(e) {
+  switch (e.keyCode) {
+    case 70: //f = forward
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed;
+      lookOut();
+      break;
+    case 50: //2 = forward 10x
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed * 10;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed * 10;
+      lookOut();
+      setSunLocation(lookLat, lookLon);
+      break;
+    case 51: //3 = forward 100x
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed * 100;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed * 100;
+      setSunLocation(lookLat, lookLon);
+      lookOut();
+      break;
+    case 52: //4 = forward 1000x
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed * 1000;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed * 1000;
+      setSunLocation(lookLat, lookLon);
+      lookOut();
+      break;
+    case 53: //5 = forward 10000x
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed * 10000;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed * 10000;
+      setSunLocation(lookLat, lookLon);
+      lookOut();
+      break;
+    case 54: //6 = forward 100000x
+      lookLat = lookLat + Math.cos(lookYaw * Math.PI / 180) * flightSpeed * 100000;
+      lookLon = lookLon + Math.sin(lookYaw * Math.PI / 180) * flightSpeed * 100000;
+      setSunLocation(lookLat, lookLon);
+      lookOut();
+      break;
+    case 66: //b = backward
+      lookLat = lookLat - Math.cos(lookYaw * Math.PI / 180) * flightSpeed;
+      lookLon = lookLon - Math.sin(lookYaw * Math.PI / 180) * flightSpeed;
+      lookOut();
+      break;
+    case 78: //n = north
+      lookLat = lookLat + flightSpeed;
+      lookOut();
+      break;
+    case 83: //s = south
+      lookLat = lookLat - flightSpeed;
+      lookOut();
+      break;
+    case 69: //e = east
+      lookLon = lookLon - flightSpeed;
+      lookOut();
+      break;
+    case 87: //w = west
+      lookLon = lookLon + flightSpeed;
+      lookOut();
+      break;
+    case 85: //u = up
+      lookAltitude = lookAltitude + 100;
+      lookOut();
+      break;
+    case 68: //d=down
+      lookAltitude = lookAltitude - 100;
+      lookOut();
+      break;
+    case 76: //l = lower
+      if (lookPitch < 90) lookPitch = lookPitch + 1;
+      lookOut();
+      break;
+    case 82: //r = raise
+      if (lookPitch > -90) lookPitch = lookPitch - 1;
+      lookOut();
+      break;
+    case 67: //c = clockwise
+      lookYaw = lookYaw + 3;
+      lookOut();
+      break;
+    case 79: //o = counterclockwise
+      lookYaw = lookYaw - 3;
+      lookOut();
+      break;
+  };
+};
+
+$(document).ready(function() {
+  $('#GoLatLon').click(function() {
+    //get user input
+    lookLat = parseFloat($('#lat').val());
+    lookLon = parseFloat($('#lon').val());
+    console.log(lookLat, lookLon);
+    lookAltitude = parseFloat($('#alt').val());
+    lookPitch = parseFloat($('#pitch').val());
+    lookYaw = parseFloat($('#yaw').val());
+    setSunLocation(lookLat, lookLon);
+    lookOut();
+  });
+});
+
+//Starting locations functions
+function startingLocationJacksonHole() {
+  flightSpeed = 0.001;
+  lookLat = 43.56646;
+  lookLon = -110.80000;
+  lookAltitude = 2400;
+  lookPitch = 3;
+  lookYaw = -48;
+  lookOut();
+};
+
+function startingLocationAlta() {
+  flightSpeed = 0.001;
+  lookLat = 40.60268;
+  lookLon = -111.60593;
+  lookAltitude = 3500;
+  lookPitch = 11;
+  lookYaw = -138;
+  lookOut();
+};
+
+function startingLocationSquawValley() {
+  flightSpeed = 0.001;
+  lookLat = 39.20099;
+  lookLon = -120.22204;
+  lookAltitude = 2200;
+  lookPitch = 7;
+  lookYaw = -101;
+  lookOut();
+};
+
+function startingLocationVail() {
+  flightSpeed = 0.001;
+  lookLat = 39.6606;
+  lookLon = -106.3773;
+  lookAltitude = 3000;
+  lookPitch = 3;
+  lookYaw = -168;
+  lookOut();
+};
+
+function startingLocationTelluride() {
+  flightSpeed = 0.001;
+  lookLat = 37.94542;
+  lookLon = -107.80098;
+  lookAltitude = 3200;
+  lookPitch = 6;
+  lookYaw = -135;
+  lookOut();
+};
+
+//Converts an image to a texture
+function textureFromImage(image) {
+  var tex = new AltusUnified.Texture(image, false);
+  return tex;
+}
+
+//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha) {
+  var image = squareImage(width, height, red, green, blue, alpha);
+  var tex = textureFromImage(image);
+  image.delete();
+  return tex;
+}
+
+//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha) {
+  var arr = new AltusUnified.VectorByte();
+  for (i = 0; i < width * height; i += 1) {
+    arr.push_back(red);
+    arr.push_back(green);
+    arr.push_back(blue);
+    arr.push_back(alpha);
+  }
+  var image = new AltusUnified.Image(width, height, arr);
+  arr.delete();
+  return image;
+}
+
+//Initalize stat tracking
+function initStats() {
+  var MySceneDelegate = AltusUnified.ISceneDelegate.extend("ISceneDelegate", {
+    getRenderEventFlags: function() {
+      return AltusUnified.RenderEventFlags.POST_RENDER;
+    },
+    preRender: function(elapsed) {},
+    postRender: function(elapsed) {
+      var pos = AltusUnified.scene.camera().transform.geographicPosition();
+      $("#statslat").val(pos.latitude);
+      $("#statslon").val(pos.longitude);
+      $("#statsalt").val(pos.altitude);
+      pos.delete();
+
+      var orientation = AltusUnified.scene.camera().transform.geographicOrientation();
+      $("#statspitch").val(orientation.pitch);
+      $("#statsyaw").val(orientation.yaw);
+      orientation.delete();
+    }
+  });
+  var sceneDelegate = new MySceneDelegate();
+  AltusUnified.scene.setDelegate(sceneDelegate);
+  sceneDelegate.delete();
+}
+
+//This function exists to solve a problem in jsfiddle with keyboard
+//clicks in the canvas. Without this function, shift-drag and
+//ctrl-drag work do not work in jsfiddle. You should not need
+//this function outside of jsfiddle. You should not need
+//this function outside of jsfiddle. 
+function solveJsfiddleProblem() {
+  AltusUnified.canvas.setAttribute('tabindex', '1');
+  AltusUnified.canvas.addEventListener('click', function(event) {
+    AltusUnified.canvas.blur();
+    AltusUnified.canvas.focus();
+  });
+}
+
+//Loads 3D terrain
+function add3DTerrain() {
+  //Create the tile provider
+  var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(
+    "baseMapHeight",
+    "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png",
+    "",
+    true,
+    AltusUnified.MapFormat.TERRAIN_HEIGHT);
+
+  //Create the terrain map object
+  var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+  var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+
+  //Add the terrain map
+  AltusUnified.scene.addMap(terrainMap);
+
+  //Disable tile biasing (to minimize the amount of data loaded)
+  AltusUnified.scene.screen().setTileLevelBias(0);
+
+  //Clean up
+  terrainMap.delete();
+  baseDesc.delete();
+  internetTileProvider.delete();
+}
+
+function positionCamera3D(lat, lon, altitude, roll, pitch, yaw) {
+  // create position object
+  var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+  // create orientation object - camera pointed like standard 2D map view
+  var orientation = new AltusUnified.Orientation(roll, pitch, yaw);
+
+  // create default scale object
+  var scale = new AltusUnified.vec3d(1, 1, 1);
+
+  // set transfrom to scene
+  // More info on transforms here: http://tinyurl.com/z2c94lb
+  var trans = new AltusUnified.Transform(pos, orientation, scale);
+  AltusUnified.scene.camera().transform.set(trans);
+
+  // clean up
+  pos.delete();
+  orientation.delete();
+  scale.delete();
+}
+
+function installBaseMap() {
+
+  //Internal name of map
+  var mapName = "BaseMap";
+
+  //Url template for raster map tiles
+  var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA";
+
+
+  //Create a tile provider that will serve up the tiles
+  var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+
+  //Create a map description and map object
+  var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+  var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+  //Add the new map
+  AltusUnified.scene.addMap(newMap);
+
+  //no dark side (delete this line and spin the globe to see what I mean)
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET);
+
+  //Make the sky blue
+  AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC);
+
+  //Know what version of the engine is in use. Press F12 to see.
+  console.log("Version Tag - " + AltusUnified.Scene.versionTag());
+
+  //Clean up
+  newMap.delete();
+  mapDesc.delete();
+  internetTileProvider.delete();
+};
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_44_Top_5_Ski_Resorts_Viewer').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,1516 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Altus Mapping Engine Web Test">
+    <meta name="author" content="BA3, LLC">
+
+    <title>Altus Web - Test</title>
+
+    <!--Altus styles : required-->
+    <link href="altus.css" rel="stylesheet">
+
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            border: 0;
+            overflow: hidden; /*  Disable scrollbars */
+            display: block; /* No floating content on sides */
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div style="position:absolute; top: 0%; left:0%; width:100%; height:100%; overflow:hidden;" id="AltusDiv"></div>
+
+    <!--Script-->
+    <script type="text/javascript" src="altus.js"></script>
+    <script type='text/javascript'>
+
+        // initalizing the map
+        var mapDiv = document.getElementById("AltusDiv");
+        var scene = null;
+        var currentMapIndex = -1;
+
+        // Create the Altus view
+        var AltusUnified = new Altus({
+            renderTo: mapDiv,
+            pauseWhenNotVisible: true,
+        });
+
+        var savedNoiseMarkerTileRequestStack = [];
+
+        // defining a function to switch the base map
+        var addBaseMap = function (mapName, url) {
+            console.log("adding base map " + mapName + " url:" + url);
+
+            // remove previous map
+            var map = scene.findMap(mapName);
+            if (map != null) {
+                scene.removeMap(map, true);
+                map.delete();
+            }
+
+            // setup tile source
+            var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, url);
+
+            // create map description
+            var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+            var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+            // add map to scene
+            scene.addMap(newMap);
+
+            newMap.delete();
+            mapDesc.delete();
+            internetTileProvider.delete();
+        };
+
+        // defining a function to switch the base map
+        var addWeatherGridBaseMap = function (mapName, url) {
+            function createColorBar(values, colors, min, max) {
+                var numValues = values.length;
+                var colorbar = new AltusUnified.ColorBar();
+
+                var minValue = min;
+
+                for (var i = 0; i < numValues; ++i) {
+                    var color = new AltusUnified.Color(colors[i]);
+                    var maxValue = values[i];
+                    colorbar.addColor(minValue, color);
+                    colorbar.addColor(maxValue, color);
+
+                    minValue = maxValue + 0.0001;
+                    color.delete();
+                }
+
+                var lastColor = new AltusUnified.Color(colors[numValues]);
+                if (minValue < max)
+                    colorbar.addColor(minValue, lastColor);
+                colorbar.addColor(max, lastColor);
+                lastColor.delete();
+
+                return colorbar;
+            }
+
+            var internetTileProvider = AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(mapName, url, "", true, AltusUnified.MapFormat.WEATHER_GRID);
+
+            var textureElevation;
+            var textureWater;
+            var textureLight;
+
+            {
+                var values = [0, 1000, 2000, 3000, 5000, 7000, 9000, 12000];
+                var heightColors = [
+                    0xdcd6b5ff, // <= 0
+                    0xeae2c5ff, // 0 - 1000
+                    0xdcd6b5ff, // 1000 - 2000
+                    0xfef4dfff, // 2000 - 3000
+                    0xf4e4c5ff, // 3000 - 5000
+                    0xe7d4acff, // 5000 - 7000
+                    0xd8c3a5ff, // 7000 - 9000
+                    0xd1b79aff, // 9000 - 12000
+                    0xd1aa98ff]; // > 12000
+                var colorbarElevation = createColorBar(values, heightColors, -328.1, 13123);
+                textureElevation = AltusUnified.Texture.createFromColorBar(colorbarElevation);
+                colorbarElevation.delete();
+            }
+
+            {
+                var values = [128, 129, 240];
+                var waterColors = [
+                    0xf4f3f200, // land
+                    0xc3878044, // outline
+                    0xc6dbf1ff, // water glow
+                    0xc6dbf1ff]; // water
+                var colorbarWater = createColorBar(values, waterColors, 0, 256);
+                textureWater = AltusUnified.Texture.createFromColorBar(colorbarWater);
+                colorbarWater.delete();
+            }
+
+            {
+                var values = [0, 32, 64, 96, 128, 160, 192, 224, 248, 256];
+                var lightColors = [
+                    0x807da97F,
+                    0x807da970,
+                    0x807da9D0,
+                    0x807da9B0,
+                    0x807da990,
+                    0x807da970,
+                    0x807da950,
+                    0x807da930,
+                    0x807da910,
+                    0x807da900,
+                    0x807da900];
+                var colorbarLight = createColorBar(values, lightColors, 0, 256);
+                textureLight = AltusUnified.Texture.createFromColorBar(colorbarLight);
+                colorbarLight.delete();
+            }
+
+            var colorbars = new AltusUnified.VectorTexture();
+            colorbars.push_back(textureElevation);
+            colorbars.push_back(textureWater);
+            colorbars.push_back(textureLight);
+            textureElevation.delete();
+            textureWater.delete();
+            textureLight.delete();
+
+            var newMap = new AltusUnified.WeatherGridMap(mapName, internetTileProvider, colorbars);
+            scene.addMap(newMap);
+
+            newMap.delete();
+            internetTileProvider.delete();
+            colorbars.delete();
+        };
+
+        //Parses parameters on the URL (i.e. page.html?lon=-57&lat=84 )
+        function parsePageParameters() {
+            var s1 = location.search.substring(1, location.search.length).split('&'),
+            r = {}, s2, i;
+            for (i = 0; i < s1.length; i += 1) {
+                s2 = s1[i].split('=');
+                r[decodeURIComponent(s2[0]).toLowerCase()] = decodeURIComponent(s2[1]);
+            }
+            return r;
+        };
+
+        function setPosition(lat, lon, altitude) {
+            // create position object
+            var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+            // create orientation object - camera pointed like standard 2D map view
+            var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+            // create default scale object
+            var scale = new AltusUnified.vec3d(1, 1, 1);
+
+            // set transfrom to scene
+            var trans = new AltusUnified.Transform(pos, orientation, scale);
+            scene.camera().transform.set(trans);
+
+            pos.delete();
+            orientation.delete();
+            scale.delete();
+        }
+
+        function pushToVector(vector, array) {
+            var size = array.length;
+            for (var i = 0; i < size; i++) {
+                vector.push_back(array[i]);
+            }
+        }
+
+        function deleteElements(array) {
+            var size = array.length;
+            for (var i = 0; i < size; i++) {
+                array[i].delete();
+            }
+            array.length = 0;
+        }
+
+        function addElementsToVectorAndDelete(vector, array) {
+            pushToVector(vector, array);
+            deleteElements(array);
+        }
+
+        function randomImage(width, height, alpha) {
+            var arr = new AltusUnified.VectorByte();
+
+            for (i = 0; i < width * height; i += 1) {
+                arr.push_back(Math.random() * 255);
+                arr.push_back(Math.random() * 255);
+                arr.push_back(Math.random() * 255);
+                arr.push_back(alpha);
+            }
+
+            var image = new AltusUnified.Image(width, height, arr);
+            arr.delete();
+
+            return image;
+        }
+
+        function createRandomTexture(width, height, alpha) {
+            var image = randomImage(width, height, alpha);
+            var tex = new AltusUnified.Texture(image, false);
+            image.delete();
+		    tex.setFilter(AltusUnified.TextureMagFilter.Nearest);
+		    return tex;
+        }
+
+        var bitmapFont = [
+				[ 32, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+				[ 33, 0x00, 0x00, 0x18, 0x18, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18 ],
+				[ 34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x36, 0x36, 0x36 ],
+				[ 35, 0x00, 0x00, 0x00, 0x66, 0x66, 0xff, 0x66, 0x66, 0xff, 0x66, 0x66, 0x00, 0x00 ],
+				[ 36, 0x00, 0x00, 0x18, 0x7e, 0xff, 0x1b, 0x1f, 0x7e, 0xf8, 0xd8, 0xff, 0x7e, 0x18 ],
+				[ 37, 0x00, 0x00, 0x0e, 0x1b, 0xdb, 0x6e, 0x30, 0x18, 0x0c, 0x76, 0xdb, 0xd8, 0x70 ],
+				[ 38, 0x00, 0x00, 0x7f, 0xc6, 0xcf, 0xd8, 0x70, 0x70, 0xd8, 0xcc, 0xcc, 0x6c, 0x38 ],
+				[ 39, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x1c, 0x0c, 0x0e ],
+				[ 40, 0x00, 0x00, 0x0c, 0x18, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x18, 0x0c ],
+				[ 41, 0x00, 0x00, 0x30, 0x18, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x18, 0x30 ],
+				[ 42, 0x00, 0x00, 0x00, 0x00, 0x99, 0x5a, 0x3c, 0xff, 0x3c, 0x5a, 0x99, 0x00, 0x00 ],
+				[ 43, 0x00, 0x00, 0x00, 0x18, 0x18, 0x18, 0xff, 0xff, 0x18, 0x18, 0x18, 0x00, 0x00 ],
+				[ 44, 0x00, 0x00, 0x30, 0x18, 0x1c, 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+				[ 45, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+				[ 46, 0x00, 0x00, 0x00, 0x38, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+				[ 47, 0x00, 0x60, 0x60, 0x30, 0x30, 0x18, 0x18, 0x0c, 0x0c, 0x06, 0x06, 0x03, 0x03 ],
+				[ 48, 0x00, 0x00, 0x3c, 0x66, 0xc3, 0xe3, 0xf3, 0xdb, 0xcf, 0xc7, 0xc3, 0x66, 0x3c ],
+				[ 49, 0x00, 0x00, 0x7e, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x78, 0x38, 0x18 ],
+				[ 50, 0x00, 0x00, 0xff, 0xc0, 0xc0, 0x60, 0x30, 0x18, 0x0c, 0x06, 0x03, 0xe7, 0x7e ],
+				[ 51, 0x00, 0x00, 0x7e, 0xe7, 0x03, 0x03, 0x07, 0x7e, 0x07, 0x03, 0x03, 0xe7, 0x7e ],
+				[ 52, 0x00, 0x00, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0xff, 0xcc, 0x6c, 0x3c, 0x1c, 0x0c ],
+				[ 53, 0x00, 0x00, 0x7e, 0xe7, 0x03, 0x03, 0x07, 0xfe, 0xc0, 0xc0, 0xc0, 0xc0, 0xff ],
+				[ 54, 0x00, 0x00, 0x7e, 0xe7, 0xc3, 0xc3, 0xc7, 0xfe, 0xc0, 0xc0, 0xc0, 0xe7, 0x7e ],
+				[ 55, 0x00, 0x00, 0x30, 0x30, 0x30, 0x30, 0x18, 0x0c, 0x06, 0x03, 0x03, 0x03, 0xff ],
+				[ 56, 0x00, 0x00, 0x7e, 0xe7, 0xc3, 0xc3, 0xe7, 0x7e, 0xe7, 0xc3, 0xc3, 0xe7, 0x7e ],
+				[ 57, 0x00, 0x00, 0x7e, 0xe7, 0x03, 0x03, 0x03, 0x7f, 0xe7, 0xc3, 0xc3, 0xe7, 0x7e ],
+				[ 58, 0x00, 0x00, 0x00, 0x38, 0x38, 0x00, 0x00, 0x38, 0x38, 0x00, 0x00, 0x00, 0x00 ],
+				[ 59, 0x00, 0x00, 0x30, 0x18, 0x1c, 0x1c, 0x00, 0x00, 0x1c, 0x1c, 0x00, 0x00, 0x00 ],
+				[ 60, 0x00, 0x00, 0x06, 0x0c, 0x18, 0x30, 0x60, 0xc0, 0x60, 0x30, 0x18, 0x0c, 0x06 ],
+				[ 61, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 ],
+				[ 62, 0x00, 0x00, 0x60, 0x30, 0x18, 0x0c, 0x06, 0x03, 0x06, 0x0c, 0x18, 0x30, 0x60 ],
+				[ 63, 0x00, 0x00, 0x18, 0x00, 0x00, 0x18, 0x18, 0x0c, 0x06, 0x03, 0xc3, 0xc3, 0x7e ],
+				[ 64, 0x00, 0x00, 0x3f, 0x60, 0xcf, 0xdb, 0xd3, 0xdd, 0xc3, 0x7e, 0x00, 0x00, 0x00 ],
+				[ 65, 0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xff, 0xc3, 0xc3, 0xc3, 0x66, 0x3c, 0x18 ],
+				[ 66, 0x00, 0x00, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe ],
+				[ 67, 0x00, 0x00, 0x7e, 0xe7, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xe7, 0x7e ],
+				[ 68, 0x00, 0x00, 0xfc, 0xce, 0xc7, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc7, 0xce, 0xfc ],
+				[ 69, 0x00, 0x00, 0xff, 0xc0, 0xc0, 0xc0, 0xc0, 0xfc, 0xc0, 0xc0, 0xc0, 0xc0, 0xff ],
+				[ 70, 0x00, 0x00, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xfc, 0xc0, 0xc0, 0xc0, 0xff ],
+				[ 71, 0x00, 0x00, 0x7e, 0xe7, 0xc3, 0xc3, 0xcf, 0xc0, 0xc0, 0xc0, 0xc0, 0xe7, 0x7e ],
+				[ 72, 0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xff, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3 ],
+				[ 73, 0x00, 0x00, 0x7e, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x7e ],
+				[ 74, 0x00, 0x00, 0x7c, 0xee, 0xc6, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06 ],
+				[ 75, 0x00, 0x00, 0xc3, 0xc6, 0xcc, 0xd8, 0xf0, 0xe0, 0xf0, 0xd8, 0xcc, 0xc6, 0xc3 ],
+				[ 76, 0x00, 0x00, 0xff, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0 ],
+				[ 77, 0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xdb, 0xff, 0xff, 0xe7, 0xc3 ],
+				[ 78, 0x00, 0x00, 0xc7, 0xc7, 0xcf, 0xcf, 0xdf, 0xdb, 0xfb, 0xf3, 0xf3, 0xe3, 0xe3 ],
+				[ 79, 0x00, 0x00, 0x7e, 0xe7, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xe7, 0x7e ],
+				[ 80, 0x00, 0x00, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe ],
+				[ 81, 0x00, 0x00, 0x3f, 0x6e, 0xdf, 0xdb, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0x66, 0x3c ],
+				[ 82, 0x00, 0x00, 0xc3, 0xc6, 0xcc, 0xd8, 0xf0, 0xfe, 0xc7, 0xc3, 0xc3, 0xc7, 0xfe ],
+				[ 83, 0x00, 0x00, 0x7e, 0xe7, 0x03, 0x03, 0x07, 0x7e, 0xe0, 0xc0, 0xc0, 0xe7, 0x7e ],
+				[ 84, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0xff ],
+				[ 85, 0x00, 0x00, 0x7e, 0xe7, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3 ],
+				[ 86, 0x00, 0x00, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3 ],
+				[ 87, 0x00, 0x00, 0xc3, 0xe7, 0xff, 0xff, 0xdb, 0xdb, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3 ],
+				[ 88, 0x00, 0x00, 0xc3, 0x66, 0x66, 0x3c, 0x3c, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3 ],
+				[ 89, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3 ],
+				[ 90, 0x00, 0x00, 0xff, 0xc0, 0xc0, 0x60, 0x30, 0x7e, 0x0c, 0x06, 0x03, 0x03, 0xff ],
+				[ 91, 0x00, 0x00, 0x3c, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x3c ],
+				[ 92, 0x00, 0x03, 0x03, 0x06, 0x06, 0x0c, 0x0c, 0x18, 0x18, 0x30, 0x30, 0x60, 0x60 ],
+				[ 93, 0x00, 0x00, 0x3c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x3c ],
+				[ 94, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc3, 0x66, 0x3c, 0x18 ],
+				[ 95, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+				[ 96, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x38, 0x30, 0x70 ],
+				[ 97, 0x00, 0x00, 0x7f, 0xc3, 0xc3, 0x7f, 0x03, 0xc3, 0x7e, 0x00, 0x00, 0x00, 0x00 ],
+				[ 98, 0x00, 0x00, 0xfe, 0xc3, 0xc3, 0xc3, 0xc3, 0xfe, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0 ],
+				[ 99, 0x00, 0x00, 0x7e, 0xc3, 0xc0, 0xc0, 0xc0, 0xc3, 0x7e, 0x00, 0x00, 0x00, 0x00 ],
+				[ 100, 0x00, 0x00, 0x7f, 0xc3, 0xc3, 0xc3, 0xc3, 0x7f, 0x03, 0x03, 0x03, 0x03, 0x03 ],
+				[ 101, 0x00, 0x00, 0x7f, 0xc0, 0xc0, 0xfe, 0xc3, 0xc3, 0x7e, 0x00, 0x00, 0x00, 0x00 ],
+				[ 102, 0x00, 0x00, 0x30, 0x30, 0x30, 0x30, 0x30, 0xfc, 0x30, 0x30, 0x30, 0x33, 0x1e ],
+				[ 103, 0x7e, 0xc3, 0x03, 0x03, 0x7f, 0xc3, 0xc3, 0xc3, 0x7e, 0x00, 0x00, 0x00, 0x00 ],
+				[ 104, 0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xfe, 0xc0, 0xc0, 0xc0, 0xc0 ],
+				[ 105, 0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x00, 0x00, 0x18, 0x00 ],
+				[ 106, 0x38, 0x6c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x00, 0x00, 0x0c, 0x00 ],
+				[ 107, 0x00, 0x00, 0xc6, 0xcc, 0xf8, 0xf0, 0xd8, 0xcc, 0xc6, 0xc0, 0xc0, 0xc0, 0xc0 ],
+				[ 108, 0x00, 0x00, 0x7e, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x78 ],
+				[ 109, 0x00, 0x00, 0xdb, 0xdb, 0xdb, 0xdb, 0xdb, 0xdb, 0xfe, 0x00, 0x00, 0x00, 0x00 ],
+				[ 110, 0x00, 0x00, 0xc6, 0xc6, 0xc6, 0xc6, 0xc6, 0xc6, 0xfc, 0x00, 0x00, 0x00, 0x00 ],
+				[ 111, 0x00, 0x00, 0x7c, 0xc6, 0xc6, 0xc6, 0xc6, 0xc6, 0x7c, 0x00, 0x00, 0x00, 0x00 ],
+				[ 112, 0xc0, 0xc0, 0xc0, 0xfe, 0xc3, 0xc3, 0xc3, 0xc3, 0xfe, 0x00, 0x00, 0x00, 0x00 ],
+				[ 113, 0x03, 0x03, 0x03, 0x7f, 0xc3, 0xc3, 0xc3, 0xc3, 0x7f, 0x00, 0x00, 0x00, 0x00 ],
+				[ 114, 0x00, 0x00, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xe0, 0xfe, 0x00, 0x00, 0x00, 0x00 ],
+				[ 115, 0x00, 0x00, 0xfe, 0x03, 0x03, 0x7e, 0xc0, 0xc0, 0x7f, 0x00, 0x00, 0x00, 0x00 ],
+				[ 116, 0x00, 0x00, 0x1c, 0x36, 0x30, 0x30, 0x30, 0x30, 0xfc, 0x30, 0x30, 0x30, 0x00 ],
+				[ 117, 0x00, 0x00, 0x7e, 0xc6, 0xc6, 0xc6, 0xc6, 0xc6, 0xc6, 0x00, 0x00, 0x00, 0x00 ],
+				[ 118, 0x00, 0x00, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3, 0xc3, 0x00, 0x00, 0x00, 0x00 ],
+				[ 119, 0x00, 0x00, 0xc3, 0xe7, 0xff, 0xdb, 0xc3, 0xc3, 0xc3, 0x00, 0x00, 0x00, 0x00 ],
+				[ 120, 0x00, 0x00, 0xc3, 0x66, 0x3c, 0x18, 0x3c, 0x66, 0xc3, 0x00, 0x00, 0x00, 0x00 ],
+				[ 121, 0xc0, 0x60, 0x60, 0x30, 0x18, 0x3c, 0x66, 0x66, 0xc3, 0x00, 0x00, 0x00, 0x00 ],
+				[ 122, 0x00, 0x00, 0xff, 0x60, 0x30, 0x18, 0x0c, 0x06, 0xff, 0x00, 0x00, 0x00, 0x00 ],
+				[ 123, 0x00, 0x00, 0x0f, 0x18, 0x18, 0x18, 0x38, 0xf0, 0x38, 0x18, 0x18, 0x18, 0x0f ],
+				[ 124, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18 ],
+				[ 125, 0x00, 0x00, 0xf0, 0x18, 0x18, 0x18, 0x1c, 0x0f, 0x1c, 0x18, 0x18, 0x18, 0xf0 ],
+				[ 126, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x8f, 0xf1, 0x60, 0x00, 0x00, 0x00 ],
+				[ 127, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 ],
+		];
+
+        function createTextImage(caption)
+        {
+		    var CharWidth = 8;
+		    var CharHeight = 13;
+		    var len = caption.length;
+		    var imageWidth = len * (CharWidth + 1);
+		    var imageHeight = CharHeight;
+
+		    var abgrData = [];
+
+		    for (i = 0; i < len; i++)
+		    {
+		        var chr = caption.charAt(i).charCodeAt(0);
+			    if (chr < 32 || chr > 126)
+			        chr = 127;
+
+			    for (y = 0; y < CharHeight; y++)
+			    {
+				    imgY = CharHeight - 1 - y;
+				    charLine = bitmapFont[chr - 32][ 1 + imgY];
+				    for (x = 0; x < CharWidth; x++)
+				    {
+					    imgX = CharWidth - 1 - x;
+					    color = (charLine & (1 << imgX)) != 0 ? 0xFF : 0x00;
+					    var pixel = y*imageWidth + x + (CharWidth + 1) * i;
+					    abgrData[pixel * 4 + 0] = color;
+					    abgrData[pixel * 4 + 1] = color;
+					    abgrData[pixel * 4 + 2] = color;
+					    abgrData[pixel * 4 + 3] = color;
+				    }
+				    var pixel = y*imageWidth + CharWidth + (CharWidth + 1) * i
+				    abgrData[pixel * 4 + 0] = 0;
+				    abgrData[pixel * 4 + 1] = 0;
+				    abgrData[pixel * 4 + 2] = 0;
+				    abgrData[pixel * 4 + 3] = 0;
+                }
+		    }
+
+		    var vec = new AltusUnified.VectorByte();
+		    pushToVector(vec,abgrData);
+		    var image = new AltusUnified.Image(imageWidth, imageHeight, vec);
+            vec.delete();
+            return image;
+        }
+
+        function createTextTexture(caption)
+	    {
+            var image = createTextImage(caption);
+            var tex = new AltusUnified.Texture(image, false);
+            image.delete();
+		    //tex.setFilter(GL_NEAREST);
+		    return tex;
+	    }
+
+
+        function onAltusEngineReady() {
+            console.log("onAltusEngineReady called");
+            scene = AltusUnified.scene;
+
+            var baseMapName = "baseMap";
+
+            function nextMap() {
+                currentMapIndex++;
+                if (currentMapIndex > 2) {
+                    currentMapIndex = 0;
+                }
+                switch (currentMapIndex) {
+                    case 0:
+                        addBaseMap(baseMapName, "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA");
+                        break;
+
+                    case 1:
+                        addBaseMap(baseMapName, "https://a.tiles.mapbox.com/v3/dxjacob.h43n70g0/{z}/{x}/{y}.png");
+                        break;
+
+                    case 2:
+                        addWeatherGridBaseMap(baseMapName, "http://s3.amazonaws.com/pwsdata/airmap/terrain_tiles/{z}/{x}/{y}.png");
+                        break;
+
+                    default:
+                        break;
+                }
+            };
+
+            // select the first map;
+            nextMap();
+
+
+            // BLUE BASE MAP IMAGE
+            {
+                var abgrData = [0x4f, 0x8f, 0xf0, 0xff]; // R G B A
+                var vec = new AltusUnified.VectorByte();
+                pushToVector(vec, abgrData);
+                var image = new AltusUnified.Image(1, 1, vec);
+                vec.delete();
+
+                scene.setBaseMapImage(image);
+                image.delete();
+            }
+
+            // WHITE POLE TILE PROVIDER
+            {
+                var whiteImage;
+                {
+                    var abgrData = [0xff, 0xff, 0xff, 0xff]; // R G B A
+                    var vec = new AltusUnified.VectorByte();
+                    pushToVector(vec, abgrData);
+                    whiteImage = new AltusUnified.Image(1, 1, vec);
+                    vec.delete();
+                }
+
+                var WhiteTileProvider = AltusUnified.ITileProvider.extend("ITileProvider", {
+                    requestTileAsync: function (request, loader) {
+                        //console.log("requestTileAsync");
+                        request.image_set(whiteImage);
+                        request.tileProviderResponse = AltusUnified.TileProviderResponse.IMAGE_DATA;
+                        loader.tileLoadComplete(request);
+                    }
+                });
+
+                // setup tile source
+                var whiteTileProvider = new WhiteTileProvider();
+
+                // create map description
+                var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+                mapDesc.imageSize().x = 1;
+                mapDesc.imageSize().y = 1;
+                var boundingBox = new AltusUnified.GeoBoundingBox(-180, 85.051128779806604, 180, 90);
+                mapDesc.bounds_set(boundingBox);
+
+                var newMap = new AltusUnified.VirtualMap("whiteMap", mapDesc, whiteTileProvider);
+
+                // add map to scene
+                scene.addMap(newMap);
+                newMap.setOrder(1);
+
+                newMap.delete();
+                mapDesc.delete();
+                whiteTileProvider.delete();
+                boundingBox.delete();
+            }
+
+            /*{
+                function createColorBar(values, colors, min, max)
+                {
+                    var numValues = values.length;
+	                var colorbar = new AltusUnified.ColorBar();
+
+	                var minValue = min;
+
+	                for (var i = 0; i < numValues; ++i) {
+		                var color = new AltusUnified.Color(colors[i]);
+		                var maxValue = values[i];
+		                colorbar.addColor(minValue, color);
+		                colorbar.addColor(maxValue, color);
+
+		                minValue = maxValue + 0.0001;
+                        color.delete();
+	                }
+
+	                var lastColor = new AltusUnified.Color(colors[numValues]);
+	                if (minValue < max)
+		                colorbar.addColor(minValue, lastColor);
+	                colorbar.addColor(max, lastColor);
+                    lastColor.delete();
+                    
+	                return colorbar;
+                }
+
+                var internetTileProvider = AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("baseMapWeather", "http://s3.amazonaws.com/pwsdata/airmap/terrain_tiles/{z}/{x}/{y}.png", "", true, AltusUnified.MapFormat.WEATHER_GRID);
+
+                var textureElevation;
+                var textureWater;
+                var textureLight;
+
+                {
+                    var values = [ 0, 1000, 2000, 3000, 5000, 7000, 9000, 12000 ];
+                    var heightColors = [
+                        0xdcd6b5ff, // <= 0
+                        0xeae2c5ff, // 0 - 1000
+                        0xdcd6b5ff, // 1000 - 2000
+                        0xfef4dfff, // 2000 - 3000
+                        0xf4e4c5ff, // 3000 - 5000
+                        0xe7d4acff, // 5000 - 7000
+                        0xd8c3a5ff, // 7000 - 9000
+                        0xd1b79aff, // 9000 - 12000
+                        0xd1aa98ff ]; // > 12000
+                    var colorbarElevation = createColorBar(values, heightColors, -328.1, 13123);
+                    textureElevation = new AltusUnified.Texture(colorbarElevation);
+                    colorbarElevation.delete();
+                }
+
+                {
+                    var values = [ 128, 129, 240 ];
+                    var waterColors = [
+                        0xf4f3f200, // land
+                        0xc3878044, // outline
+                        0xc6dbf1ff, // water glow
+                        0xc6dbf1ff ]; // water
+                    var colorbarWater = createColorBar(values, waterColors, 0, 256);
+                    textureWater = new AltusUnified.Texture(colorbarWater);
+                    colorbarWater.delete();
+                }
+
+                {
+                    var values = [ 0, 32, 64, 96, 128, 160, 192, 224, 248, 256 ];
+                    var lightColors = [
+                        0x807da97F,
+                        0x807da970,
+                        0x807da9D0,
+                        0x807da9B0,
+                        0x807da990,
+                        0x807da970,
+                        0x807da950,
+                        0x807da930,
+                        0x807da910,
+                        0x807da900,
+                        0x807da900 ];
+                    var colorbarLight = createColorBar(values, lightColors, 0, 256);
+                    textureLight = new AltusUnified.Texture(colorbarLight);
+                    colorbarLight.delete();
+                }
+
+                var colorbars = new AltusUnified.VectorTexture();
+                colorbars.push_back(textureElevation);
+                colorbars.push_back(textureWater);
+                colorbars.push_back(textureLight);
+                textureElevation.delete();
+                textureWater.delete();
+                textureLight.delete();
+
+                var newMap = new AltusUnified.WeatherGridMap("baseMap", internetTileProvider, colorbars);
+                scene.addMap(newMap);
+
+                newMap.delete();
+                internetTileProvider.delete();
+                colorbars.delete();
+            }*/
+
+            // TEMPERATURE_RASTER
+            /*{
+                var blue = new AltusUnified.Color(0x2020ff2f);
+                var yellow = new AltusUnified.Color(0xc0c0509f);
+                var orange = new AltusUnified.Color(0xf0c030cf);
+                var darkorange = new AltusUnified.Color(0xff5000ef);
+                var red = new AltusUnified.Color(0xff0000ff);
+
+                var colorBar = new AltusUnified.ColorBar();
+                colorBar.addColor(0, blue);
+                colorBar.addColor(128, yellow);
+                colorBar.addColor(140, orange);
+                colorBar.addColor(170, darkorange);
+                colorBar.addColor(255, red);
+                var waterColor = new AltusUnified.Color(20, 20, 50, 255)
+                colorBar.setWaterColor(waterColor);
+
+                var textureTemperature = AltusUnified.Texture.createFromColorBar(colorBar);
+
+                var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("temperatureMap900", "http://s3-us-west-2.amazonaws.com/altusmaps/forecast/gfs/gfs.t12z.pgrb2.0p25.f003/tiles/TMP_900/{z}/{x}/{y}.png", "", false, AltusUnified.MapFormat.WEATHER_GRID);
+
+                var colorbars = new AltusUnified.VectorTexture();
+                colorbars.push_back(textureTemperature);
+
+                var temperatureMap = new AltusUnified.WeatherGridMap("temperatureMap900", internetTileProvider, colorbars);
+                temperatureMap.setMaxLevel(3);
+
+                scene.addMap(temperatureMap);
+                temperatureMap.setOrder(5);
+                temperatureMap.setAlpha(0.75);
+
+                blue.delete();
+                yellow.delete();
+                orange.delete();
+                darkorange.delete();
+                red.delete();
+                waterColor.delete();
+                textureTemperature.delete();
+                internetTileProvider.delete();
+                colorbars.delete();
+                temperatureMap.delete();
+            }*/
+
+
+            
+            // If you want to load a model
+            {
+                var modelMap = new AltusUnified.ModelMap("modelMap");
+                scene.addMap(modelMap);
+
+                var trans;
+                {
+                    var geopos = new AltusUnified.GeographicPosition(49.305146953978046, -123.09124563698273, 1000000);
+                    var geoorient = new AltusUnified.Orientation(0, 0, 0);
+                    var s = 0.3;
+                    var scale = new AltusUnified.vec3d(s, s, s);
+                    trans = new AltusUnified.Transform(geopos, geoorient, scale);
+                    geopos.delete();
+                    geoorient.delete();
+                    scale.delete();
+                }
+
+                // load model here
+                {
+                    var tex = createRandomTexture(4,4, 255);
+                    var mesh = AltusUnified.Mesh.createCubeMesh(tex);
+                    var model = new AltusUnified.Model("cube", mesh);
+                    model.transform().set(trans);
+                    modelMap.addModel(model);
+                    mesh.delete();
+                    tex.delete();
+                    model.delete();
+                }
+
+                {
+                    var tex = createRandomTexture(4,4, 255);
+                    var trans2 = AltusUnified.Transform.createFromGeographicCoordinatesAndNauticalMiles(47, -80, 500, 0, 0, 0, 1200, 800, 800);
+                    var mesh = AltusUnified.Mesh.createCylinderMesh(14,tex);
+                    var model = new AltusUnified.Model("cylinder", mesh);
+                    model.transform().set(trans2);
+                    modelMap.addModel(model);
+                    tex.delete();
+                    mesh.delete();
+                    model.delete();
+                    trans2.delete();
+                }
+
+                modelMap.delete();
+            }
+            
+            
+            // FRAMERATE
+            {
+                scene.framerate().setGreenModeCruiseFramerate(20);
+                scene.framerate().setGreenMode(true);
+            }
+
+            // TAWS
+            /*{
+                var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("baseMapHeight_nomax", "https://maps.ba3.us/terrain/nomaxheights/{z}/{x}/{y}.png", "", true, AltusUnified.MapFormat.HGT_TAWS);
+                var tawsDesc = AltusUnified.VirtualMap.defaultTawsMapDesc();
+                var tawsMap = new AltusUnified.VirtualMap("tawsMap", tawsDesc, internetTileProvider);
+                scene.addMap(tawsMap);
+
+                var red = new AltusUnified.Color(0xff0000e0);
+                var orange = new AltusUnified.Color(0xff7f00af);
+                var yellow = new AltusUnified.Color(0xafaf005f);
+                var clear = new AltusUnified.Color(0x00000000);
+                var water = new AltusUnified.Color(20, 20, 50, 255);
+
+                var colorbar = new AltusUnified.ColorBar();
+                colorbar.addColor(-2000.00001, clear);
+                colorbar.addColor(-2000, yellow);
+                colorbar.addColor(-1000.000001, yellow);
+                colorbar.addColor(-1000, orange);
+                colorbar.addColor(-1.000001, orange);
+                colorbar.addColor(-1, red);
+                colorbar.setWaterColor(water);
+                scene.setTawsColorBar(colorbar);
+                scene.setTawsAltitude(3000);
+
+                colorbar.delete();
+                red.delete();
+                orange.delete();
+                yellow.delete();
+                clear.delete();
+                water.delete();
+
+                tawsMap.delete();
+                tawsDesc.delete();
+                internetTileProvider.delete();
+            }
+            */
+            // VIRTUAL TERRAIN
+            {
+                var internetTileProvider = new AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat("baseMapHeight", "https://maps.ba3.us/terrain/maxheights/{z}/{x}/{y}.png", "", true, AltusUnified.MapFormat.TERRAIN_HEIGHT);
+                var loadOrder = new AltusUnified.VectorInt();
+                var loadingInstructions = internetTileProvider.loadingInstructions();
+                loadingInstructions.loadOrder_set(loadOrder);
+                loadingInstructions.maxParentOffset = 10;
+                var baseDesc = AltusUnified.VirtualMap.defaultTerrainMapDesc();
+                var terrainMap = new AltusUnified.VirtualMap("terrain3D", baseDesc, internetTileProvider);
+                scene.addMap(terrainMap);
+                scene.screen().setTileLevelBias(0);
+
+                //loadingInstructions.delete();
+                loadOrder.delete();
+                internetTileProvider.delete();
+                baseDesc.delete();
+                terrainMap.delete();
+            }
+
+            // CLUSTERED MARKER MAP
+            {
+                console.log("CLUSTERED MARKER MAP BEGIN");
+                var StringMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+                    onMarkerTapped: function (marker, screenPoint, markerPoint, mapName) {
+                        console.log("onMarkerTapped: " + marker.metadata);
+                    },
+                    onMarkersTapped: function (markerHits) {
+                        for (i = 0; i < markerHits.size() ; i++) {
+                            var hit = markerHits.get(i);
+                            console.log("onMarkersTapped: " + hit.mapName + "." + hit.marker().metadata + " at " + hit.screenPoint());
+                            hit.delete();
+                        }
+                    },
+                    getMarkerImage: function (markerInfo, mapName) {
+                        //console.log("getMarkerImage");
+                        if (markerInfo.textureCreatedOnMainThread == null) {
+                            var newImage = createTextImage(this.phrase);
+                            markerInfo.image_set(newImage);
+                            newImage.delete();
+                        }
+                    },
+                    phrase : "phrase"
+                });
+
+                var tex = createTextTexture("Zoom!");
+                var m1 = new AltusUnified.MarkerData(0, 47, -100, 0, 1, "m1", null);
+                var m2 = new AltusUnified.MarkerData(1, 47, -101, 0, 2, "m2", null);
+                var m3 = new AltusUnified.MarkerData(2, 48, -100, 0, 3, "m3", tex);
+                var m4 = new AltusUnified.MarkerData(3, 48, -101, 0, 4, "m4", tex);
+                var markers = new AltusUnified.VectorMarkerData();
+                addElementsToVectorAndDelete(markers, [m1, m2, m3, m4]);
+                var markerMap = new AltusUnified.ClusteredMarkerMap("clusteredMarkerMap", markers, 32, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+                var del = new StringMarkerMapDelegate();
+                del.phrase = "marker";
+                markerMap.setDelegate(del);
+                markerMap.setHitTestingEnabled(true);
+                scene.addMap(markerMap);
+                markerMap.setOrder(312);
+
+                markers.delete();
+                markerMap.delete();
+                tex.delete();
+                del.delete();
+                console.log("CLUSTERED MARKER MAP END");
+            }
+
+            // MARKER TILE PROVIDER
+            {
+                console.log("deriving a new marker tile provider");
+
+                var NoiseMarkerTileProvider = AltusUnified.ITileProvider.extend("ITileProvider", {
+                    mapDesc: function()
+                    {
+                        var mapDesc = AltusUnified.VirtualMap.defaultMarkerMapDesc();
+                        mapDesc.priority = 2000; // low priority
+                        return mapDesc;
+                    },
+                    requestTileAsync: function (request, loader) {
+                        //console.log("requestTileAsync");
+
+                        var width = 32;
+                        var height = 32;
+
+                        var image = randomImage(width, height, 128);
+                        request.image = image;
+                        request.tileProviderResponse = AltusUnified.TileProviderResponse.IMAGE_DATA;
+
+                        var uid = request.getId_LowHigh();
+                        var tileId = new AltusUnified.TileId(uid);
+                        var bounds = tileId.getBounds();
+                        var minx = bounds.min().x;
+                        var maxx = bounds.max().x;
+                        var miny = bounds.min().y;
+                        var maxy = bounds.max().y;
+                        bounds.delete();
+                        tileId.delete();
+                        uid.delete();
+
+                        var midx = (minx + maxx) / 2;
+                        var midy = (miny + maxy) / 2;
+
+
+                        var markerResources = new AltusUnified.MapUintMarkerResource();
+                        var markerId = 0;//Math.random() * 0x7FFFFFFF;
+                        var m1 = new AltusUnified.Marker(markerId, midx, midy, 1, "0");
+                        var mr1 = new AltusUnified.MarkerResource(m1);
+                        var tex = new AltusUnified.Texture(image, false);
+                        mr1.texture = tex;
+                        mr1.alpha = 1;
+                        markerResources.set(markerId, mr1);
+                        //loader.markerTileLoadComplete(request, markerResources);
+
+                        // NOTE: request and loader are only valid for the duration of this function.  If you want to store these somewhere and call tileLoadComplete later
+                        //       then make a copy of them first.  You will have to call .delete() on these copies when you have finished.
+                        var savedRequest = request.duplicate();
+                        var savedLoader = loader.duplicate();
+                        var requestData = { request: savedRequest, loader: savedLoader, markerResources: markerResources };
+                        savedNoiseMarkerTileRequestStack.push(requestData);
+                    }
+                });
+
+                var NoiseMarkerFullfillerSceneDelegate = AltusUnified.ISceneDelegate.extend("ISceneDelegate", {
+                    getRenderEventFlags: function () {
+                        return AltusUnified.RenderEventFlags.POST_RENDER;
+                    },
+                    preRender: function (elapsed) {
+                    },
+                    postRender: function (elapsed) {
+                        // let's create these slowly
+                        //if (Math.random() > 0.2)
+                        //    return;
+
+                        if (savedNoiseMarkerTileRequestStack.length > 0)
+                        {
+                            var requestData = savedNoiseMarkerTileRequestStack[savedNoiseMarkerTileRequestStack.length - 1];
+                            savedNoiseMarkerTileRequestStack.length = savedNoiseMarkerTileRequestStack.length - 1;
+
+                            requestData.loader.markerTileLoadComplete(requestData.request, requestData.markerResources);
+
+                            requestData.loader.delete();
+                            requestData.request.delete();
+                            requestData.markerResources.delete();
+                        }
+                    },
+                    lastAltitude: -1
+                });
+
+                var sceneDelegate = new NoiseMarkerFullfillerSceneDelegate();
+                scene.setDelegate(sceneDelegate);
+                sceneDelegate.delete();
+
+
+                // setup tile source
+                var markerTileProvider = new NoiseMarkerTileProvider();
+
+                // create map description
+                var mapDesc = markerTileProvider.mapDesc();
+                var newMap = new AltusUnified.VirtualMap("customMarkerMap", mapDesc, markerTileProvider);
+
+                // add map to scene
+                scene.addMap(newMap);
+                newMap.setOrder(113);
+
+                newMap.delete();
+                mapDesc.delete();
+                markerTileProvider.delete();
+            }
+
+
+            // CLASSIC INPUT STYLE
+            /*{
+                var classicInputHandler = new AltusUnified.ClassicInputHandler(scene);
+                AltusUnified.inputManager.setRawInputHandler(classicInputHandler);
+                classicInputHandler.delete();
+            }*/
+
+            
+            // DYNAMIC MARKER MAP
+            {
+                var MarkerMover = AltusUnified.ILongPressDelegate.extend("ILongPressDelegate", {
+                    withholdingInput: function () { },
+                    stoppedWitholdingInput: function () { },
+                    startLongPress: function (x, y) {
+                        // we have pressed for long enough
+                        if (this._pressStartPoint)
+                            this._pressStartPoint.delete();
+                        this._pressStartPoint = this._scene.screen().getPercentagePoint(x, y);
+                        var screenPoint = this._scene.screen().getScreenPoint(this._pressStartPoint);
+                        var markers = this._scene.hitTesting().getMarkerHits(screenPoint, true);
+                        numMarkers = markers.size(); 
+                        for (i = 0; i < numMarkers; i++) {
+                            var markerHit = markers.get(i);
+
+
+                            var markerMap = this._scene.findMap(markerHit.mapName);
+                            if (markerMap && markerMap.getMapType() == AltusUnified.MapType.DynamicMarkerMap) {
+                                if (this._selectedTransform)
+                                {
+                                    this._selectedTransform.delete();
+                                    this._selectedTransform = null;
+                                }
+                                this._selectedMarker = markerMap.getMarker(markerHit.marker().metadata);
+                                if (this._selectedMarker) {
+                                    // find the initial position of the marker and calculate the distance from the mouse to the marker
+                                    this._selectedTransform = this._selectedMarker.transform;
+                                    var geoPos = this._selectedTransform.geographicPosition();
+                                    var markerScreenSpacePoint = this._scene.camera().getScreenSpacePercentagePoint(geoPos);
+                                    if (this._deltaPoint)
+                                        this._deltaPoint.delete();
+                                    this._deltaPoint = markerScreenSpacePoint.sub(this._pressStartPoint);
+                                    //console.log("Starting to move " + markerHit.marker.metadata + " with delta (" + this._deltaPoint.x + "," + this._deltaPoint.y + ")");
+                                    geoPos.delete();
+                                    markerScreenSpacePoint.delete();
+                                    markerHit.delete();
+                                    return true;
+                                }
+                            }
+                            markerHit.delete();
+                        }
+                        return false;
+                    },
+                    updateLongPress: function (x, y) {
+                        var recentPoint = this._scene.screen().getPercentagePoint(x, y);
+                        recentPoint.add_inplace(this._deltaPoint);
+
+                        // find point on earth under the mouse/finger
+                        var ray = this._scene.camera().getRay(recentPoint);
+                        var worldPosition = this._scene.camera().transform.worldPosition();
+                        var closestPointToSphere = AltusUnified.intersectRayWithUnitSphereOrClosestPoint(worldPosition, ray);
+
+                        // if we are in space, move to point on earth
+                        closestPointToSphere.normalize();
+
+                        var geoPos = AltusUnified.getGeographicPosition(closestPointToSphere);
+                        this._selectedTransform.setPositionAndMaintainGeographicOrientation(geoPos);
+
+                        geoPos.delete();
+                        ray.delete();
+                        closestPointToSphere.delete();
+                        worldPosition.delete();
+                        recentPoint.delete();
+                    },
+                    stoppedLongPress: function () {
+                        if (this._selectedMarker) {
+                            this._selectedMarker.delete();
+                            this._selectedMarker = null;
+                            this._selectedTransform.delete();
+                            this._selectedTransform = null;
+                        }
+                    },
+                    _scene: null,
+                    _selectedMarker: null,
+                    _selectedTransform: null,        
+                    _pressStartPoint: null,
+                    _deltaPoint: null
+                });
+
+
+                var prevInputHandler = AltusUnified.inputManager.rawInputHandler();
+                var markerMoverDelegate = new MarkerMover();
+                markerMoverDelegate._scene = scene;
+                var longPressInputHandler = new AltusUnified.LongPressInputHandler(scene, markerMoverDelegate, prevInputHandler);
+                AltusUnified.inputManager.setRawInputHandler(longPressInputHandler);
+                markerMoverDelegate.delete();
+                prevInputHandler.delete();
+                longPressInputHandler.delete();
+
+
+                var StringMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+                    onMarkerTapped: function (marker, screenPoint, markerPoint, mapName)
+                    {
+                        console.log("onMarkerTapped: " + marker.metadata);
+                    },
+                    getMarkerImage: function (markerInfo, mapName)
+                    {
+                        //console.log("getMarkerImage");
+                        if (markerInfo.textureCreatedOnMainThread == null)
+                        {
+                            var newImage = createTextImage(this.phrase);
+                            markerInfo.image_set(newImage);
+                            newImage.delete();
+                        }
+                    },
+                    phrase: "phrase"
+                });
+
+
+
+                var scale = 0.0002;
+                var vancouver = new AltusUnified.Transform(new AltusUnified.GeographicPosition(49.295525985946611, -123.09557310271200, 0), new AltusUnified.Orientation(0, 0, -10), new AltusUnified.vec3d(scale, scale, scale));
+                var vancouverTex = createTextTexture("Vancouver");
+                var zero = new AltusUnified.vec2d(0, 0);
+                var hitTestSize = new AltusUnified.vec2i(32, 32);
+
+                var vanMarker = new AltusUnified.DynamicMarker("vancouver", 1, vancouver, vancouverTex, zero, zero, AltusUnified.MarkerRotationType.ROTATION_SCREENEDGE_ALIGNED, hitTestSize);
+
+                var markerMap = new AltusUnified.DynamicMarkerMap("markers");
+                var markers = new AltusUnified.VectorDynamicMarker();
+                markers.push_back(vanMarker);
+                markerMap.addMarkers(markers);
+
+                var del = new StringMarkerMapDelegate();
+                del.phrase = "marker";
+                markerMap.setDelegate(del);
+                //markerMap.setHitTestingEnabled(true);
+
+                scene.addMap(markerMap);
+                markerMap.setOrder(212);
+
+                markers.delete;
+                vanMarker.delete();
+                zero.delete();
+                hitTestSize.delete();
+                vancouverTex.delete();
+                vancouver.delete();
+                markerMap.delete();
+            }
+
+
+            // VECTOR TILE PROVIDER
+            /*{
+                console.log("deriving a new vector tile provider");
+
+                var VectorTileProvider = AltusUnified.ITileProvider.extend("ITileProvider", {
+                    requestTileAsync: function (request, loader) {
+                        //console.log("requestTileAsync");
+                        request.tileProviderResponse = AltusUnified.TileProviderResponse.UNKNOWN_RESPONSE;
+                        request.isOpaque = false;
+
+                        request.tileProviderResponse = AltusUnified.TileProviderResponse.UNKNOWN_RESPONSE;
+
+                        var geometryGroup = new AltusUnified.GeometryGroup();
+                        var poly = new AltusUnified.Polygon();
+
+                        var uid = request.getId_LowHigh();
+                        var tileId = new AltusUnified.TileId(uid);
+                        var bounds = tileId.getBounds();
+                        var minx = bounds.min().x;
+                        var maxx = bounds.max().x;
+                        var miny = bounds.min().y;
+                        var maxy = bounds.max().y;
+                        bounds.delete();
+                        tileId.delete();
+                        uid.delete();
+
+                        var polyPoints = [
+                            new AltusUnified.vec2d(minx, miny),
+                            new AltusUnified.vec2d(minx, maxy),
+                            new AltusUnified.vec2d(maxx, maxy),
+                        ];
+                        pushToVector(poly.shell(), polyPoints);
+                        deleteElements(polyPoints);
+                        poly.shapeId = Math.random() * 255;
+                        
+                        geometryGroup.polygons().push_back(poly);
+
+                        loader.vectorTileLoadComplete(request, geometryGroup);
+
+                        // NOTE: request and loader are only valid for the duration of this function.  If you want to store these somewhere and call tileLoadComplete later
+                        //       then make a copy of them first.  You will have to call .delete() on these copies when you have finished.
+                        //var savedRequest = request.duplicate();
+                        //var savedLoader = loader.duplicate();
+                    }
+                });
+
+                // setup tile source
+                var vectorTileProvider = new VectorTileProvider();
+
+                // create map description
+                var mapDesc = AltusUnified.VirtualMap.defaultVectorMapDesc();
+                var newMap = new AltusUnified.VirtualMap("customVectorMap", mapDesc, vectorTileProvider);
+
+                // add map to scene
+                scene.addMap(newMap);
+                newMap.setOrder(112);
+
+                newMap.delete();
+                mapDesc.delete();
+                vectorTileProvider.delete();
+            }
+
+            // TILE PROVIDER
+            {
+                console.log("deriving a new tile provider");
+
+
+                var RandomTileProvider = AltusUnified.ITileProvider.extend("ITileProvider", {
+                    requestTileAsync: function (request, loader) {
+                        //console.log("requestTileAsync");
+                        var width = 1;
+                        var height = 1;
+                        var arr = new AltusUnified.VectorByte();
+
+                        for (i = 0; i < width * height; i += 1) {
+                            arr.push_back(Math.random() * 255);
+                            arr.push_back(Math.random() * 255);
+                            arr.push_back(Math.random() * 255);
+                            arr.push_back(128);
+                        }
+
+                        var image = new AltusUnified.Image(width, height, arr);
+                        arr.delete();
+                        request.image_set(image);
+                        request.tileProviderResponse = AltusUnified.TileProviderResponse.IMAGE_DATA;
+                        loader.tileLoadComplete(request);
+                        image.delete();
+
+                        // NOTE: request and loader are only valid for the duration of this function.  If you want to store these somewhere and call tileLoadComplete later
+                        //       then make a copy of them first.  You will have to call .delete() on these copies when you have finished.
+                        //var savedRequest = request.duplicate();
+                        //var savedLoader = loader.duplicate();
+                    }
+                });
+
+                // setup tile source
+                var randomTileProvider = new RandomTileProvider();
+
+                // create map description
+                var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+                mapDesc.imageSize().x = 1;
+                mapDesc.imageSize().y = 1;
+                var newMap = new AltusUnified.VirtualMap("randomMap", mapDesc, randomTileProvider);
+
+                // add map to scene
+                scene.addMap(newMap);
+                newMap.setOrder(111);
+
+                newMap.delete();
+                mapDesc.delete();
+                randomTileProvider.delete();
+            }*/
+
+            // CLASSIC CAMERA STYLE
+            /*{
+                // Animate with SetTrackUp
+                var classicCamera = scene.classicCameraModifier();
+                classicCamera.setTrackUp(true, 3);
+                classicCamera.setTrackUpForwardDistance(200, 4);
+                classicCamera.setCameraLocation(49.305146953978046, -123.09124563698273, 20000000, 0, 90, 0, 0);
+                classicCamera.setCameraLocation(-20, -40, 20000000, 0, 90, -40, 5);
+                classicCamera.delete();
+            }*/
+
+            // DYNAMIC VECTOR MAP
+            {
+                var LogVectorMapDelegate = AltusUnified.IVectorMapDelegate.extend("IVectorMapDelegate", {
+                    onLineSegmentHit: function (mapName, shapeId, geoHitPoint, screenPoint, segmentStartIndex, segmentEndIndex) {
+                        console.log("OnLineSegmentHit: " + mapName + "." + shapeId + "(" + segmentStartIndex + "," + segmentEndIndex + ") at " + screenPoint);
+                    },
+                    onVertexHit: function (mapName, shapeId, geoHitPoint, screenPoint, vertexIndex) {
+                        console.log("OnVertexHit: " + mapName + "." + shapeId + "(" + vertexIndex + ") at " + screenPoint);
+                    },
+                    onPolygonHit: function (hits, geoHitPoint, screenPoint) {
+                        for (i = 0; i < hits.size() ; i++)
+                        {
+                            var hit = hits.get(i);
+                            console.log("OnPolygonHit: " + hit.mapName + "." + hit.shapeId + " at " + screenPoint);
+                            hit.delete();
+                        }
+                        this.map.triggerLineHitDetection(screenPoint, 15, 15);
+                    },
+                    onPolygonHit3d: function (hits, screenPoint) {
+                        for (i = 0; i < hits.size() ; i++)
+                        {
+                            var hit = hits.get(i);
+                            console.log("OnPolygonHit3d: " + hit.mapName + "." + hit.shapeId + " at " + screenPoint);
+                            hit.delete();
+                        }
+                    },
+                    polygonHitDetectionEnabled: function() {
+                        return true;
+                    },
+                    lineSegmentHitTestPixelBufferDistance: function() {
+                        return 15;
+                    },
+                    vertexHitTestPixelBufferDistance: function() {
+                        return 15;
+                    },
+                    scene: null,
+                    map: null,
+                });
+
+                // Create a delegate
+                var del = new LogVectorMapDelegate();
+
+                var vectorMap = new AltusUnified.DynamicVectorMap("vecMap");
+                vectorMap.setDelegate(del);
+                del.scene = scene;
+                del.map = vectorMap;
+                del.delete();
+
+                vectorMap.setTesselationThreshold(400000);
+
+                // Add line before adding map
+                var dynamicLine = new AltusUnified.DynamicLine("line1");
+                var dynamicLinePoints = [
+                    new AltusUnified.GeographicPosition2D(0, 0),
+                    new AltusUnified.GeographicPosition2D(10, -10),
+                    new AltusUnified.GeographicPosition2D(20, -20),
+                    new AltusUnified.GeographicPosition2D(28, -50),
+                    new AltusUnified.GeographicPosition2D(35, -80),
+                    new AltusUnified.GeographicPosition2D(47, -122),
+                ];
+                pushToVector(dynamicLine.points(), dynamicLinePoints);
+                deleteElements(dynamicLinePoints);
+                var colors = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var lineStyle = new AltusUnified.LineStyle(colors[0], 8, colors[1], 2);
+                deleteElements(colors);
+                vectorMap.addDynamicLine(dynamicLine, lineStyle);
+
+                // Add 3D line before adding map
+                var dynamicLine3D = new AltusUnified.DynamicLine3D("line3D1");
+                var dynamicLine3DPoints = [
+                    new AltusUnified.GeographicPosition(0, 0, 0),
+                    new AltusUnified.GeographicPosition(10, -10, 10000),
+                    new AltusUnified.GeographicPosition(20, -20, 100000),
+                    new AltusUnified.GeographicPosition(28, -50, 200000),
+                    new AltusUnified.GeographicPosition(35, -80, 300000),
+                    new AltusUnified.GeographicPosition(47, -122, 400000),
+                ];
+                pushToVector(dynamicLine3D.points(), dynamicLine3DPoints);
+                deleteElements(dynamicLine3DPoints);
+                vectorMap.addDynamicLine3D(dynamicLine3D, lineStyle);
+
+                // Add map to scene
+                scene.addMap(vectorMap);
+                vectorMap.setOrder(200);
+                lineStyle.strokeColor().r = 255;
+                lineStyle.strokeColor().g = 0;
+                vectorMap.updateLineStyle(lineStyle, 1.0);
+                lineStyle.delete();
+                vectorMap.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+
+                // Add line after adding map
+                var dynamicLine2 = new AltusUnified.DynamicLine("line2");
+                var dynamicLinePoints2 = [
+                    new AltusUnified.GeographicPosition2D(40, -110),
+                    new AltusUnified.GeographicPosition2D(47, -122),
+                    new AltusUnified.GeographicPosition2D(57, -110),
+                    new AltusUnified.GeographicPosition2D(67, -90),
+                ];
+                pushToVector(dynamicLine2.points(), dynamicLinePoints2);
+                deleteElements(dynamicLinePoints2);
+                var colors2 = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var lineStyle2 = new AltusUnified.LineStyle(colors2[0], 8, colors2[1], 2);
+                deleteElements(colors2);
+                vectorMap.addDynamicLine(dynamicLine2, lineStyle2);
+                dynamicLine2.delete();
+                lineStyle2.delete();
+
+                // modify a line
+                var newColor = new AltusUnified.GeographicPosition2D(75, -50);
+                dynamicLine.points().set(3, newColor);
+                vectorMap.rebuildMapUsingCachedShapes();
+                dynamicLine.delete();
+                newColor.delete();
+
+
+                // add a polygon
+                var dynamicPolygon = new AltusUnified.DynamicPolygon("poly1");
+                var dynamicPolygonPoints = [
+                    new AltusUnified.GeographicPosition2D(20, -112),
+                    new AltusUnified.GeographicPosition2D(15, -116),
+                    new AltusUnified.GeographicPosition2D(15, -122),
+                    new AltusUnified.GeographicPosition2D(20, -126),
+                    new AltusUnified.GeographicPosition2D(25, -122),
+                    new AltusUnified.GeographicPosition2D(25, -116),
+                    new AltusUnified.GeographicPosition2D(20, -112),
+                ];
+                pushToVector(dynamicPolygon.points(), dynamicPolygonPoints);
+                deleteElements(dynamicPolygonPoints);
+                var colors3 = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 80), new AltusUnified.Color(10, 100, 150)];
+                var polygonStyle = new AltusUnified.PolygonStyle(colors3[0], colors3[1], 8, colors3[2], 2);
+                deleteElements(colors3);
+                vectorMap.addDynamicPolygon(dynamicPolygon, polygonStyle);
+                dynamicPolygon.delete();
+                polygonStyle.strokeColor().r = 255;
+                polygonStyle.strokeColor().g = 0;
+                polygonStyle.fillColor().r = 240;
+                vectorMap.updatePolygonStyle(polygonStyle, 1.0);
+                
+                // add a 3D polygon
+                var dynamicPolygon3D = new AltusUnified.DynamicPolygon3D("poly3D1");
+                var dynamicPolygon3DPoints = [
+                    new AltusUnified.GeographicPosition(20, -112, 1000000),
+                    new AltusUnified.GeographicPosition(15, -116, 1000000),
+                    new AltusUnified.GeographicPosition(15, -122, 1000000),
+                    new AltusUnified.GeographicPosition(20, -126, 1000000),
+                    new AltusUnified.GeographicPosition(25, -122, 1000000),
+                    new AltusUnified.GeographicPosition(25, -116, 1000000),
+                    new AltusUnified.GeographicPosition(20, -112, 1000000),
+                ];
+                pushToVector(dynamicPolygon3D.points(), dynamicPolygon3DPoints);
+                deleteElements(dynamicPolygon3DPoints);
+                vectorMap.addDynamicPolygon3D(dynamicPolygon3D, polygonStyle);
+                dynamicPolygon3D.delete();
+                polygonStyle.delete();
+
+                // Add polygon after adding map
+                var dynamicPolygon2 = new AltusUnified.DynamicPolygon("poly2");
+                var dynamicPolygonPoints2 = [
+                    new AltusUnified.GeographicPosition2D(40, -122),
+                    new AltusUnified.GeographicPosition2D(40, -110),
+                    new AltusUnified.GeographicPosition2D(30, -116),
+                    new AltusUnified.GeographicPosition2D(40, -122),
+                ];
+                pushToVector(dynamicPolygon2.points(), dynamicPolygonPoints2);
+                deleteElements(dynamicPolygonPoints2);
+                var colors4 = [new AltusUnified.Color(100, 200, 200), new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var polygonStyle2 = new AltusUnified.PolygonStyle(colors4[0], colors4[1], 8, colors4[2], 2);
+                deleteElements(colors4);
+                vectorMap.addDynamicPolygon(dynamicPolygon2, polygonStyle2);
+                polygonStyle2.delete();
+
+                // modify a polygon
+                //dynamicPolygon->points[3].latitude = 35;
+                vectorMap.rebuildMapUsingCachedShapes();
+                //vectorMap.delete(); // vectormap is retained by the delegate
+            }
+
+            /*
+            // VECTOR MAP
+            {
+                var LogVectorMapDelegate = AltusUnified.IVectorMapDelegate.extend("IVectorMapDelegate", {
+                    onLineSegmentHit: function (mapName, shapeId, geoHitPoint, segmentStartIndex, segmentEndIndex) {
+                        console.log("OnLineSegmentHit: " + mapName + "." + shapeId + "(" + segmentStartIndex + "," + segmentEndIndex + ")");
+                    },
+                    onVertexHit: function (mapName, shapeId, geoHitPoint, vertexIndex) {
+                        console.log("OnVertexHit: " + mapName + "." + shapeId + "(" + vertexIndex + ")");
+                    },
+                    onPolygonHit: function (hits, location) {
+                        for (i = 0; i < hits.size() ; i++) {
+                            var hit = hits.get(i);
+                            console.log("OnPolygonHit: " + hit.mapName + "." + hit.shapeId);
+                            hit.delete();
+                        }
+                    },
+                    onPolygonHit3d: function (hits, screenPoint) {
+                        for (i = 0; i < hits.size() ; i++)
+                        {
+                            var hit = hits.get(i);
+                            console.log("OnPolygonHit3d: " + hit.mapName + "." + hit.shapeId + " at " + screenPoint);
+                            hit.delete();
+                        }
+                    },
+                    polygonHitDetectionEnabled: function () {
+                        return true;
+                    },
+                    lineSegmentHitTestPixelBufferDistance: function () {
+                        return 15;
+                    },
+                    vertexHitTestPixelBufferDistance: function () {
+                        return 15;
+                    }
+                });
+
+                // Create a delegate
+                var del = new LogVectorMapDelegate();
+
+                // Add line before adding map
+                var vectorMap = new AltusUnified.VectorMap("vecMap2");
+                vectorMap.setTesselationThreshold(800000);
+                vectorMap.setDelegate(del);
+                del.delete();
+                var line = new AltusUnified.VectorGeographicPosition2D();
+                var linePoints = [
+                    new AltusUnified.GeographicPosition2D(0, -122),
+                    new AltusUnified.GeographicPosition2D(-20, -122),
+                    new AltusUnified.GeographicPosition2D(20, -122),
+                    new AltusUnified.GeographicPosition2D(40, -122),
+                ];
+                pushToVector(line, linePoints);
+                deleteElements(linePoints);
+                var colors = [new AltusUnified.Color(200, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var lineStyle = new AltusUnified.LineStyle(colors[0], 8, colors[1], 2);
+                deleteElements(colors);
+                vectorMap.addLine(line, lineStyle);
+                line.delete();
+                scene.addMap(vectorMap);
+                lineStyle.strokeColor().r = 255;
+                lineStyle.strokeColor().g = 0;
+                vectorMap.updateLineStyle(lineStyle, 1.0);
+                lineStyle.delete();
+
+                // Add line after adding map
+                var line2 = new AltusUnified.VectorGeographicPosition2D();
+                var linePoints2 = [
+                    new AltusUnified.GeographicPosition2D(20, -160),
+                    new AltusUnified.GeographicPosition2D(20, -140),
+                    new AltusUnified.GeographicPosition2D(20, -120),
+                ];
+                pushToVector(line2, linePoints2);
+                deleteElements(linePoints2);
+                var colors2 = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 200, 150)];
+                var lineStyle2 = new AltusUnified.LineStyle(colors2[0], 8, colors2[1], 2);
+                deleteElements(colors2);
+                vectorMap.addLine(line2, lineStyle2);
+                line2.delete();
+                lineStyle2.delete();
+
+                // add a polygon
+                var polygon = new AltusUnified.VectorGeographicPosition2D();
+                var polygonPoints = [
+                    new AltusUnified.GeographicPosition2D(20, -72),
+                    new AltusUnified.GeographicPosition2D(15, -76),
+                    new AltusUnified.GeographicPosition2D(15, -82),
+                    new AltusUnified.GeographicPosition2D(20, -86),
+                    new AltusUnified.GeographicPosition2D(25, -82),
+                    new AltusUnified.GeographicPosition2D(25, -76),
+                    new AltusUnified.GeographicPosition2D(20, -72),
+                ];
+                pushToVector(polygon, polygonPoints);
+                deleteElements(polygonPoints);
+                var colors3 = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 0, 150)];
+                var polygonStyle = new AltusUnified.PolygonStyle(colors3[0], colors3[1], 8, colors3[2], 2);
+                deleteElements(colors3);
+                vectorMap.addPolygon("poly3", polygon, polygonStyle);
+                polygonStyle.strokeColor().r = 255;
+                polygonStyle.strokeColor().g = 0;
+                polygonStyle.fillColor().r = 140;
+                vectorMap.updatePolygonStyle(polygonStyle, 1.0);
+                polygonStyle.delete();
+
+                // Add polygon after adding map
+                var polygon2 = new AltusUnified.VectorGeographicPosition2D();
+                var polygonPoints2 = [
+                    new AltusUnified.GeographicPosition2D(40, -82),
+                    new AltusUnified.GeographicPosition2D(40, -70),
+                    new AltusUnified.GeographicPosition2D(30, -76),
+                    new AltusUnified.GeographicPosition2D(40, -82),
+                ];
+                pushToVector(polygon2, polygonPoints2);
+                deleteElements(polygonPoints2);
+                var colors4 = [new AltusUnified.Color(100, 20, 200), new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var polygonStyle2 = new AltusUnified.PolygonStyle(colors4[0], colors4[1], 8, colors4[2], 2);
+                vectorMap.addPolygon("poly4", polygon2, polygonStyle2);
+                deleteElements(colors4);
+                polygonStyle2.delete();
+                vectorMap.delete();
+            }*/
+
+        	// ANIMATED_VECTORS
+	        {
+		        var circleMap = new AltusUnified.DynamicVectorMarkerMap("animatedCircles");
+		        scene.addMap(circleMap);
+		        circleMap.setOrder(112);
+
+                var colors = [new AltusUnified.Color(100, 200, 80), new AltusUnified.Color(10, 100, 150)];
+                var lineStyle = new AltusUnified.LineStyle(colors[0], 8, colors[1], 2);
+                deleteElements(colors);
+                
+                var geoPos = new AltusUnified.GeographicPosition(46.7145184, -121.720509, 0);
+                var orient = new AltusUnified.Orientation(0, 0, 0);
+                var scale = new AltusUnified.vec3d(1,1,1);
+		        var circleTransform = new AltusUnified.Transform(geoPos, orient, scale);
+                geoPos.delete();
+                orient.delete();
+                scale.delete();
+
+		        var minRadius = 10;
+		        var maxRadius = 80;
+		        var animationDuration = 1;
+		        var repeatDelay = 0.4;
+		        var fade = false;
+		        var fadeDelay = 0.5;
+		        var circle1 = new AltusUnified.AnimatedCircle("circle1", lineStyle, circleTransform, minRadius, maxRadius, animationDuration, repeatDelay, fade, fadeDelay, 40, false);
+
+		        circleMap.addVectorMarker(circle1);
+                circleMap.delete();
+                lineStyle.delete();
+	        }
+
+
+            //Position over US - position, orientation, and scale
+            setPosition(39.720774, -101.505561, 15000000);
+
+            // disable tile level bias
+            scene.screen().setTileLevelBias(0);
+
+            //See if there are any page parameters
+            //if url === "index.html?test1=t1&test2=t2&test3=t3"
+            var pageParams = parsePageParameters();
+            var lon = pageParams["lon"];
+            var lat = pageParams["lat"];
+            var alt = pageParams["alt"];
+            if (typeof lon != 'undefined' && typeof lat != 'undefined') {
+
+                // set default altitude
+                if (typeof alt == 'undefined') {
+                    alt = '800000';
+                }
+
+                setPosition(parseFloat(lat), parseFloat(lon), parseFloat(alt));
+            }
+        };
+
+    </script>
+</body>
+</html>

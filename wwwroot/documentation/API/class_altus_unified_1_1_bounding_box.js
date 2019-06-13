@@ -1,0 +1,25 @@
+var class_altus_unified_1_1_bounding_box =
+[
+    [ "BoundingBox", "class_altus_unified_1_1_bounding_box.html#a3ae6bfc7c4bf31cac117e7c59ce08d0e", null ],
+    [ "BoundingBox", "class_altus_unified_1_1_bounding_box.html#a864fab6d8b17fdf897b674a77f236d72", null ],
+    [ "BoundingBox", "class_altus_unified_1_1_bounding_box.html#aaf79713000b1ef960192bd0380d2d03d", null ],
+    [ "BoundingBox", "class_altus_unified_1_1_bounding_box.html#aaaa86a567e528cf24de2268e9f0c522c", null ],
+    [ "center", "class_altus_unified_1_1_bounding_box.html#aacef1285e5ecea3932ecd28f2e63da5c", null ],
+    [ "combine", "class_altus_unified_1_1_bounding_box.html#a096f9a2c60cd622c9a03cf5d4622311d", null ],
+    [ "contains", "class_altus_unified_1_1_bounding_box.html#afece035ed26935c7f53fdcc50c84449a", null ],
+    [ "contains", "class_altus_unified_1_1_bounding_box.html#a84312e1c1ba8a3707c66b7eae220900c", null ],
+    [ "crossesMeridian", "class_altus_unified_1_1_bounding_box.html#a8754aa47fb839c8e380e93e1e3ca8ed8", null ],
+    [ "distanceToPoint", "class_altus_unified_1_1_bounding_box.html#a11420016e5137352b78db87138035b23", null ],
+    [ "divide", "class_altus_unified_1_1_bounding_box.html#acc679ed969df7df838c6ad16aca3ad02", null ],
+    [ "intersect", "class_altus_unified_1_1_bounding_box.html#a4a3ba0ea301f5177a87e06db4018289d", null ],
+    [ "intersects", "class_altus_unified_1_1_bounding_box.html#a07c192dffcb97cb85a746be50264bcd9", null ],
+    [ "isValid", "class_altus_unified_1_1_bounding_box.html#ae3ee569376df65ca755a41cc74f6334e", null ],
+    [ "max", "class_altus_unified_1_1_bounding_box.html#a2522ae4333b1e22bb99f5f44bd63255d", null ],
+    [ "max_set", "class_altus_unified_1_1_bounding_box.html#a8b5a952e7726f0af2e09f9f2b8e52823", null ],
+    [ "min", "class_altus_unified_1_1_bounding_box.html#a146427f55228933f362152061aec344d", null ],
+    [ "min_set", "class_altus_unified_1_1_bounding_box.html#a370c28a152494eba42a1a60b75f92f41", null ],
+    [ "relativeBounds", "class_altus_unified_1_1_bounding_box.html#a0f8b54ad88252579ca5c6e6272feca52", null ],
+    [ "size", "class_altus_unified_1_1_bounding_box.html#af97d7a12b0c5ade3b38fbddc3a765646", null ],
+    [ "toGeoBoundingBox", "class_altus_unified_1_1_bounding_box.html#ad7cd8eabcbb5757d58a2d95d38172289", null ],
+    [ "toString", "class_altus_unified_1_1_bounding_box.html#af99c70b372e6ac4d93fb7f0a79920e30", null ]
+];

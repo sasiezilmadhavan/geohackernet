@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Example #45 - 2D Route Planning - Rubber Banding Example with Labels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Example_45_2D_Route_Planning_Rubber_Banding_Example_with_Labels.html">Altus Platform - Example #45 - 2D Route Planning - Rubber Banding Example with Labels</a>
+        </div>
+        
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            
+    <div style="position:relative; width:100%; height:85vh; overflow:hidden;" id="AltusDiv"></div>
+
+<h5 style="pointer-events:none"><span>Base map: Ba3 terrain tiles with colorbar<span class='spacer'></span></span></h5>
+
+<font face="arial,helvetica">
+<center>
+<b>Example #45 - 2D Route Planning: Rubber Banding Example with Labels  </b>
+</center>
+This example demonstrates how to rubber band a polyline that has labels attached to all vertexes.  
+
+<p>
+More info:
+<ul>
+<li>Product information:  <a href="http://ba3.us">http://ba3.us</a>
+<li>Q and A forum: <a href="http://forum.ba3.us">http://forum.ba3.us</a>
+<li>All of BA3's current builds: <a href="http://releases.ba3.us">http://releases.ba3.us</a>
+<li>Ask questions: info@ba3.us
+</ul>
+</font>
+<script src="altus.js" type="text/javascript"></script>
+<script type="text/javascript">
+// BA3 ALTUS WEB EXAMPLE #45
+// This example demonstrates how to rubber band a polyline that has labels attached to all vertexes.
+// To try it, find the route line and click/drag anywhere along it. 
+// Or click on one of the labels to relocate it. 
+// More info: http://ba3.us, forum.ba3.us, releases.ba3.us, info@ba3.us
+
+//Globals that control this scenario.
+var movingPointIndex; //The index of the current moving route point
+var pointWasMoved; //Indicates if a newly inserted route point was actually moved
+var labelLayerName = "RouteLabels"; //Name of marker layer
+var fontSize = 12; //Font size of labels
+var maxLevel = 11; //Maximum level to cluster labels to
+var clusterDistance = 20; //Cluster distance for labels
+var routeData; //Will contain the json data for the route
+var routeLineLayer; //Dynamic vector layer
+var routeLine; //The dynamic route line
+var routeLineStyle; //Style for the line
+var routeLineWidth = 4; //Route line width
+var routeLineStrokeWidth = 1; //Route line stroke width
+var routeLineFillColorR = 0; //Route line fill color : red
+var routeLineFillColorG = 191; //Route line fill color : green
+var routeLineFillColorB = 255; //Route line fill color : blue
+var routeLineFillColorA = 100; //Route line fill color : alpha
+var routeLineStrokeColorR = 0; //Route line outline color : red
+var routeLineStrokeColorG = 0; //Route line outline color : green
+var routeLineStrokeColorB = 0; //Route line outline color : blue
+
+//How far away from a line segment a mouse click will register a hit
+var routeLineSegmentHitTestPixelBufferDistance = 10;
+
+//How far away from a line vertex a mouse click will register a hit
+var routeVertexHitTestPixelBufferDistance = 10;
+
+var AltusUnified;
+var clusterStartTimeStamp = 0;
+
+var heightColorValues = [0, 50, 200, 600,
+  1000, 2000, 3000, 4000,
+  5000, 6000, 7000, 8000,
+  9000, 10000, 11000, 12000
+];
+
+var heightColors = [
+  0x9fb28DFF, // <= 0
+  0x4e7a5fFF, // 0 - 50
+  0x5c8563FF, // 50 - 200
+  0x6f8d6dFF, // 200 - 600
+  0x9a9874FF, // 600 - 1000
+  0xa1a094FF, // 1000 - 2000
+  0xcab9a6FF, // 2000 - 3000
+  0xc6947cFF, // 3000 - 4000
+  0xc59b96FF, // 4000 - 5000
+  0xcab9a6FF, // 5000 - 6000
+  0xd8e0edFF, // 6000 - 7000
+  0xd0c0afFF, // 7000 - 8000
+  0xd9ccbfFF, // 8000 - 9000
+  0xe3d9cfFF, // 9000 - 10000
+  0xece6dfFF, // 10000 - 11000
+  0xf6f2efFF, // 11000 - 12000
+  0xFFFFFFFF // > 12000
+];
+
+var waterColorValues = [128, 129, 240];
+var waterColors = [
+  0xffffcc00, // land
+  0x006badff, // outline
+  0x0065a3ff, // water glow
+  0x005f99ff // water
+];
+
+var lightColorValues = [0, 32, 64, 96, 128, 160, 192, 224, 248, 256];
+var lightColors = [
+  0x0000007F,
+  0x00000070,
+  0x000000D0,
+  0x000000B0,
+  0x00000090,
+  0x00000070,
+  0x00000050,
+  0x00000030,
+  0x00000010,
+  0x00000000,
+  0x00000000
+];
+
+routeData = [{
+  "m": "KSEA",
+  "x": -122.30833333333,
+  "y": 47.45,
+  "w": 16,
+  "ml": 0
+}, {
+  "m": "YXC",
+  "x": -116.08833333333,
+  "y": 49.555,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "YEA",
+  "x": -109.99,
+  "y": 50.926666666667,
+  "w": 8,
+  "ml": 4
+}, {
+  "m": "VLR",
+  "x": -98.723333333333,
+  "y": 50.421666666667,
+  "w": 4,
+  "ml": 4
+}, {
+  "m": "VBI",
+  "x": -94.046666666667,
+  "y": 49.476666666667,
+  "w": 8,
+  "ml": 4
+}, {
+  "m": "48N090W",
+  "x": -90.00,
+  "y": 48.00,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "YVV",
+  "x": -81.105,
+  "y": 44.745,
+  "w": 16,
+  "ml": 4
+}, {
+  "m": "YYZ",
+  "x": -79.631666666667,
+  "y": 43.658333333333,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "GEE",
+  "x": -77.733333333333,
+  "y": 42.835,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "ULW",
+  "x": -77.025,
+  "y": 42.093333333333,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "LVZ",
+  "x": -75.69,
+  "y": 41.273333333333,
+  "w": 8,
+  "ml": 4
+}, {
+  "m": "HARTY",
+  "x": -75.09,
+  "y": 41.071666666667,
+  "w": 4,
+  "ml": 4
+}, {
+  "m": "MUGZY",
+  "x": -74.97,
+  "y": 41.03,
+  "w": 8,
+  "ml": 4
+}, {
+  "m": "STW",
+  "x": -74.868333333333,
+  "y": 40.995,
+  "w": 12,
+  "ml": 4
+}, {
+  "m": "KTEB",
+  "x": -74.061666666667,
+  "y": 40.85,
+  "w": 16,
+  "ml": 0
+}];
+
+createAltusUnified(); // Start running the mapping engine
+
+function onAltusEngineReady() {
+  initPathMover();
+  initRouteLayerDelegate();
+  routePlanning2DMain();
+};
+
+///////////////////////////////////////////////////////////
+//Map URL templates
+
+//Height data:
+//2 byte PNG, for map formats: VIRTUAL_TERRAIN and TERRAIN_HEIGHT
+var terrain2BytePNGUrlTemplate = "https://maps.ba3.us/terrain/2bytepng/noborder/{z}/{x}/{y}.png"
+
+//1 byte PNG, for map formats: WEATHER_GRID
+var terrain1BytePNGUrlTemplate = "https://maps.ba3.us/terrain/tiles/{z}/{x}/{y}.png"
+
+//MapBox raster maps
+var mapBoxSubDomainList = "a,b,c,d";
+var mapBoxAerialUrlTemplate = "https://{s}.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA"
+var mapBoxStreetsUrlTemplate = "https://{s}.tiles.mapbox.com/v3/dxjacob.h43n70g0/{z}/{x}/{y}.png"
+
+//Other raster maps
+var mapQuestAerialUrlTemplate = "https://otile{s}-s.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg"
+var mapQuestSubDomainList = "1,2,3,4";
+
+function createAltusUnified() {
+  AltusUnified = new Altus({
+    renderTo: document.getElementById("AltusDiv"),
+
+    /*C24*/
+    //Altus Mapping Engine Events
+
+    //Called when starting to load a resource for a layer.
+    onWillStartLoadingMap: function(mapName) {
+      console.log("AltusEvent: onWillStartLoadingMap mapName:" + mapName);
+    },
+
+    //Called when finished loading a resource for a layer.
+    onDidFinishLoadingMap: function(mapName) {
+      console.log("AltusEvent: onDidFinishLoadingMap mapName:" + mapName);
+    },
+
+    //Called when a clustering operation begins.
+    onBeginClusteringMarkers: function(mapName, timeStamp) {
+      console.log("AltusEvent: onBeginClusteringMarkers mapName:" + mapName + " timeStamp:" + timeStamp);
+      clusterStartTimeStamp = timeStamp;
+    },
+
+    //Called when a clustering operation ends.
+    onEndClusteringMarkers: function(mapName, timeStamp) {
+      console.log("AltusEvent: onEndClusteringMarkers mapName:" + mapName + " timeStamp:" + timeStamp + " elapsed:" + (timeStamp - clusterStartTimeStamp));
+    },
+
+    onPanBegan: function() {
+      //console.log("AltusEvent: onPanBegan");
+    },
+
+    onPanEnded: function() {
+      //console.log("AltusEvent: onPanEnded");
+    },
+
+    onPinchBegan: function() {
+      //console.log("AltusEvent: onPinchBegan");
+    },
+
+    onPinchEnded: function() {
+      //console.log("AltusEvent: onPinchEnded");
+    },
+
+    onDeviceScaleChanged: function() {
+      //console.log("AltusEvent: onDeviceScaleChanged");
+    },
+
+    onTileSizeChanged: function() {
+        //console.log("AltusEvent: onTileSizeChanged");
+      }
+      /*C24*/
+  })
+};
+
+//////////////////////////////////////////////////////////////////
+//Map layer creation and utility functions for this sceario
+//Creates a dynamic vector layer for the route line
+function createAndAddDynamicVectorLayer(layerName, zOrder) {
+  var vectorLayer = new AltusUnified.DynamicVectorMap(layerName);
+  vectorLayer.setOrder(zOrder);
+  vectorLayer.setVectorWindingOrder(AltusUnified.VectorWindingOrder.BOTH);
+  vectorLayer.setTesselationThreshold(40000);
+  return vectorLayer;
+}
+
+//Adds a dynamic line to a dynamic vector layer
+function addDynamicLine(vectorLayer, lineName, lineData, lineStyle) {
+  //Create line
+  var dynamicLine = new AltusUnified.DynamicLine(lineName);
+
+  //Create and add way point positions
+  for (i = 0; i < lineData.length; i++) {
+    position2D = new AltusUnified.GeographicPosition2D(lineData[i].y, lineData[i].x);
+    dynamicLine.points().push_back(position2D);
+    position2D.delete();
+  }
+
+  //Add the line
+  vectorLayer.addDynamicLine(dynamicLine, lineStyle);
+  return dynamicLine;
+}
+
+//Creates a very accurate screen point in the same pixel coordinate space as the mapping engine.
+//This is used by the mousedown event handler
+function createScreenPoint(x, y) {
+  var percentagePoint = AltusUnified.scene.screen().getPercentagePoint(x, y);
+  var screenPoint = AltusUnified.scene.screen().getScreenPoint(percentagePoint);
+  percentagePoint.delete();
+  return screenPoint;
+}
+
+//Given a mouse event, returns the closest geographic position.
+function createNearestGeographicPosition(x, y) {
+  var screenSpacePercentagePoint = AltusUnified.scene.screen().getPercentagePoint(x, y);
+  var ray = AltusUnified.scene.camera().getRay(screenSpacePercentagePoint);
+  var worldPosition = AltusUnified.scene.camera().transform.worldPosition();
+
+  var closestPointToSphere = AltusUnified.intersectRayWithUnitSphereOrClosestPoint(worldPosition, ray);
+
+  //If we are in space, move to point on earth
+  closestPointToSphere.normalize();
+
+  //Create a position (must be deleted later)
+  var geographicPosition = AltusUnified.getGeographicPosition(closestPointToSphere);
+
+  //Clean up
+  screenSpacePercentagePoint.delete();
+  ray.delete();
+  worldPosition.delete();
+  closestPointToSphere.delete();
+
+  return geographicPosition;
+}
+
+//Handles when a line segment is hit
+function handleLineSegmentHit(lineSegmentHit, lon, lat) {
+  pointWasMoved = false;
+  var startPointIndex = lineSegmentHit.startPointIndex;
+
+  //Insert a new entry into the route data for the new point that
+  //will break the segment into 2 segments
+  routeData.splice(
+    startPointIndex + 1, 0, {
+      "m": "Foo",
+      "x": lon,
+      "y": lat,
+      "w": 9,
+      "ml": 3
+    }
+  );
+
+  //set moving point index here
+  movingPointIndex = startPointIndex + 1;
+}
+
+//Handles when a line vertex is hit
+function handleVertexHit(vertexHit) {
+  var vertexIndex = vertexHit.vertexIndex;
+  movingPointIndex = vertexIndex;
+}
+
+
+//////////////////////////////////////////////////////////
+//Labels
+
+//To a vector, 'pushes' an array of elements
+function pushToVector(vector, array) {
+  var size = array.length;
+  for (i = 0; i < size; i++) {
+    vector.push_back(array[i]);
+  }
+}
+
+function imageFromCanvas(canvas) {
+  var context = canvas.getContext("2d");
+  var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+  var imageBytes = new Uint8Array(imageData.data);
+  var vectorOfBytes = new AltusUnified.VectorByte();
+  pushToVector(vectorOfBytes, imageBytes);
+  var image = new AltusUnified.Image(canvas.width, canvas.height, vectorOfBytes);
+  vectorOfBytes.delete();
+  return image;
+}
+/*C25*/
+
+/*C26*/
+function textureFromCanvas(canvas) {
+  var image = imageFromCanvas(canvas);
+  var texture = textureFromImage(image);
+  image.delete();
+  return texture;
+}
+
+function createLabelCanvas(fontSize, fontName, fontBold, labelText) {
+
+  var textFillColor = "#FFFFFF";
+  var textStrokeColor = "#000000"
+  var textShadowColor = "#000000";
+  var shadowBlur = 2;
+  var shadowOffsetX = 0;
+  var shadowOffsetY = 0;
+  var outlineWidth = 3;
+
+  //Create font string
+  var fontString = "";
+  if (fontBold) fontString = "bold ";
+  fontString = fontString + fontSize + "px " + fontName;
+
+  //Create a canvas
+  var canvas = document.createElement('canvas');
+
+  //Configure the context
+  var ctx = canvas.getContext("2d");
+  ctx.font = fontString;
+  ctx.fillStyle = textFillColor;
+  ctx.strokeStyle = textStrokeColor;
+  ctx.shadowColor = textShadowColor;
+  ctx.shadowOffsetX = shadowOffsetX;
+  ctx.shadowOffsetY = shadowOffsetY;
+  ctx.shadowBlur = shadowBlur;
+  ctx.imageSmothingEnabled = true;
+  ctx.lineWidth = outlineWidth;
+  ctx.textBaseline = "bottom";
+  ctx.miterLimit = 2;
+
+  //Get the width the text will be
+  var textWidth = ctx.measureText(labelText).width;
+
+  //Create device-scaled width and height values for the canvas
+  var cwidth = textWidth + shadowOffsetX + shadowBlur + outlineWidth;
+  var cheight = fontSize + shadowOffsetY + shadowBlur + outlineWidth;
+
+  //Resize canvas
+  canvas.width = cwidth;
+  canvas.height = cheight;
+
+  //Reconfigure the context since it changes when you change the canvas size
+  ctx = canvas.getContext("2d");
+  ctx.font = fontString;
+  ctx.fillStyle = textFillColor;
+  ctx.strokeStyle = textStrokeColor;
+  ctx.shadowColor = textShadowColor;
+  ctx.shadowOffsetX = shadowOffsetX;
+  ctx.shadowOffsetY = shadowOffsetY;
+  ctx.shadowBlur = shadowBlur;
+  ctx.imageSmothingEnabled = true;
+  ctx.lineWidth = outlineWidth;
+  ctx.textBaseline = "bottom";
+  ctx.miterLimit = 2;
+
+  var outlineSide = (shadowBlur + outlineWidth) / 2;
+
+  //Draw the text outline and shadow
+  ctx.strokeText(labelText, 0 + outlineSide, canvas.height - outlineSide);
+
+  //Draw the filled text
+  ctx.fillText(labelText, 0 + outlineSide, canvas.height - outlineSide);
+
+  return canvas;
+}
+
+function createLabelImage(fontSize, fontName, fontBold, labelText) {
+  var canvas = createLabelCanvas(fontSize, fontName, fontBold, labelText);
+  return imageFromCanvas(canvas);
+}
+
+function createLabelTexture(fontSize, fontName, fontBold, labelText) {
+  var canvas = createLabelCanvas(fontSize, fontName, fontBold, labelText);
+  return textureFromCanvas(canvas);
+}
+
+function addTextLabelToMarker(markerInfo, fontSize, fontName, fontBold, labelText) {
+  //degrees = Math.rand();
+
+  var markerData = markerInfo.markerData();
+  markerData.rotation = 0;
+
+  //Create text label image
+  var labelImage = createLabelImage(fontSize, fontName, fontBold, labelText);
+
+  //Set text label image
+  markerInfo.image_set(labelImage);
+
+  //Calculate anchor point
+  var anchorPoint = new AltusUnified.vec2d(labelImage.width / 2.0, labelImage.height / 2.0);
+
+  //Set the anchor point
+  markerData.anchorPoint_set(anchorPoint);
+
+  //Clean up
+  anchorPoint.delete();
+  labelImage.delete();
+}
+
+//Returns a clustered marker map object
+function createClusteredMarkerMap(name, markers, clusterDistance, maxLevel, targetImageFormat, hitTestingEnabled) {
+  var markerMap = new AltusUnified.ClusteredMarkerMap(name, markers, clusterDistance, maxLevel, targetImageFormat, hitTestingEnabled);
+  return markerMap;
+}
+
+//Returns a populated MarkerData object
+function createMarkerData(uid, lat, lon, alt, weight, minLevel, metaData, texture, anchorX, anchorY) {
+  var markerData = new AltusUnified.MarkerData(uid, lat, lon, alt, weight, metaData, texture);
+  markerData.minimumLevel = minLevel;
+  var anchorPoint = new AltusUnified.vec2d(anchorX, anchorY);
+  markerData.anchorPoint_set(anchorPoint);
+  anchorPoint.delete();
+  return markerData;
+}
+
+function addMarkerLayer(layerName, fontSize, maxLevel, clusterDistance, markerData) {
+
+  //Returns a vector of marker data from an array of marker data objects having:
+  //m: marker metadata
+  //y: marker latitude
+  //x: marker longitude
+  //w: marker weight
+
+  var markers = new AltusUnified.VectorMarkerData();
+  for (i = 0; i < markerData.length; i++) {
+    var metaData = markerData[i].m;
+    var lat = markerData[i].y;
+    var lon = markerData[i].x;
+    var alt = 0;
+    var weight = markerData[i].w;
+    var minLevel = markerData[i].ml;
+    marker = createMarkerData(i, lat, lon, alt, weight, minLevel, metaData, null, 0, 0);
+    markers.push_back(marker);
+    marker.delete();
+  }
+
+  //Prototype for a marker map delegate
+  var StringMarkerMapDelegate = AltusUnified.IMarkerMapDelegate.extend("IMarkerMapDelegate", {
+
+    //Called if user clicks or taps a marker
+    onMarkerTapped: function(marker, screenPoint, markerPoint, mapName) {
+      console.log("onMarkerTapped: " + marker.metadata);
+    },
+
+    //Called if a marker image is needed (i.e. one is not supplied with the marker data)
+    getMarkerImage: function(markerInfo, mapName) {
+      if (markerInfo.textureCreatedOnMainThread == null) {
+        var labelText = markerInfo.markerData().metadata;
+        var minLevel = markerInfo.markerData().minimumLevel;
+        var fSize = fontSize;
+        var fontName = "Arial, Helvetica, sans-serif";
+        var fontBold = false;
+        addTextLabelToMarker(markerInfo, fSize, fontName, fontBold, labelText)
+      }
+    },
+    phrase: "phrase"
+  });
+
+  //Create the clustered marker layer
+  var markerMap = createClusteredMarkerMap(layerName, markers, clusterDistance, maxLevel, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+  //Create and assign the delegate
+  var delagate = new StringMarkerMapDelegate();
+  delagate.phrase = "marker";
+  markerMap.setDelegate(delagate);
+
+  //Enable hit testing
+  markerMap.setHitTestingEnabled(true);
+
+  //Add the clustered marker map layer
+  AltusUnified.scene.addMap(markerMap);
+
+  //Set the z order of the layer above everything else
+  markerMap.setOrder(1000);
+
+  //Clean up
+  markers.delete();
+  markerMap.delete();
+  delagate.delete();
+}
+
+//Adds a clustered marker layer of labels nice fonts (see altusutil.js)
+function addLabelLayer() {
+  addMarkerLayer(labelLayerName, fontSize, maxLevel, clusterDistance, routeData);
+}
+
+//Updates the label layer by removing and re-adding the clustered markers
+function updateLabelLayer() {
+  var map = AltusUnified.scene.findMap(labelLayerName);
+  if (map != null) {
+    AltusUnified.scene.removeMap(map, true);
+    map.delete();
+  }
+  addLabelLayer();
+}
+
+////////////////////////////////////////////////////////////////
+//Mouse event handling
+
+//Redraws the route line (called whenever routeData is changed)
+function redrawRoute() {
+  //Remove the current route line and delete
+  routeLineLayer.removeDynamicLineFromCache(routeLine);
+  routeLine.delete();
+
+  //Add a new route line to the dynamic vector layer for the route
+  routeLine = addDynamicLine(routeLineLayer, "route", routeData, routeLineStyle);
+
+  //Redraw the dynamic vector map
+  routeLineLayer.rebuildMapUsingCachedShapes();
+}
+
+var PathMover; // used by initPathMover
+
+function initPathMover() {
+  PathMover = AltusUnified.ILongPressDelegate.extend("ILongPressDelegate", {
+    withholdingInput: function() {},
+    stoppedWitholdingInput: function() {},
+    startLongPress: function(x, y) {
+      // we have pressed for long enough
+      var geographicPosition = createNearestGeographicPosition(x, y);
+      mouseDownLat = geographicPosition.latitude;
+      mouseDownLon = geographicPosition.longitude;
+      geographicPosition.delete();
+      console.log("mouse down at lon:" + mouseDownLon + " lat:" + mouseDownLat);
+
+      //Trigger hit
+      var point = createScreenPoint(x, y);
+      var hit = routeLineLayer.triggerLineHitDetection(point, 20, 20);
+      point.delete();
+
+      //Handle hit
+      if (hit != null) {
+        //Hit a vertex? (actual route waypoint)
+        if (hit.hitType == AltusUnified.VectorGeometryHitType.Vertex) {
+          handleVertexHit(hit);
+        }
+        //Hit a segment? (line between two route waypoints)
+        if (hit.hitType == AltusUnified.VectorGeometryHitType.LineSegment) {
+          handleLineSegmentHit(hit, mouseDownLon, mouseDownLat);
+        }
+        hit.delete();
+        return true;
+      }
+      return false;
+    },
+    updateLongPress: function(x, y) {
+      if (true) {
+        pointWasMoved = true;
+        //Get geographic position
+        var geographicPosition = createNearestGeographicPosition(x, y);
+        var mouseMoveLat = geographicPosition.latitude;
+        var mouseMoveLon = geographicPosition.longitude;
+        geographicPosition.delete();
+
+        //Update the waypoint's metadata (label) to show the lat/lon
+        //of it's new location
+        routeData[movingPointIndex].y = mouseMoveLat;
+        routeData[movingPointIndex].x = mouseMoveLon;
+        routeData[movingPointIndex].m = "" + mouseMoveLat.toFixed(2) + "," + mouseMoveLon.toFixed(2);
+
+        redrawRoute();
+      }
+    },
+    stoppedLongPress: function() {
+      console.log("mouse up");
+
+      if (pointWasMoved) {
+        //Redraw labels only (as route is redrawn during mousemove event)
+        updateLabelLayer();
+      }
+
+      if (!pointWasMoved) {
+        //The new point was never actually moved, so delete it
+        //Remove the new point and redraw the route
+        routeData.splice(movingPointIndex, 1);
+        redrawRoute();
+      }
+    }
+  });
+}
+
+var RouteLayerDelegate; // used by initRouteLayerDelegate
+
+//Handles hit events (when mouse comes up) for lines and shapes
+function initRouteLayerDelegate() {
+  RouteLayerDelegate = AltusUnified.IVectorMapDelegate.extend("IVectorMapDelegate", {
+    onLineSegmentHit: function(mapName, shapeId, geoHitPoint, screenPoint, segmentStartIndex, segmentEndIndex) {
+      console.log("OnLineSegmentHit: " + mapName + "." + shapeId + "(" + segmentStartIndex + "," + segmentEndIndex + ") at " + screenPoint);
+    },
+    onVertexHit: function(mapName, shapeId, geoHitPoint, screenPoint, vertexIndex) {
+      console.log("OnVertexHit: " + mapName + "." + shapeId + "(" + vertexIndex + ") at " + screenPoint);
+    },
+    onPolygonHit: function(hits, geoHitPoint, screenPoint) {
+      for (i = 0; i < hits.size(); i++) {
+        var hit = hits.get(i);
+        console.log("OnPolygonHit: " + hit.mapName + "." + hit.shapeId + " at " + screenPoint);
+        hit.delete();
+      }
+      this.map.triggerLineHitDetection(screenPoint, 15, 15);
+    },
+    onPolygonHit3d: function(hits, screenPoint) {
+      for (i = 0; i < hits.size(); i++) {
+        var hit = hits.get(i);
+        console.log("OnPolygonHit3d: " + hit.mapName + "." + hit.shapeId + " at " + screenPoint);
+        hit.delete();
+      }
+    },
+    polygonHitDetectionEnabled: function() {
+      return true;
+    },
+    lineSegmentHitTestPixelBufferDistance: function() {
+      return routeLineSegmentHitTestPixelBufferDistance;
+    },
+    vertexHitTestPixelBufferDistance: function() {
+      return routeVertexHitTestPixelBufferDistance;
+    },
+    scene: null,
+    map: null,
+  });
+}
+
+//Creates the style for the route line
+function createRouteLineStyle() {
+
+  var fillColor = new AltusUnified.Color(routeLineFillColorR,
+    routeLineFillColorG,
+    routeLineFillColorB,
+    routeLineFillColorA);
+
+  var strokeColor = new AltusUnified.Color(routeLineStrokeColorR,
+    routeLineStrokeColorG,
+    routeLineStrokeColorB);
+
+  var style = new AltusUnified.LineStyle(fillColor, routeLineWidth,
+    strokeColor, routeLineStrokeWidth);
+
+  //Clean up
+  fillColor.delete();
+  strokeColor.delete();
+  return style;
+}
+
+// Does the work to add colors to a colorbar
+function createColorBar(values, colors, min, max) {
+  var numValues = values.length;
+  var colorbar = new AltusUnified.ColorBar();
+
+  var minValue = min;
+
+  for (var i = 0; i < numValues; ++i) {
+    var color = new AltusUnified.Color(colors[i]);
+    var maxValue = values[i];
+    colorbar.addColor(minValue, color);
+    colorbar.addColor(maxValue, color);
+
+    minValue = maxValue + 0.0001;
+    color.delete();
+  }
+
+  var lastColor = new AltusUnified.Color(colors[numValues]);
+  if (minValue < max)
+    colorbar.addColor(minValue, lastColor);
+  colorbar.addColor(max, lastColor);
+  lastColor.delete();
+
+  return colorbar;
+}
+
+/**Turns on a base map based on dynamically coloring height samples from a 1-byte PNG tile source.*/
+function addColorbarBaseMap(mapName, url, maxLevel) {
+
+  var internetTileProvider = AltusUnified.InternetTileProvider.createFromURLWithSubdomainsAndFormat(mapName, url, "", true, AltusUnified.MapFormat.WEATHER_GRID);
+
+  internetTileProvider.loadingInstructions().maxParentOffset = 20;
+
+  var textureElevation;
+  var textureWater;
+  var textureLight;
+
+  // Set up the elevation colorbar
+  var colorbarElevation = createColorBar(heightColorValues, heightColors, -328.1, 13123);
+  textureElevation = AltusUnified.Texture.createFromColorBar(colorbarElevation);
+  colorbarElevation.delete();
+
+  // Set up the water colorbar
+  var colorbarWater = createColorBar(waterColorValues, waterColors, 0, 256);
+  textureWater = AltusUnified.Texture.createFromColorBar(colorbarWater);
+  colorbarWater.delete();
+
+  // Set up the light colorbar
+  var colorbarLight = createColorBar(lightColorValues, lightColors, 0, 256);
+  textureLight = AltusUnified.Texture.createFromColorBar(colorbarLight);
+  colorbarLight.delete();
+
+  var colorbars = new AltusUnified.VectorTexture();
+  colorbars.push_back(textureElevation);
+  colorbars.push_back(textureWater);
+  colorbars.push_back(textureLight);
+  textureElevation.delete();
+  textureWater.delete();
+  textureLight.delete();
+
+  var newMap = new AltusUnified.WeatherGridMap(mapName, internetTileProvider, colorbars);
+  newMap.setMaxLevel(maxLevel);
+  newMap.set
+  AltusUnified.scene.addMap(newMap);
+
+  newMap.delete();
+  internetTileProvider.delete();
+  colorbars.delete();
+
+}
+
+function setColorbarTerrainBaseMap1() {
+  addColorbarBaseMap("ColorBarTerrain1", terrain1BytePNGUrlTemplate, 5);
+}
+
+function routePlanning2DMain() {
+  //Turn on a base map. This map is a set of weathergrid tiles
+  //that look like terrain. They are smoothe bilinear filtered,
+  //and are colored well for labels and things
+  setColorbarTerrainBaseMap1();
+
+  //Create and add route layer
+  routeLineLayer = createAndAddDynamicVectorLayer("routeLineLayer", 10);
+
+  //Register a delegate for mouse clicks.
+  //NOTE: You must register the delegate before adding this map layer
+  var routeLayerDelegate = new RouteLayerDelegate();
+  routeLineLayer.setDelegate(routeLayerDelegate);
+  routeLayerDelegate.scene = AltusUnified.scene;
+  routeLayerDelegate.map = routeLineLayer;
+  routeLayerDelegate.delete();
+
+  var prevInputHandler = AltusUnified.inputManager.rawInputHandler();
+  var pathMoverDelegate = new PathMover();
+  var longPressInputHandler = new AltusUnified.LongPressInputHandler(AltusUnified.scene, pathMoverDelegate, prevInputHandler);
+  longPressInputHandler.setLongPressDuration(0);
+  AltusUnified.inputManager.setRawInputHandler(longPressInputHandler);
+
+  //Clean up
+  pathMoverDelegate.delete();
+  prevInputHandler.delete();
+  longPressInputHandler.delete();
+
+  //Add the map layer
+  AltusUnified.scene.addMap(routeLineLayer);
+
+  //Create style for route line
+  routeLineStyle = createRouteLineStyle();
+
+  //Add marker layer
+  addLabelLayer();
+
+  //Add route line
+  routeLine = addDynamicLine(routeLineLayer, "route", routeData, routeLineStyle);
+
+}
+</script>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+    
+    
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Example_45_2D_Route_Planning_Rubber_Banding_Example_with_Labels').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

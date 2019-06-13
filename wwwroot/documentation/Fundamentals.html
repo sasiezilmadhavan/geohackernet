@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Fundamentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="Fundamentals.html">Altus Platform - Fundamentals</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    <h2 id="altus-web---fundamentals">Altus Web - Fundamentals</h2>
+<p>The goal of this document is to help JavaScript developers understand the rationale of Altus Web JavaScript API and how to use it effectively. This document covers:</p>
+<ul>
+<li>Events and Callbacks</li>
+<li>Leveraging Native Code</li>
+<li>Memory Management</li>
+</ul>
+<h3 id="events-and-callbacks">Events and Callbacks</h3>
+<p>The Altus Mapping Engine signals events to you through several overridable callback functions. The default implementatation of these functions in in <a href="altusutil.js"><code>altusutil.js</code></a>, but you may replace them with you own:</p>
+
+<pre><code class=language-javascript> //Altus Mapping Engine Events
+
+        //Called when starting to load a resource for a layer.
+        onWillStartLoadingMap: function (mapName) {
+            console.log(&quot;AltusEvent: onWillStartLoadingMap mapName:&quot; + mapName);
+        },
+
+        //Called when finished loading a resource for a layer.
+        onDidFinishLoadingMap: function (mapName) {
+            console.log(&quot;AltusEvent: onDidFinishLoadingMap mapName:&quot; + mapName);
+        },
+
+        //Called when a clustering operation begins.
+        onBeginClusteringMarkers: function (mapName, timeStamp) {
+            console.log(&quot;AltusEvent: onBeginClusteringMarkers mapName:&quot; + mapName + &quot; timeStamp:&quot; + timeStamp);
+            clusterStartTimeStamp = timeStamp;
+        },
+
+        //Called when a clustering operation ends.
+        onEndClusteringMarkers: function (mapName, timeStamp) {
+            console.log(&quot;AltusEvent: onEndClusteringMarkers mapName:&quot; + mapName + &quot; timeStamp:&quot; + timeStamp + &quot; elapsed:&quot; + (timeStamp - clusterStartTimeStamp));
+        },
+
+        onPanBegan: function(){
+            //console.log(&quot;AltusEvent: onPanBegan&quot;);
+        },
+
+        onPanEnded: function(){
+            //console.log(&quot;AltusEvent: onPanEnded&quot;);
+        },
+
+        onPinchBegan: function(){
+            //console.log(&quot;AltusEvent: onPinchBegan&quot;);
+        },
+
+        onPinchEnded: function(){
+            //console.log(&quot;AltusEvent: onPinchEnded&quot;);
+        },
+
+        onDeviceScaleChanged: function(){
+            //console.log(&quot;AltusEvent: onDeviceScaleChanged&quot;);
+        },
+
+        onTileSizeChanged: function(){
+            //console.log(&quot;AltusEvent: onTileSizeChanged&quot;);
+        }
+</code></pre>
+
+<h3 id="leveraging-native-code">Leveraging Native Code</h3>
+<p>The power of the Altus Mapping Engine is made possible in modern web browsers by compiling C and C++ code into highly-optimizable JavaScript in asm.js format. This lets you run C and C++ on the web at near-native speed, without plugins. In essence, you are using JavaScript code to drive the same &quot;native&quot; Altus Mapping Engine we make available on iOS, Android, and Windows for a specific target CPU.</p>
+<p>This is made possible by the <a href="https://kripken.github.io/emscripten-site/index.html">Emscripten</a> project. Specifically, we are leveraging <a href="https://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/embind.html">Embind</a> as the primary means to bind JavaScript code to the native Altus C++ code.</p>
+<p>The mechanics of this binding approach enforce some contraints on the Altus Web API in terms of function and constructor overloading and memory management which are generally not a concern to web developers.</p>
+<p>There are some fundamental differences in JavaScript and C++ in the area of function and constructor overloading that affect the Altus Web API. This may seem foreign at first glance compared to more familiar APIs.</p>
+<p>Here is a typical example of setting a new camera placement using the Altus Web API:</p>
+<pre><code class="language-javascript">//Create a new position
+var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+//Create a new orientation
+var orientation = new AltusUnified.Orientation(0, 0, 0);
+
+//Scale is needed to construct a transform, but not used by the camera
+var scale = new AltusUnified.vec3d(1, 1, 1);
+
+//Create a new transform
+var trans = new AltusUnified.Transform(pos, orientation, scale);
+
+//Set the camera's transform
+AltusUnified.scene.camera().transform.set(trans);
+</code></pre>
+
+<p>If you look at this code line by line, your first question might be: What is a transform? You will learn about this as you dig into the examples, but briefly, a transform represents the complete transformation place, rotate, or scale an object in three dimensions. We use transforms because they are a much more powerful way to convey placement than geographic constructs. They are mathematically more convenient (and consistent).</p>
+<p>The camera does not really care about the scale component of the transform. It only cares about the position and orientation. So why are we having to pass a scale into it through the transform object? The reason is, the transform object's scale component is needed by 3D models which can have a placement and a scale.</p>
+<p>In C++, the Altus Tranform class has several contructors. And in C++ code, there would no need to create a scale when setting camera placement. JavaScript does not support the concept of overloading in the same way C++ does. Therefore, we expose only the Transform constructor that works across all cases. We have to apply this same kind of logic with function calls - what is exposed in the Javascript API is the maximum set of parameters, which means that sometimes you have to pass in parameters that act as placeholders and don't really apply. It is a little bit of overhead for you, but it lets BA3 offer a single, unified API that you use the same way on every platform, both now and 10 years in the future</p>
+<h4 id="c-overloading">C++ Overloading</h4>
+<p>Function overloading is a feature of C++ that allows us to create multiple functions with the same name, so long as they have different parameters. Consider the following function:</p>
+<pre><code class="language-javascript">int add(int x, int y){
+    return x + y;
+}
+</code></pre>
+
+<p>This trivial function adds two integers. However, what if we also need to add two floating point numbers? This function is not at all suitable, as any floating point parameters would be converted to integers, causing the floating point arguments to lose their fractional values.</p>
+<p>One way to work around this issue is to define multiple functions with slightly different names:</p>
+<pre><code class="language-javascript">int addInteger(int x, int y){
+    return x + y;
+}
+
+double addDouble(double x, double y){
+    return x + y;
+}
+</code></pre>
+
+<p>Function overloading provides a better solution. Using function overloading, we can simply declare another add() function that takes double parameters:</p>
+<pre><code class="language-javascript">double add(double x, double y){
+    return x + y;
+}
+</code></pre>
+
+<p>We now have two versions of add() that have the same name and the same concept but do two different things. In C++, this technique is common.</p>
+<pre><code class="language-javascript">int add(int x, int y); // integer version
+double add(double x, double y); // floating point version
+</code></pre>
+
+<p>Which version of add() gets called depends on the arguments used in the call -- if we provide two ints, C++ will know we mean to call add(int, int). If we provide two floating point numbers, C++ will know we mean to call add(double, double). In fact, we can define as many overloaded add() functions as we want, so long as each add() function has unique parameters.</p>
+<p>Consequently, it’s also possible to define add() functions with a differing number of parameters:</p>
+<pre><code class="language-javascript">int add(int x, int y, int z){
+    return x + y + z;
+}
+</code></pre>
+
+In C++, constructors are just functions, which can also be overloaded. So for example you can have a Transform class like this:
+<pre><code class="language-javascript">class Transform{
+    public:
+        Transform();
+        Transform(Position p);
+        Transform(Position p, Orientation o);
+        Transform(Position p, Orientation o, Scale s);
+}
+</code></pre>
+
+<p>There are 4 ways of constructing a Transform object, a default constructor which takes no parameters, and other functions with variable numbers of parameters.</p>
+<p>This kind of overloading relies on C++ being a strongly typed language. The compiler can decide which constructor to use based on parameter count and type. In contrast, JavaScript is a loosely-typed language without first-class support for constructor or function overloading. However, JavaScript developers can achieve something that synatictically looks like C++ overloading.</p>
+<h4 id="javascript-overloading">JavaScript Overloading</h4>
+<p>JavaScript does not natively support overloading. So, when JavaScript if parsed by the browser, there are two or more functions with a same names, the last one defined is used and others are ignored.</p>
+<p>However, in any JavaScript method, the arguments passed into the method are accessible via an Object array with the name arguments[]. This provides a way of using 'sub-functions' to emulate the variable parameter nature of C++ overloading like so:</p>
+
+<pre><code class=language-javascript>//This is an example of how to emulate C++ function overloading in JavaScript
+function add() {
+  if (arguments.length == 2) return add.twoNumbers.apply(this, arguments);
+  if (arguments.length == 3) return add.threeNumbers.apply(this, arguments);
+}
+add.twoNumbers = function (a, b) {
+  return a + b;
+};
+add.threeNumbers = function (a, b, c) {
+  return a + b + c;
+};
+
+//Test the overloaded function
+console.log(add(1, 1));
+console.log(add(1, 2, 3));
+</code></pre>
+
+<p>JavaScript developers can also emulate C++ constructor overloading. Here is an example of constructor overloading that looks very similar to C++ code. A C++ developer working in JavaScript would find this pattern very understandable. It appears much like there is a Transform class that has several constructors:</p>
+
+<pre><code class=language-javascript>//This is an example of how to emulate C++ constructor overloading in JavaScript using
+//a factory function which considers the number of arguments and returns an
+//object with all members present
+
+//Position 'class'
+function Position(lat, lon) {
+  this.lat = lat;
+  this.lon = lon;
+}
+
+//Orientation 'class'
+function Orientation(roll, pitch, yaw) {
+  this.roll = roll;
+  this.pitch = pitch;
+  this.yaw = yaw;
+}
+
+//Scale 'class'
+function Scale(x, y, z) {
+  this.x = x;
+  this.y = y;
+  this.z = z;
+}
+
+//Transform factory
+//This function creates a Transform 'object' and accepts 1, 2, or 3 parameters
+//The methods for the transform are 'appended' to a new vanilla object
+function Transform() {
+  //This function actually crea
+  this.Construct = function (args) {
+    var newObject = Object.create(Transform.methods);
+    newObject.Position = args[0];
+    newObject.Orientation = args[1];
+    newObject.Scale = args[2];
+    return newObject;
+  }
+  //Slice the arguments into an array and build that array into the 3 required
+  //components for the transform: a Position, Orientation, and Scale
+  var args = [];
+  if (typeof (arguments) != 'undefined') args = Array.prototype.slice.call(arguments);
+  if (args.length == 0) args.push(new Position(0, 0));
+  if (args.length == 1) args.push(new Orientation(0, 90, 0));
+  if (args.length == 2) args.push(new Scale(1, 1, 1));
+  return this.Construct(args);
+}
+
+//Transform methods
+Transform.methods = {
+  setPosition: function (pos) {
+    this.Position = pos;
+  }
+};
+
+//Test the overloaded constructor
+var position = new Position(30, 30);
+var orientation = new Orientation(30, 30, 30);
+var scale = new Scale(3, 3, 3);
+
+//Create instances of Transform objects with the factory function that
+//emulates an overloaded C++ constructor using C++-like syntax
+var t1 = Transform(); //Default constructor, all members will receive defaults
+var t2 = Transform(position); //Passing only position, orientation and scale will be defaults
+var t3 = Transform(position, orientation); //Passing position and orientation, scall will be default
+var t4 = Transform(position, orientation, scale); //Passing all parameters, no defaults
+
+console.dir(t1.Scale); //Display t1's default scale
+t1.Scale = t4.Scale; //Change t1's scale to custom scale of t4
+console.dir(t1.Scale); //Display t1's new non-default scale
+
+</code></pre>
+
+<p>This approach, while producing syntax similar to that of C++ is not a typical pattern in most JavaScript APIs. A more familiar pattern is to pass an object literal like this:</p>
+<pre><code class="language-javascript">//Create an object literal with properties and values
+var foo = {
+    "Property1": "Value1"
+    "Property2": "Value2"
+    "Property3": "Value3"
+    ...
+};
+
+//Pass the object to a function    
+var result = SomeFunction(foo);
+</code></pre>
+
+<p>This is typical in pure JavaScript APIs but not when using Altus because, presently, the functions being called as the result of automated code generation for a C++ code base, not other JavaScript functions.</p>
+<h3 id="memory-management">Memory Management</h3>
+<p>The Altus Mappinge Engine is implemented in C++ and cross-compiled to JavaScript using Emscripten and made available by a JavaScript API. In this approach, the cross-compiled code operates in an emulated environment that mirrors how native code manages memory on hardware. This brings speed and efficiency, but creates the need to keep the virtual memory from being 'filled' by C++ objects that are no longer needed.</p>
+<h4 id="c-explicit-memory-management">C++ Explicit Memory Management</h4>
+<p>C++ has low-level memory management functions like malloc() and free() and objects can be allocated and dellocated with new and delete. This is considered &quot;explicit&quot; memory management, and it is extremely efficient and precise compared to garbage collection in Javascript. The only caveat is that the programmer now needs to remember to free objects once they are no longer needed. It is a small price to pay for the performance benefits and predictable nature of run-time performance.</p>
+<h4 id="javascript-implicit-memory-management">JavaScript Implicit Memory Management</h4>
+<p>JavaScript values are allocated when things (objects, strings, etc.) are created and &quot;automatically&quot; freed when they are not used anymore. The latter process is called garbage collection. This is considered &quot;implicit&quot; memory management and gives JavaScript (and high-level languages) developers the impression they can decide not to care about memory management.</p>
+<h4 id="javascript-c-hybrid-object-lifecycle">Javascript / C++ Hybrid Object Lifecycle</h4>
+<p>There are several important concepts for Javascript developers to be aware of regarding the Altus Web API related to managing object lifecycle and class contructor methods.</p>
+<p>In Altus Web, the native code of the Altus Mapping Engine is cross-compiled from C++ code to JavaScript using Emscripten. In some cases, this creates the need for the JavaScript developer to manage object lifecycle whenever a JavaScript object is actually referring to a cross-compiled C++ object instance.</p>
+<p>As noted above, JavaScript-based software relies on automatic memory management and there is no explicit destruction of objects. Futhermore, since JavaScript does not support finalizers or weak references with callbacks, there is no way for these hybrid JavaScript/C++ objects to have an implicit lifecycle. In other words, there is no way for Altus to know when you are 'done' with an object you have asked it to create whether that was by way of a copy constructor or an explcity &quot;newing up&quot; of an object.</p>
+<p>Therefore, your JavaScript code must explicitly &quot;delete&quot; C++ object handles it has received, or the C++ heap will grow indefinitely.</p>
+For example:
+<pre><code class="language-javascript">//Using a newly created class instance, then deleting it.
+var x = new Module.MyClass;
+x.method();
+x.delete();
+
+//Using a returned class instance, then deleting it.
+var y = Module.myFunctionThatReturnsClassInstance();
+y.method();
+y.delete();
+</code></pre>
+
+<p>As you can can, any time you request an object that is a proxy for an new 'native' object, you must delete it. A good rule of thumb is, if you create a new object of any type that is provided by Altus, you must delete it.</p>
+<h3 id="summary">Summary</h3>
+<p>Because the Altus Mapping Engine is cross-compiled from C++ code to JavaScript and we are presently using Emscripten as the means to achieve this, then a certain level of explicit memory management falls on the JavaScript developer as shown in the previous example. Additionally there are cases when extra parameters are needed for functions or constructors that may seem verbose at first glance and the API is no presently wired to work with object literal parameters as is common in pure-JavaScript APIs.</p>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+
+
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('Fundamentals').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>

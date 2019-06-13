@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_altus_unified_1_1_raw_input_handler.html" title="AltusUnified::RawInputHandler" alt="" coords="5,107,209,134"/>
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_free_axis_input_handler.html" title="AltusUnified::FreeAxisInput\lHandler" alt="" coords="265,5,447,47"/>
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_gesture_input_handler.html" title="AltusUnified::GestureInput\lHandler" alt="" coords="267,71,445,112"/>
+<area shape="rect" id="node5" href="$class_altus_unified_1_1_list_input_handler.html" title="AltusUnified::ListInputHandler" alt="" coords="257,137,455,163"/>
+<area shape="rect" id="node6" href="$class_altus_unified_1_1_long_press_input_handler.html" title="AltusUnified::LongPressInput\lHandler" alt="" coords="259,188,453,229"/>
+<area shape="rect" id="node4" href="$class_altus_unified_1_1_classic_input_handler.html" title="AltusUnified::ClassicInput\lHandler" alt="" coords="503,71,676,112"/>
+</map>

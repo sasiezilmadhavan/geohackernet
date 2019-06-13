@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Altus Web - Raster Layer</title>
+    <link href="altus.css" rel="stylesheet">
+</head>
+<body style="padding:0px; margin:0px;">
+    <!--HMD1
+    ### Initialize Altus ###
+    HMD1-->
+    <!--H1-->
+    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
+    <script type="text/javascript" src="es6-promise.js"></script>
+    <script type="text/javascript" src="altusloader.js"></script>
+    </script>
+    <!--H1-->
+
+    <!--HMD2
+    ### Add Raster Layer ###
+    When onAltusEngineReady() is called you can add a raster layer. Raster layers are composed of PNG or JPG images that are available from a tile source. This example uses raster tiles from MapBox. But you can use any source that conforms to the web mercator standard.
+    HMD2-->
+    <!--H2-->
+    <script type="text/javascript">
+        //Called by the mapping engine after it has initialized
+        function onAltusEngineReady() {
+            
+            //Internal name of map
+            var mapName = "MapBox Aerial"
+            
+            //Url template for raster map tiles
+            var mapUrl = "https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA"
+            
+            //Create a tile provider that will serve up the tiles
+            var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, mapUrl);
+            
+            //Create a map description and map object
+            var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+            var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+            
+            //Add the new map
+            AltusUnified.scene.addMap(newMap);
+            
+            //Clean up
+            newMap.delete();
+            mapDesc.delete();
+            internetTileProvider.delete();
+        };
+    </script>
+    <!--H2-->
+
+    <!--HMD3
+    ####[See Demo](RasterLayerDemo.html)
+    HMD3-->
+    <!--HMD4
+    ####[See Tutorial](RasterLayerTutorial.html)
+    HMD4-->
+
+</body>
+</html>

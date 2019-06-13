@@ -1,0 +1,5 @@
+<map id="AltusUnified::MarkerMap" name="AltusUnified::MarkerMap">
+<area shape="rect" id="node3" href="$class_altus_unified_1_1_clustered_marker_map.html" title="A map of markers, where some of the markers are hidden when the camera is zoomed far away..." alt="" coords="5,155,231,181"/>
+<area shape="rect" id="node4" href="$class_altus_unified_1_1_dynamic_marker_map.html" title="A dynamic marker map. Use this map to show markers that can move. Every marker is drawn every frame (..." alt="" coords="255,155,475,181"/>
+<area shape="rect" id="node2" href="$class_altus_unified_1_1_map.html" title="A base class for all Maps. You cannot create this map directly." alt="" coords="177,5,304,32"/>
+</map>

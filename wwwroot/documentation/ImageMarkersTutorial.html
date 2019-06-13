@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="favicon.ico" />
+    <title>Image Markers - Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./resources/bootstrap.min.css">
+    <link rel="stylesheet" href="./resources/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" href="./resources/font-awesome.min.css">
+    <link rel="stylesheet" href="./resources/prism.css">
+    <link rel="stylesheet" href="./resources/demobrowser.css">
+    <link rel="stylesheet" href="./resources/altus.css">
+    <link rel="stylesheet" href="./resources/docs.css">
+    <script src="./resources/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="./resources/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="./resources/bootstrap.js" type="text/javascript"></script>
+    <script src="./resources/holder.js" type="text/javascript"></script>
+    <script src="./resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="./resources/prism.js" type="text/javascript"></script>
+    <script src="./resources/demo.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="ImageMarkersTutorial.html">Altus Platform - Image Markers - Tutorial</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="Documentation"><a href="http://releases.ba3.us/latest/">Home</a></li>
+            <li id="iOS"><a href="../../../iOS/AltusMappingEngine/documentation/index.html">iOS</a></li>
+            <li id="Android"><a href="../../../Android/AltusMappingEngine/documentation/index.html">Android</a></li>
+            <li id="Windows"><a href="../../../Windows/AltusMappingEngine/documentation/index.html">Windows</a></li>
+            <li id="Web"><a href="../../../Web/AltusMappingEngine/documentation/index.html">Web</a></li>
+            <li id="Server"><a href="../../../Unix/AltusServer/documentation/index.html">Server</a></li>
+            <li><a href="http://www.ba3.us">BA3</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul id="sidebar_list" class="nav nav-sidebar">
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    <h2 id="image-markers">Image Markers</h2>
+<div class="figure">
+<img src="Images/Documentation/Images/ImageMarkers.png" alt="Image Markers" /><p class="caption">Image Markers</p>
+</div>
+<p>As we have seen in the <a href="ClusteredMarkersTutorial.html">Clustered Markers</a> tutorial, we can place markers on a map using the following steps:</p>
+<p>For each marker,</p>
+<ul>
+<li>Create an Altus Image object</li>
+<li>Use the Image object to instantiate an Altus Texture</li>
+<li>Create a MarkerData object to assign position, altitude, descriptive text, a weight (TODO: explain this) and the texture</li>
+<li>Specify where in the image to anchor it to the position</li>
+</ul>
+
+<pre><code class=language-javascript>//Creates a square image with the given dimensions and colors
+function squareImage(width, height, red, green, blue, alpha){
+    var arr = new AltusUnified.VectorByte();
+    for (i = 0; i &lt; width * height; i += 1) {
+        arr.push_back(red);
+        arr.push_back(green);
+        arr.push_back(blue);
+        arr.push_back(alpha);
+    }
+    var image = new AltusUnified.Image(width, height, arr);
+    arr.delete();
+    return image;
+}
+</code></pre>
+<pre><code class=language-javascript>//Converts an image to a texture
+function textureFromImage(image){
+    var tex = new AltusUnified.Texture(image, false);
+    return tex;
+}
+</code></pre>
+<pre><code class=language-javascript>//Returns a square texture with the given dimensions and colors
+function squareTexture(width, height, red, green, blue, alpha){
+    var image = squareImage(width, height, red, green, blue, alpha);
+    var tex = textureFromImage(image);
+    image.delete();
+    return tex;
+}
+</code></pre>
+<pre><code class=language-javascript>//Returns a populated MarkerData object
+function createMarkerData(uid, lat, lon, alt, weight, minLevel, metaData, texture, anchorX, anchorY){
+    var markerData = new AltusUnified.MarkerData(uid, lat, lon, alt, weight, metaData, texture);
+    markerData.minimumLevel = minLevel;
+    var anchorPoint = new AltusUnified.vec2d(anchorX, anchorY);
+    markerData.anchorPoint_set(anchorPoint);
+    anchorPoint.delete();
+    return markerData;
+}
+</code></pre>
+
+
+<p>From here we can add the markers to a vector, instantiate a map layer, add the markers to the layer and then add the layer to our scene.</p>
+<h3 id="using-images-instead-of-text-and-polygons">Using Images Instead of Text and Polygons</h3>
+<p>To use an image such as a png or jpeg, we must first decide how we want to get the image data. We will look at two ways to do this:</p>
+<ul>
+<li>Load the image over the network using an AJAX request</li>
+<li>Provide the image data directly using an encoded data url</li>
+</ul>
+<h4 id="loading-an-image-over-the-network-using-an-ajax-request">Loading an image over the Network using an AJAX request</h4>
+<p>With an XMLHttpRequest, we can send an AJAX request for our image, and specify a &quot;response type&quot; of &quot;arraybuffer&quot; to get the image data in a convenient form:</p>
+
+<pre><code class=language-javascript> function requestData(url, onLoad, onError, onTimeout, timeout) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = timeout || 60000; // default to 60 seconds
+    xhr.responseType = 'arraybuffer';
+
+    //Handle download timeouts
+    xhr.ontimeout = onTimeout || function(e) {
+      console.log(e)
+    };
+
+    //Handle successful downloads
+    xhr.onload = function() {
+      if (xhr.status == 200 &amp;&amp; xhr.response) {
+        onLoad(xhr.response);
+      } else {
+        onError(e);
+      }
+    };
+
+    //Handle other errors
+    xhr.onerror = onError || function(e) {
+      console.error(e);
+    };
+
+    //Send the download request
+    xhr.send(null);
+  }
+</code></pre>
+
+<p>We can push this array data to a vector, populate an Altus Image object and then An Altus Texture as follows:</p>
+
+<pre><code class=language-javascript> function createTextureFromXhr(response) {
+    var byteArray = new Uint8Array(response),
+        vector = new AltusUnified.VectorByte(),
+        altusImage = new AltusUnified.Image(),
+        texture;
+
+    pushToVector(vector, byteArray);
+
+    altusImage.loadFromMemory(vector);
+    altusImage.multiplyAlpha();
+
+    texture = new AltusUnified.Texture(altusImage, false);
+
+    vector.delete();
+    altusImage.delete();
+
+    return texture;
+  }
+</code></pre>
+
+<p>We create a function to add the markers to a map layer given the texture, and call it within a callback to our AJAX function:</p>
+
+<pre><code class=language-javascript> function addMarkers(texture) {
+    var anchor = new AltusUnified.vec2d(texture.getImageWidth() / 2, texture.getImageHeight()), //anchor to bottom center
+        markers = [
+          new AltusUnified.MarkerData(0, 38.889469, -77.035258, 0, 1, &quot;Washington Monument&quot;, texture),
+          new AltusUnified.MarkerData(1, 38.889803, -77.009114, 0, 2, &quot;United States Capital&quot;, texture),
+          new AltusUnified.MarkerData(2, 38.8977, -77.0365, 0, 3, &quot;White House&quot;, texture),
+          new AltusUnified.MarkerData(3, 38.8893, -77.050111, 0, 4, &quot;Lincoln Memorial&quot;, texture),
+          new AltusUnified.MarkerData(4, 38.8957, -77.0559, 0, 5, &quot;Kennedy Center&quot;, texture),
+          new AltusUnified.MarkerData(5, 38.891111, -77.047778, 0, 6, &quot;Vietnam Memorial&quot;, texture),
+          new AltusUnified.MarkerData(6, 38.888, -77.02, 0, 7, &quot;Air &amp; Space Museum&quot;, texture),
+          new AltusUnified.MarkerData(7, 38.89731, -77.00626, 0, 8, &quot;Union Station&quot;, texture)
+        ];
+
+    for (var i = 0; i &lt; markers.length; i++) {
+      markers[i].anchorPoint_set(anchor);
+    }
+
+    var vectorMarkerData = new AltusUnified.VectorMarkerData();
+    addElementsToVectorAndDelete(vectorMarkerData, markers);
+
+    var markerMap = new AltusUnified.ClusteredMarkerMap(&quot;clusteredMarkerMap&quot;, vectorMarkerData, 32, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+    AltusUnified.scene.addMap(markerMap);
+    markerMap.setOrder(312);
+
+    vectorMarkerData.delete();
+    markerMap.delete();
+    texture.delete();
+  }
+</code></pre>
+
+<pre><code class=language-javascript> function addMarkersAsync() {
+    requestData(&quot;https://cdn.ba3.us/images/blue-dot.png&quot;, function(response) {
+        var texture = createTextureFromXhr(response);
+        addMarkers(texture);
+      }
+    );
+  }
+</code></pre>
+
+<h4 id="provide-image-data-directly-using-an-encoded-data-url">Provide image data directly using an encoded data url</h4>
+<p>Using a data url, we can create a JavaScript Image object and set its source to a string containing a base64 encoded version of our PNG.</p>
+<p>With this method, we need to render the image to a hidden canvas object.</p>
+
+<pre><code class=language-javascript> function createCanvas(width, height) {
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
+  }
+</code></pre>
+
+<pre><code class=language-javascript> function getImageDataFromCanvas(image) {
+    var canvas = createCanvas(image.width, image.height),
+        context = canvas.getContext(&quot;2d&quot;),
+        imageData,
+        imageBytes;
+
+    // Copy the image contents to the canvas        
+    context.clearRect(0, 0, image.width, image.height);
+    context.drawImage(image, 0, 0);
+
+    return context.getImageData(0, 0, image.width, image.height);
+  }
+</code></pre>
+
+<pre><code class=language-javascript> function createTextureFromImageData(imageData, width, height, mipEnabled) {
+    var vector = new AltusUnified.VectorByte(),
+        image,
+        texture;
+
+    pushToVector(vector, imageData);
+
+    image = new AltusUnified.Image(width, height, vector);
+    image.multiplyAlpha();
+
+    texture = new AltusUnified.Texture(image, mipEnabled);
+
+    vector.delete();
+    image.delete();
+
+    return texture;
+  }
+</code></pre>
+
+<pre><code class=language-javascript> function addMarkersFromEncodedData() {
+    var image = new Image(),
+        imageData,
+        imageBytes,
+        texture;
+
+    image.src = &quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAANbY1E9YMgAABMxJREFUWMOlV1lMlFcUvjAzUEYQRrZAhk2owsiwdVgqmw7DIosDYZkBUYQXJKBowKhQakWNYjTGgJVQjEQDioYoKg8EWuOK25tFQcF9iS+kSdMYW+vpOX8DhfH/rVwm+XJzZ+499zvnnvOdOwwAmBiyb99mOXfvsqzLl9myjg4WvW8fC6mpkfnl5EQ7eHvXWVlZtTPGOmh08PJq8E5PXxq2ZYs8as8elnj0qLCP9pMdqTMI7LME7txhWVeusKRTp1hwVVW40t29X6ZQfFig0cDC3FxYXFoKC/PzwVmrBblC8bfSze0Xzbp10frOzn8J4P65EUAPCJry8hL09r1XSgqknj8PBQ8fQtGLF1MwPXoEaX194JOZiRbZh8Vr11ZM7p8TgbzhYRa+bVupFS7D0ELRy5dgfvIECkZGIP/Bg/+Ac/Pjx1D06hV8e/AgWFtbg3bjxkraz01g5Y0bLKGtTYeH/xnd1ASr3rwRDppxsAhoXWxzM0XiI47xK4eG+AiknDvHVEFB/erUVFiFnv3fwTNIvH4NmKww38/vanJPj5yLQEhtbby1TAZpFy8K4Z0NAdP4OGQMDoJMLocllZWpXATQ++9UgYGCMcvQJ3V3C1Vg5+QkjDS3JGF++hRcwsIoCo1cBPDzk09GhpDllsbpUDl6NwmaW66hhPXHEkU77bwEjgWYTIIhS+Pk+XQCNBcjEFhWRoaOcRHA7G/1TkubUwQoEZFAGxcBt8jIWrw/QXRmnQO4nnIH8wgWBAfXcxH4Zvv2CNT59yjDUIgJNZsqILFK6e0F3P8xbOvWOC4CetR/V52uy02ng8Jnz6BgdPTLCKD3dG0eCQnkfa++q4tPiIyohIbubn+Zjc2Etrr6i8WI1qF8A2rI7/oTJzRGXiXMxk5GWo5t2ICJ9C6ioUG0IiwTj3oGrv9L19iYlXf/vmCHmwAhH41E7tqVi0Yhob0dCp8/F793zJOk06fp3iEMG9hkI+JvRtevTyHv3j22aPXqH2xVKsi+dUtov9MPF/JjeBjwoQK+RmMLkcZ1zHjzpgAuApmXLk2BHhf4MJFhWQ7hAVBkEQUKffD69WDr6DiO7wLHDNyTPjg4Bb5u2Ns7Ayv6++kq9HQVqRcuTDUo0gkMM8jt7IhEWfrAgNBJp4OLwLLjxz+B4cwZalJ903sEeR+6eTPYOjmN6k+etMXKEZ5w08GtA5ZIPnuWhdfXJ2NpQta1a2AaGxNeR/ZeXuBvNteQt1T3luAiEHfkyKdobaVRYTNv3ljk7t1Q/PYtYFRAJpO9w+99KEKW3nNHYOmhQ6KIb2tj7jExzZ6JibBmYgKWVFWBvVp9la4Iy1QUXATofS+GmAMH2KKSkhV2zs6C7LpERIDaYKiLPXxY+E0MXAQwxKIgEuF1dR4KpfKP5Z2doHR1BU1FRRwdFLV3ryi4CGg3bJBGdTX7SqUaCSovBxx/Q5l2JmJSpLkI4D8hSYRs2sRQ9X52CQ0Fe0/PXyN37mS6HTskwUUgwGyWBMoym+/r222jVAKOA1okhMkoCS4C/iaTJL4uLmb4Yv6RVNFBre7xMxoZipMk+F5EGDopRDU1MXVy8vdEwCM2tgX/jklWDYGLgFRJEWJbWlhAYeEaIoAPzyqax+zfL4nPEfgHf2JVnNxdC00AAAAASUVORK5CYII=&quot;;
+
+    imageData = getImageDataFromCanvas(image);
+    imageBytes = new Uint8Array(imageData.data);
+
+    texture = createTextureFromImageData(imageBytes, image.width, image.height, true)
+    addMarkers(texture);
+  }
+</code></pre>
+
+
+<h3 id="putting-it-all-together">Putting it all together</h3>
+
+<pre><code class=language-javascript>var AltusUnified = new Altus(document.getElementById(&quot;AltusDiv&quot;));
+
+function createImageMarkersExample() {
+
+  /*C2*/
+  function addBaseMap(mapName, url) {
+
+    // setup tile source
+    var internetTileProvider = new AltusUnified.InternetTileProvider(mapName, url);
+
+    // create map description
+    var mapDesc = AltusUnified.VirtualMap.defaultRasterMapDesc();
+    var newMap = new AltusUnified.VirtualMap(mapName, mapDesc, internetTileProvider);
+
+    // add map to scene
+    AltusUnified.scene.addMap(newMap);
+
+    newMap.delete();
+    mapDesc.delete();
+    internetTileProvider.delete();
+  };
+  /*C2*/
+
+  function pushToVector(vector, array) {
+    var size = array.length;
+    for (var i = 0; i &lt; size; i++) {
+      vector.push_back(array[i]);
+    }
+  }
+
+  function deleteElements(array) {
+    var size = array.length;
+    for (var i = 0; i &lt; size; i++) {
+      array[i].delete();
+    }
+    array.length = 0;
+  }
+
+  function addElementsToVectorAndDelete(vector, array) {
+    pushToVector(vector, array);
+    deleteElements(array);
+  }
+
+  /*C3*/
+  function requestData(url, onLoad, onError, onTimeout, timeout) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = timeout || 60000; // default to 60 seconds
+    xhr.responseType = 'arraybuffer';
+
+    //Handle download timeouts
+    xhr.ontimeout = onTimeout || function(e) {
+      console.log(e)
+    };
+
+    //Handle successful downloads
+    xhr.onload = function() {
+      if (xhr.status == 200 &amp;&amp; xhr.response) {
+        onLoad(xhr.response);
+      } else {
+        onError(e);
+      }
+    };
+
+    //Handle other errors
+    xhr.onerror = onError || function(e) {
+      console.error(e);
+    };
+
+    //Send the download request
+    xhr.send(null);
+  }
+  /*C3*/
+
+  /*C4*/
+  function createTextureFromImageData(imageData, width, height, mipEnabled) {
+    var vector = new AltusUnified.VectorByte(),
+        image,
+        texture;
+
+    pushToVector(vector, imageData);
+
+    image = new AltusUnified.Image(width, height, vector);
+    image.multiplyAlpha();
+
+    texture = new AltusUnified.Texture(image, mipEnabled);
+
+    vector.delete();
+    image.delete();
+
+    return texture;
+  }
+  /*C4*/
+
+  /*C5*/
+  function createTextureFromXhr(response) {
+    var byteArray = new Uint8Array(response),
+        vector = new AltusUnified.VectorByte(),
+        altusImage = new AltusUnified.Image(),
+        texture;
+
+    pushToVector(vector, byteArray);
+
+    altusImage.loadFromMemory(vector);
+    altusImage.multiplyAlpha();
+
+    texture = new AltusUnified.Texture(altusImage, false);
+
+    vector.delete();
+    altusImage.delete();
+
+    return texture;
+  }
+  /*C5*/
+
+  /*C6*/
+  function createCanvas(width, height) {
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
+  }
+  /*C6*/
+
+  /*C7*/
+  function getImageDataFromCanvas(image) {
+    var canvas = createCanvas(image.width, image.height),
+        context = canvas.getContext(&quot;2d&quot;),
+        imageData,
+        imageBytes;
+
+    // Copy the image contents to the canvas        
+    context.clearRect(0, 0, image.width, image.height);
+    context.drawImage(image, 0, 0);
+
+    return context.getImageData(0, 0, image.width, image.height);
+  }
+  /*C7*/
+
+  /*C8*/
+  function addMarkers(texture) {
+    var anchor = new AltusUnified.vec2d(texture.getImageWidth() / 2, texture.getImageHeight()), //anchor to bottom center
+        markers = [
+          new AltusUnified.MarkerData(0, 38.889469, -77.035258, 0, 1, &quot;Washington Monument&quot;, texture),
+          new AltusUnified.MarkerData(1, 38.889803, -77.009114, 0, 2, &quot;United States Capital&quot;, texture),
+          new AltusUnified.MarkerData(2, 38.8977, -77.0365, 0, 3, &quot;White House&quot;, texture),
+          new AltusUnified.MarkerData(3, 38.8893, -77.050111, 0, 4, &quot;Lincoln Memorial&quot;, texture),
+          new AltusUnified.MarkerData(4, 38.8957, -77.0559, 0, 5, &quot;Kennedy Center&quot;, texture),
+          new AltusUnified.MarkerData(5, 38.891111, -77.047778, 0, 6, &quot;Vietnam Memorial&quot;, texture),
+          new AltusUnified.MarkerData(6, 38.888, -77.02, 0, 7, &quot;Air &amp; Space Museum&quot;, texture),
+          new AltusUnified.MarkerData(7, 38.89731, -77.00626, 0, 8, &quot;Union Station&quot;, texture)
+        ];
+
+    for (var i = 0; i &lt; markers.length; i++) {
+      markers[i].anchorPoint_set(anchor);
+    }
+
+    var vectorMarkerData = new AltusUnified.VectorMarkerData();
+    addElementsToVectorAndDelete(vectorMarkerData, markers);
+
+    var markerMap = new AltusUnified.ClusteredMarkerMap(&quot;clusteredMarkerMap&quot;, vectorMarkerData, 32, 20, AltusUnified.TargetImageFormat.FOUR_BPP, false);
+
+    AltusUnified.scene.addMap(markerMap);
+    markerMap.setOrder(312);
+
+    vectorMarkerData.delete();
+    markerMap.delete();
+    texture.delete();
+  }
+  /*C8*/
+
+  function setPosition(lat, lon, altitude) {
+    // create position object
+    var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+
+    // create orientation object - camera pointed like standard 2D map view
+    var orientation = new AltusUnified.Orientation(0, 90, 0);
+
+    // create default scale object
+    var scale = new AltusUnified.vec3d(1, 1, 1);
+
+    // set transfrom to scene
+    var trans = new AltusUnified.Transform(pos, orientation, scale);
+    AltusUnified.scene.camera().transform.set(trans);
+
+    pos.delete();
+    orientation.delete();
+    scale.delete();
+  }
+
+  /*C9*/
+  function addMarkersFromEncodedData() {
+    var image = new Image(),
+        imageData,
+        imageBytes,
+        texture;
+
+    image.src = &quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAANbY1E9YMgAABMxJREFUWMOlV1lMlFcUvjAzUEYQRrZAhk2owsiwdVgqmw7DIosDYZkBUYQXJKBowKhQakWNYjTGgJVQjEQDioYoKg8EWuOK25tFQcF9iS+kSdMYW+vpOX8DhfH/rVwm+XJzZ+499zvnnvOdOwwAmBiyb99mOXfvsqzLl9myjg4WvW8fC6mpkfnl5EQ7eHvXWVlZtTPGOmh08PJq8E5PXxq2ZYs8as8elnj0qLCP9pMdqTMI7LME7txhWVeusKRTp1hwVVW40t29X6ZQfFig0cDC3FxYXFoKC/PzwVmrBblC8bfSze0Xzbp10frOzn8J4P65EUAPCJry8hL09r1XSgqknj8PBQ8fQtGLF1MwPXoEaX194JOZiRbZh8Vr11ZM7p8TgbzhYRa+bVupFS7D0ELRy5dgfvIECkZGIP/Bg/+Ac/Pjx1D06hV8e/AgWFtbg3bjxkraz01g5Y0bLKGtTYeH/xnd1ASr3rwRDppxsAhoXWxzM0XiI47xK4eG+AiknDvHVEFB/erUVFiFnv3fwTNIvH4NmKww38/vanJPj5yLQEhtbby1TAZpFy8K4Z0NAdP4OGQMDoJMLocllZWpXATQ++9UgYGCMcvQJ3V3C1Vg5+QkjDS3JGF++hRcwsIoCo1cBPDzk09GhpDllsbpUDl6NwmaW66hhPXHEkU77bwEjgWYTIIhS+Pk+XQCNBcjEFhWRoaOcRHA7G/1TkubUwQoEZFAGxcBt8jIWrw/QXRmnQO4nnIH8wgWBAfXcxH4Zvv2CNT59yjDUIgJNZsqILFK6e0F3P8xbOvWOC4CetR/V52uy02ng8Jnz6BgdPTLCKD3dG0eCQnkfa++q4tPiIyohIbubn+Zjc2Etrr6i8WI1qF8A2rI7/oTJzRGXiXMxk5GWo5t2ICJ9C6ioUG0IiwTj3oGrv9L19iYlXf/vmCHmwAhH41E7tqVi0Yhob0dCp8/F793zJOk06fp3iEMG9hkI+JvRtevTyHv3j22aPXqH2xVKsi+dUtov9MPF/JjeBjwoQK+RmMLkcZ1zHjzpgAuApmXLk2BHhf4MJFhWQ7hAVBkEQUKffD69WDr6DiO7wLHDNyTPjg4Bb5u2Ns7Ayv6++kq9HQVqRcuTDUo0gkMM8jt7IhEWfrAgNBJp4OLwLLjxz+B4cwZalJ903sEeR+6eTPYOjmN6k+etMXKEZ5w08GtA5ZIPnuWhdfXJ2NpQta1a2AaGxNeR/ZeXuBvNteQt1T3luAiEHfkyKdobaVRYTNv3ljk7t1Q/PYtYFRAJpO9w+99KEKW3nNHYOmhQ6KIb2tj7jExzZ6JibBmYgKWVFWBvVp9la4Iy1QUXATofS+GmAMH2KKSkhV2zs6C7LpERIDaYKiLPXxY+E0MXAQwxKIgEuF1dR4KpfKP5Z2doHR1BU1FRRwdFLV3ryi4CGg3bJBGdTX7SqUaCSovBxx/Q5l2JmJSpLkI4D8hSYRs2sRQ9X52CQ0Fe0/PXyN37mS6HTskwUUgwGyWBMoym+/r222jVAKOA1okhMkoCS4C/iaTJL4uLmb4Yv6RVNFBre7xMxoZipMk+F5EGDopRDU1MXVy8vdEwCM2tgX/jklWDYGLgFRJEWJbWlhAYeEaIoAPzyqax+zfL4nPEfgHf2JVnNxdC00AAAAASUVORK5CYII=&quot;;
+
+    imageData = getImageDataFromCanvas(image);
+    imageBytes = new Uint8Array(imageData.data);
+
+    texture = createTextureFromImageData(imageBytes, image.width, image.height, true)
+    addMarkers(texture);
+  }
+  /*C9*/
+
+  /*C10*/
+  function addMarkersFromImgTag() {
+    var image = getMarkerImage(), // window scoped function
+        imageData,
+        imageBytes,
+        texture;
+
+    imageData = getImageDataFromCanvas(image);
+    imageBytes = new Uint8Array(imageData.data);
+
+    texture = createTextureFromImageData(imageBytes, image.width, image.height, true)
+    addMarkers(texture);
+
+  }
+  /*C10*/
+
+  /*C11*/
+  function addMarkersAsync() {
+    requestData(&quot;https://cdn.ba3.us/images/blue-dot.png&quot;, function(response) {
+        var texture = createTextureFromXhr(response);
+        addMarkers(texture);
+      }
+    );
+  }
+  /*C11*/
+
+  return {
+    addBaseMap: addBaseMap,
+    addMarkersFromEncodedData: addMarkersFromEncodedData,
+    addMarkersFromImgTag: addMarkersFromImgTag,
+    addMarkersAsync: addMarkersAsync,
+    setPosition: setPosition
+  }
+}
+
+// Called by the mapping engine after it has initialized
+function onAltusEngineReady() {
+  var ImageMarkersExample = createImageMarkersExample(),
+      mapName = &quot;MapBox Aerial&quot;,
+      tileProviderUrl = &quot;https://a.tiles.mapbox.com/v4/dxjacob.ho6k3ag9/{z}/{x}/{y}.jpg?access_token=pk.eyJ1IjoiZHhqYWNvYiIsImEiOiJwYXotMmtVIn0.rvNzd7EZTKqynbx-9BQdtA&quot;;
+
+  ImageMarkersExample.addBaseMap(mapName, tileProviderUrl);
+
+  // ImageMarkersExample.addMarkersFromEncodedData();
+  // ImageMarkersExample.addMarkersFromImgTag();
+  ImageMarkersExample.addMarkersAsync();
+
+  //Position of camera 
+  ImageMarkersExample.setPosition(38.889469, -77.035258, 10000);
+
+  AltusUnified.scene.atmospherics().setSunLocationType(AltusUnified.LocationType.DIRECTION_VIEW_OFFSET); //no dark side
+  AltusUnified.scene.atmospherics().setLightingType(AltusUnified.LightingType.REALISTIC); //blue sky
+
+  console.log(&quot;Version Hash - &quot; + AltusUnified.Scene.versionHash());
+  console.log(&quot;Version Tag - &quot; + AltusUnified.Scene.versionTag());
+};
+
+</code></pre>
+
+<h4 id="see-demo"><a href="ImageMarkersDemo.html">See Demo</a></h4>
+            </div>
+        </div>
+        <hr>
+        <p align="right">AltusMappingEngine Web v2.0.ut.2153.g60764257e master</p>
+        <p align="right">COPYRIGHT (C) 2017, BA3, LLC ALL RIGHTS RESERVED</p>
+    </div>
+
+
+    <script src="js/contents.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="js/prism.js"></script>
+
+<script>
+<!--
+//Activate the current side bar list item
+document.getElementById('ImageMarkersTutorial').className="active";
+//Activate the current OS in the top nav bar
+document.getElementById('Web').className="active";
+-->
+</script>
+
+
+</body>
+</html>
