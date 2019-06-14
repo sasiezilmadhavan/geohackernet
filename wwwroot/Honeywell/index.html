@@ -27,9 +27,11 @@
     <script src="../Resources/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
     <script src="../Resources/prism.js" type="text/javascript"></script>
     <script src="../Resources/demo.js" type="text/javascript"></script>
-
-    <div style="position:relative; width:100%; height:75vh; overflow:hidden;" id="AltusDiv"></div>
-
+    <script src ="serviceController.js" type="text/javascript"></script>
+<div>
+    <div style="position:relative; width:48%; height:75vh;float:left " id="AltusDiv"></div>
+    <div style="position:relative; width:48%; height:75vh; color: black; float:left" id="AltusDiv1"></div>
+</div>
 </head>
 
 <body>
@@ -127,6 +129,7 @@
 <script type="text/javascript" src="../altus.js"></script>
 <script type='text/javascript'>
     var AltusUnified = new Altus(document.getElementById("AltusDiv"));
+    var AltusUnifiedTop = new Altus(document.getElementById("AltusDiv1"))
 </script>
 
 <script type='text/javascript'>
@@ -173,11 +176,11 @@
 
     var lookLat = 47;
     var lookLon = -121.7;
-    var flightSpeed = 0.01;
+    var flightSpeed = 0.001;
     var cubeSize = 0.00002;
     var heading = 180;
     var cubeAlt = 10000;
-    var cameraOffset = 0.3;
+    var cameraOffset = 0.1;
     var cameraAltOffset = 5000;
     var incrementDistance = 0;
     var distanceDivisor = 70;
@@ -190,6 +193,7 @@
     function positionCamera2D(lat, lon, altitude) {
         // create position object
         var pos = new AltusUnified.GeographicPosition(lat, lon, altitude);
+        //var toppos =         
 
         // create orientation object - camera pointed like standard 2D map view
         var orientation = new AltusUnified.Orientation(0, 90, 0);
@@ -252,8 +256,6 @@
             console.log("ModelMap is null..");
             return;
         }
-
-
     }
 
 
@@ -511,9 +513,10 @@
 
     function myTimer() {
   var dynamicMarker = markerMap.getMarker(markerName);
-  //console.info('dynamicMarker2: '+ markerMap.getMarker(markerName2));
-  //var dynamicMarker2 = markerMap.getMarker(markerName2);
-  // look at the heading and move forward one notch
+ //console.info('dynamicMarker2: '+ markerMap.getMarker(markerName2));
+ //var dynamicMarker2 = markerMap.getMarker(markerName2);
+ // look at the heading and move forward one notch
+  //getFlightData();
   incrementLocation();
   var name = "cube" + cubeNum;
   //addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize, 254, 254, 254);
@@ -526,11 +529,11 @@
 //    dynamicMarker2.transform.setPositionAndMaintainGeographicOrientation(newGeoPos2);
 //    newGeoPos2.delete();
 
-var name = "cube" + cubeNum;
+    var name = "cube" + cubeNum;
         addCube("cubes", name, lookLat, lookLon, cubeAlt, cubeSize, 254, 254, 254);
 
-  lookAtModel();
-}
+    lookAtModel();
+    }
 
     function myTimer1() {
         // look at the heading and move forward one notch
@@ -842,7 +845,7 @@ function squareImage(width, height, red, green, blue, alpha) {
 
                 // var angleTrig = calculateDirectionalAngle(currentCity.latitude, currentCity.longitude, destinationCity.latitude, destinationCity.longitude);
                 rotateMarker(dynamicMarker.transform, 10);
-                timerPtr = setInterval(myTimer, 200);
+                timerPtr = setInterval(myTimer, 500);
             },
             function () { },
             function () { });

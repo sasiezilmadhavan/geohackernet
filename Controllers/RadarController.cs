@@ -22,7 +22,7 @@ namespace aerohacknet.Controllers
         // {
         //     return new String[]{""};
         // }
-        public ActionResult<List<RadarInfo>> Get()
+        public ActionResult<RadarInfo> Get()
         {
             return _infoProvider.GetPosition();
         }
